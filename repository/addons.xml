@@ -167,7 +167,7 @@ v3.0.0 (2024-04-17)
     <platform>all</platform>
   </extension>
 </addon>
-<addon id="skin.estuary.custom" version="4.1.0_10" name="Estuary (Custom)" provider-name="allolive (fork of phil65, Ichabod Fletchman)">
+<addon id="skin.estuary.custom" version="4.1.0_11" name="Estuary (Custom)" provider-name="allolive (fork of phil65, Ichabod Fletchman)">
 	<requires>
 		<import addon="xbmc.gui" version="5.18.0"/>
 	</requires>
