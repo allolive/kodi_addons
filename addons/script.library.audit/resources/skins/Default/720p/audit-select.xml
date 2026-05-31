@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<window>
+  <defaultcontrol always="true">3000</defaultcontrol>
+  <onload>SetFocus(3000)</onload>
+  <controls>
+    <control type="group">
+      <left>0</left>
+      <top>0</top>
+      <width>100%</width>
+      <height>100%</height>
+
+      <control type="image">
+        <left>0</left>
+        <top>0</top>
+        <width>100%</width>
+        <height>100%</height>
+        <texture colordiffuse="dialog_tint">colors/white.png</texture>
+      </control>
+
+      <control type="image">
+        <left>0</left>
+        <top>0</top>
+        <width>100%</width>
+        <height>3</height>
+        <texture colordiffuse="button_focus">colors/white.png</texture>
+      </control>
+
+      <control type="label" id="2000">
+        <left>30</left>
+        <top>14</top>
+        <width>100%-60</width>
+        <height>40</height>
+        <font>font14_title</font>
+        <textcolor>white</textcolor>
+        <align>left</align>
+        <aligny>center</aligny>
+        <label></label>
+      </control>
+
+      <control type="image">
+        <left>24</left>
+        <top>62</top>
+        <width>100%-48</width>
+        <height>1</height>
+        <texture colordiffuse="33FFFFFF">colors/white.png</texture>
+      </control>
+
+      <control type="list" id="3000">
+        <left>18</left>
+        <top>72</top>
+        <width>100%-36</width>
+        <height>100%-88</height>
+        <pagecontrol>-</pagecontrol>
+        <onleft>3000</onleft>
+        <onright>3000</onright>
+        <scrolltime>200</scrolltime>
+        <itemlayout height="68">
+          <control type="label">
+            <left>16</left>
+            <top>6</top>
+            <width>100%-32</width>
+            <height>28</height>
+            <font>font13</font>
+            <textcolor>white</textcolor>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <left>16</left>
+            <top>36</top>
+            <width>100%-32</width>
+            <height>24</height>
+            <font>font12</font>
+            <textcolor>grey</textcolor>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label>$INFO[ListItem.Label2]</label>
+          </control>
+        </itemlayout>
+        <focusedlayout height="68">
+          <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>100%</width>
+            <height>100%</height>
+            <texture colordiffuse="button_alt_focus">colors/white.png</texture>
+          </control>
+          <control type="label">
+            <left>16</left>
+            <top>6</top>
+            <width>100%-32</width>
+            <height>28</height>
+            <font>font13</font>
+            <textcolor>white</textcolor>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label>$INFO[ListItem.Label]</label>
+          </control>
+          <control type="label">
+            <left>16</left>
+            <top>36</top>
+            <width>100%-32</width>
+            <height>24</height>
+            <font>font12</font>
+            <textcolor>grey</textcolor>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label>$INFO[ListItem.Label2]</label>
+          </control>
+        </focusedlayout>
+      </control>
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings version="1">
+  <section id="audit">
+    <category id="general" label="General">
+      <group id="1" label="Safety">
+        <setting id="dry_run" type="boolean" label="Dry run mode (no actual deletes)" help="When ON, delete actions are simulated only. Files and library entries are not touched.">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+      <group id="2" label="Internal">
+        <setting id="selected_sources" type="string" label="Saved source selection" visible="false">
+          <level>4</level>
+          <default></default>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="repository.allolive" version="1.0.0" name="Allolive Repository" provider-name="allolive">
+  <extension point="xbmc.addon.repository" name="Allolive Repository">
+    <dir>
+      <info compressed="false">https://raw.githubusercontent.com/allolive/kodi_addons/main/repository/addons.xml</info>
+      <checksum>https://raw.githubusercontent.com/allolive/kodi_addons/main/repository/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.githubusercontent.com/allolive/kodi_addons/main/repository/</datadir>
+    </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Allolive personal Kodi addon repository</summary>
+    <description lang="en_GB">Custom Kodi addons and skins.</description>
+    <platform>all</platform>
+    <license>GPL-2.0-or-later</license>
+  </extension>
+</addon>

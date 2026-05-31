@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.library.audit"
+       name="Library Audit"
+       version="0.1.0"
+       provider-name="olivier">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.python.script" library="default.py"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Find duplicate movies and orphan video files in source paths</summary>
+    <description lang="en_GB">Two scans for cleaning up a Kodi video library.
+
+1. Find duplicate movies: matched by IMDB/TMDB id, falling back to title + year. For each copy you can see the path, size and video stream, then delete unwanted files (and their library entry).
+
+2. Find orphan video files: walks every configured video source and flags video files that are not present in the movie, episode or music-video library. You can scan the parent folder into the library or delete the file from disk.</description>
+    <license>GPL-2.0-or-later</license>
+    <platform>all</platform>
+  </extension>
+</addon>
