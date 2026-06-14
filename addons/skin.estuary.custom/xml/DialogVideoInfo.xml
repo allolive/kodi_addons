@@ -655,10 +655,11 @@
 							<visible>!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]</visible>
 						</item>
 						<item>
-							<label>$LOCALIZE[31124]</label>
+							<label>Media info</label>
 							<icon>icons/infodialogs/media_details.png</icon>
+							<onclick>RunScript(special://skin/extras/mediainfo.py,$INFO[ListItem.DBID],$INFO[ListItem.DBType])</onclick>
 							<onclick>SetProperty(InfoViewer_Visible,true,home)</onclick>
-							<onclick>SetProperty(InfoViewer_Header,$LOCALIZE[31124],home)</onclick>
+							<onclick>SetProperty(InfoViewer_Header,Media info,home)</onclick>
 							<onclick>SetProperty(InfoViewer_Content,MediaDetails,home)</onclick>
 							<onclick>SetFocus(102)</onclick>
 							<visible>String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,episode)</visible>

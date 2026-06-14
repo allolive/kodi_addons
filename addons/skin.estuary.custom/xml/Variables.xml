@@ -374,10 +374,10 @@
 		<value condition="Control.HasFocus(70046)">$LOCALIZE[13392]</value>
 		<value condition="Control.HasFocus(70047)">$LOCALIZE[36501]</value>
 		<value condition="Control.HasFocus(70048)">$LOCALIZE[5]</value>
-		<value condition="Control.HasFocus(70060)">$LOCALIZE[13396]: $VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, - ]$VAR[AudioChannelsVar, ]</value>
+		<value condition="Control.HasFocus(70060)">$LOCALIZE[13396]: [UPPERCASE]$VAR[OSDAudioLangVar][/UPPERCASE]$VAR[AudioCodecVar, - ]$VAR[AudioChannelsVar, ]</value>
 		<value condition="Control.HasFocus(70061) + !VideoPlayer.SubtitlesEnabled">$LOCALIZE[24012]: $LOCALIZE[1223]</value>
 		<value condition="Control.HasFocus(70061) + VideoPlayer.SubtitlesEnabled + String.IsEmpty(VideoPlayer.SubtitlesLanguage)">$LOCALIZE[24012]: $LOCALIZE[13205]$VAR[SubtitleCodecVar, | ]</value>
-		<value condition="Control.HasFocus(70061)">$LOCALIZE[24012]: $INFO[VideoPlayer.SubtitlesLanguage]$VAR[SubtitleCodecVar, | ]</value>
+		<value condition="Control.HasFocus(70061)">$LOCALIZE[24012]: [UPPERCASE]$VAR[OSDSubLangVar][/UPPERCASE]$VAR[SubtitleCodecVar, | ]</value>
 		<value condition="Control.HasFocus(70050)">$LOCALIZE[29900]</value>
 		<value condition="Control.HasFocus(70051)">$LOCALIZE[31066]</value>
 		<value condition="Control.HasFocus(70052)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
@@ -759,6 +759,15 @@
 	<variable name="ActiveVideoPlayerAudioLanguage">
 		<value condition="!String.IsEmpty(VideoPlayer.AudioLanguage)">$INFO[VideoPlayer.AudioLanguage]</value>
 		<value condition="String.IsEmpty(VideoPlayer.AudioLanguage) | String.IsEqual(ListItem.AudioLanguage,und)">$LOCALIZE[13205]</value>
+	</variable>
+	<!-- OSD labels: prefer the script-mapped language name, fall back to the raw code -->
+	<variable name="OSDAudioLangVar">
+		<value condition="!String.IsEmpty(Window(Home).Property(MediaInfo.Player.AudioLanguage))">$INFO[Window(Home).Property(MediaInfo.Player.AudioLanguage)]</value>
+		<value>$VAR[ActiveVideoPlayerAudioLanguage]</value>
+	</variable>
+	<variable name="OSDSubLangVar">
+		<value condition="!String.IsEmpty(Window(Home).Property(MediaInfo.Player.SubtitleLanguage))">$INFO[Window(Home).Property(MediaInfo.Player.SubtitleLanguage)]</value>
+		<value>$INFO[VideoPlayer.SubtitlesLanguage]</value>
 	</variable>
 	<variable name="AudioPropertyFlagVar">
 		<value condition="!Window.IsActive(fullscreenvideo) + [String.IsEmpty(ListItem.AudioLanguage) | String.IsEqual(ListItem.AudioLanguage,und)]">$VAR[AudioChannelsVar]</value>

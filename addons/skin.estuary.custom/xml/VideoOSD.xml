@@ -177,14 +177,16 @@
 						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings-audio.png"/>
 						</include>
-						<onclick>DialogSelectAudio</onclick>
+						<onfocus>RunScript(special://skin/extras/mediainfo.py,player)</onfocus>
+							<onclick>DialogSelectAudio</onclick>
 					</control>
 					<control type="radiobutton" id="70061">
 						<description>Subtitle stream selection</description>
 						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 						</include>
-						<onclick>DialogSelectSubtitle</onclick>
+						<onfocus>RunScript(special://skin/extras/mediainfo.py,player)</onfocus>
+							<onclick>DialogSelectSubtitle</onclick>
 						<enable>VideoPlayer.HasSubtitles</enable>
 					</control>
 					<control type="radiobutton" id="70044">
