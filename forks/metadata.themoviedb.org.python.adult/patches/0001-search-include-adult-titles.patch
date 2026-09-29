@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:54:13 -0400
+Subject: [PATCH 1/2] search: include adult titles
+
+TMDB leaves adult titles out of search results unless asked; ask for
+them, so they can be scraped at all.
+---
+ python/lib/tmdbscraper/tmdbapi.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/python/lib/tmdbscraper/tmdbapi.py b/python/lib/tmdbscraper/tmdbapi.py
+index ac095cb..dd5fb31 100644
+--- a/python/lib/tmdbscraper/tmdbapi.py
++++ b/python/lib/tmdbscraper/tmdbapi.py
+@@ -64,6 +64,7 @@ def search_movie(query, year=None, language=None, page=None):
+     log('using title of %s to find movie' % query)
+     theurl = SEARCH_URL
+     params = _set_params(None, language)
++    params['include_adult'] = 'true'
+     params['query'] = query
+     if page is not None:
+         params['page'] = page
