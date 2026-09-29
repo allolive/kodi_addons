@@ -5,7 +5,8 @@ silently ignores when missing or defined twice.
   check-skin.py <skin-dir> [<baseline-skin-dir>]
 
 Reports variables, includes, strings (skin range 31000-39999), fonts and textures that are
-referenced but not defined, and variables, includes, strings, fonts and colours defined twice.
+referenced but not defined, variables, includes, strings, fonts and colours defined twice, and
+control ids used twice in one window (navigation to that id then lands on the wrong control).
 With a baseline (e.g. the unpatched upstream skin), problems the baseline already has are
 not reported. Exit status 1 when anything new is found.
 """
@@ -36,6 +37,11 @@ def problems(d):
     xml = load(d)
     alltext = '\n'.join(xml.values())
     out = set()
+
+    for f, text in xml.items():
+        for n, c in Counter(re.findall(r'<control\b[^>]*\bid="(\d+)"', text)).items():
+            if c > 1:
+                out.add(('control id used twice', f'{f}/{n}'))
 
     var_defs = Counter(re.findall(r'<variable\s+name="([^"]+)"', alltext))
     inc_defs = Counter(re.findall(r'<include\s+name="([^"]+)"', alltext))
