@@ -10,9 +10,11 @@ addons/<id>/                      Our own addons, zipped as they are
   script.library.audit/
 forks/<id>/                       Upstream addons we patch - no upstream code is stored here
   skin.estuary.custom/              Estuary as CoreELEC's kodi ships it
-  metadata.themoviedb.org.python.adult/   the TMDB movie scraper, with adult titles
-    fork.conf                       upstream repo + path, our name/provider, whether to pack textures
-    <release>.pin                   upstream commit (PIN) and our REVISION, per CoreELEC release
+  metadata.themoviedb.org.python.allolive/          TMDB movies: adult titles, original-language art
+  metadata.tvshows.themoviedb.org.python.allolive/  TMDB TV shows: original-language art
+    fork.conf                       upstream repo + path (. = the repository is the addon),
+                                    our name/provider, whether to pack textures
+    <release>.pin                   upstream commit (PIN), our REVISION, and what to follow
     patches/*.patch                 our changes, one patch per feature (git format-patch)
     patches-<release>/              only if a release needs a different series
 releases.conf                     CoreELEC releases we publish for (ce22; ce23 once it exists)
@@ -20,9 +22,12 @@ scripts/                          lib.sh (shared helpers), fork.sh, check-versio
                                   follow-upstream.sh, check-skin.py
 ```
 
-A fork's upstream is the kodi commit its CoreELEC release builds (CoreELEC/xbmc at the
-`PKG_VERSION` of `projects/Amlogic-ce/packages/mediacenter/kodi/package.mk`), so the skin
-always matches the kodi on the box. Its version is upstream's plus `_<REVISION>`, e.g.
+A fork follows what its pin says: `UPSTREAM_TAGS=<pattern>` follows the newest matching
+tag (the movie scraper's releases), `UPSTREAM_BRANCH=<branch>` the tip of a branch (the TV
+scraper's `piers`, its Kodi 22 line), and neither the kodi commit its CoreELEC release builds
+(CoreELEC/xbmc at the `PKG_VERSION` of `projects/Amlogic-ce/packages/mediacenter/kodi/package.mk`),
+so the skin always matches the kodi on the box. The tree is taken with `git archive`, so the
+upstream's `export-ignore` rules apply, and without dot-files. Its version is upstream's plus `_<REVISION>`, e.g.
 `3.2.2_03`; our id, name and provider replace upstream's at build time, and a skin's media
 is packed into `Textures.xbt` with the TexturePacker from the same kodi commit, the way
 kodi's own build installs Estuary.
@@ -38,9 +43,10 @@ kodi's own build installs Estuary.
 
   It refuses a push that changes an addon (or a fork's pin or patches) without a version
   bump, and checks that every XML file parses and every `.py` compiles.
-- **Daily** (`.github/workflows/follow-upstream.yml`): reads the kodi repository and commit
-  each CoreELEC release builds (`PKG_URL` / `PKG_VERSION` of its kodi `package.mk`). When that
-  commit changes a fork's upstream directory and our patches still apply, CI moves the pin,
+- **Daily** (`.github/workflows/follow-upstream.yml`): finds each fork's upstream commit - its
+  newest tag, its branch tip, or the kodi commit its CoreELEC release builds (`PKG_URL` /
+  `PKG_VERSION` of its kodi `package.mk`). When that commit changes the fork's upstream
+  directory and our patches still apply, CI moves the pin,
   bumps REVISION, commits to `main` and releases - boxes get upstream fixes on their own.
   When the patches no longer apply it opens an issue saying how to rebase them. A fork whose
   `UPSTREAM_REPO` is not the repository CoreELEC builds kodi from is left alone.

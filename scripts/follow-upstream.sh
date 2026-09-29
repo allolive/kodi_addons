@@ -1,5 +1,6 @@
 #!/bin/bash
-# Move every fork onto the kodi commit its CoreELEC release currently builds.
+# Move every fork onto its upstream's current commit, as its pin says: the newest tag matching
+# UPSTREAM_TAGS, the tip of UPSTREAM_BRANCH, or else the kodi commit its CoreELEC release builds.
 #
 # A fork whose upstream directory did not change keeps its pin. One that changed and still
 # takes our patches gets the new PIN and REVISION+1 in forks/<id>/<release>.pin and a commit.
@@ -13,12 +14,11 @@ failed="$ROOT/build/follow-failed.txt"
 mkdir -p "$(dirname "$failed")"; : > "$failed"
 
 while read -r release _ _ branch; do
-  kodi="$(coreelec_kodi "$branch")"
-  read -r kodi_repo target <<< "$kodi"
   for fork in $(forks "$release"); do
     load_fork "$fork" "$release"
+    found="$(upstream_target "$branch")" || { echo "$release $fork: skipped"; continue; }
+    read -r target source <<< "$found"
     [ "$PIN" = "$target" ] && continue
-    [ "$UPSTREAM_REPO" = "$kodi_repo" ] || { echo "$release $fork: follows $UPSTREAM_REPO, CoreELEC builds $kodi_repo; skipped"; continue; }
 
     src="$(upstream_fetch "$UPSTREAM_REPO" "$PIN" "$target")"
     if git -C "$src" diff --quiet "$PIN" "$target" -- "$UPSTREAM_PATH"; then
@@ -31,7 +31,7 @@ while read -r release _ _ branch; do
     # Whether the patches still apply is all that is decided here; the release build packs.
     if (fork_source "$fork" "$release" "$ROOT/build/follow/$fork") >&2; then
       git add "$PIN_FILE"
-      git commit -q -m "$fork: follow CoreELEC $branch kodi ${target:0:10}" \
+      git commit -q -m "$fork: follow $source ${target:0:10}" \
         -m "$UPSTREAM_REPO $UPSTREAM_PATH ${PIN:0:10}..${target:0:10}; our patches apply unchanged." \
         -m "https://github.com/$UPSTREAM_REPO/compare/$PIN...$target"
       echo "$release $fork: moved to ${target:0:10}, revision $REVISION -> $revision"

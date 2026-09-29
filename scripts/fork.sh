@@ -18,10 +18,9 @@ git_w() { git -C "$work" "$@"; }
 
 # Commit the upstream tree at <sha> in work/<id>, on top of the current upstream commit if any.
 commit_upstream() { # <sha>
-  local src; src="$(upstream_tree "$1")"
   git_w rm -rq --cached --ignore-unmatch .
   find "$work" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-  cp -a "$src/." "$work/"
+  upstream_export "$1" "$work"
   git_w add -A
   git_w commit -q --allow-empty -m "upstream: $UPSTREAM_REPO@$1 $UPSTREAM_PATH"
   git_w tag -f upstream >/dev/null

@@ -22,7 +22,7 @@ load_fork() { # <id> <release>
   local dir="$ROOT/forks/$1"
   [ -f "$dir/fork.conf" ] || die "no fork $1"
   [ -f "$dir/$2.pin" ] || die "fork $1 has no pin for $2 ($dir/$2.pin)"
-  UPSTREAM_REPO= UPSTREAM_PATH= NAME= PROVIDER= PACK_TEXTURES=0 PIN= REVISION=
+  UPSTREAM_REPO= UPSTREAM_PATH= UPSTREAM_BRANCH= UPSTREAM_TAGS= NAME= PROVIDER= PACK_TEXTURES=0 PIN= REVISION=
   # shellcheck source=/dev/null
   . "$dir/fork.conf"; . "$dir/$2.pin"
   [ -n "$UPSTREAM_REPO" ] && [ -n "$UPSTREAM_PATH" ] && [ -n "$PIN" ] && [ -n "$REVISION" ] \
@@ -33,8 +33,10 @@ load_fork() { # <id> <release>
   return 0
 }
 
+# Set PIN and REVISION in forks/<id>/<release>.pin, keeping its other lines.
 write_pin() { # <id> <release> <pin> <revision>
-  printf 'PIN=%s\nREVISION=%s\n' "$3" "$4" > "$ROOT/forks/$1/$2.pin"
+  local f="$ROOT/forks/$1/$2.pin"
+  sed -i -e "s/^PIN=.*/PIN=$3/" -e "s/^REVISION=.*/REVISION=$4/" "$f"
 }
 
 # The files an addon of <release> is built from, relative to ROOT: a version bump is due
@@ -87,11 +89,22 @@ upstream_checkout() { # <owner/repo> <sha> <path>...
   echo "$dir"
 }
 
-# After load_fork: check out the fork's upstream addon at <sha> and print its directory.
-upstream_tree() { # <sha>
-  local tree; tree="$(upstream_checkout "$UPSTREAM_REPO" "$1" "/$UPSTREAM_PATH/")/$UPSTREAM_PATH"
-  [ -f "$tree/addon.xml" ] || die "$UPSTREAM_REPO@$1 has no $UPSTREAM_PATH/addon.xml"
-  echo "$tree"
+# After load_fork: extract the fork's upstream addon at <sha> into the existing directory <dest>,
+# as upstream packages it - git archive, so its export-ignore rules apply - without top-level
+# dot-files. UPSTREAM_PATH=. is an upstream repository that is the addon itself.
+upstream_export() { # <sha> <dest>
+  local pattern="/$UPSTREAM_PATH/" treeish="$1:$UPSTREAM_PATH"
+  [ "$UPSTREAM_PATH" = . ] && pattern='/*' treeish="$1"
+  # the sparse checkout fetches the path's blobs in one batch for git archive
+  local dir; dir="$(upstream_checkout "$UPSTREAM_REPO" "$1" "$pattern")"
+  git -C "$dir" archive --format=tar "$treeish" | tar -x --anchored --exclude='.*' -C "$2"
+  [ -f "$2/addon.xml" ] || die "$UPSTREAM_REPO@$1 has no $UPSTREAM_PATH/addon.xml"
+}
+
+# The commit of the newest tag of <repo> matching <glob>, by version order.
+latest_tag_commit() { # <owner/repo> <glob>
+  # sort -V puts an annotated tag's peeled "^{}" line right after it, so the last line is a commit
+  git ls-remote --tags "https://github.com/$1.git" "refs/tags/$2" | sort -k2,2V | tail -1 | cut -f1
 }
 
 # "<owner/repo> <sha>" of the kodi a CoreELEC release branch builds.
@@ -103,6 +116,27 @@ coreelec_kodi() { # <coreelec-branch>
   sha="$(sed -n 's/^PKG_VERSION="\([0-9a-f]\{40\}\)"$/\1/p' <<< "$mk")"
   [ -n "$repo" ] && [ -n "$sha" ] || die "no kodi PKG_URL/PKG_VERSION on CoreELEC $1"
   echo "$repo $sha"
+}
+
+# After load_fork: "<sha> <description>" of the commit the fork should be on - the newest tag
+# matching UPSTREAM_TAGS, the tip of UPSTREAM_BRANCH, or the kodi commit <coreelec-branch> builds.
+# Fails (and prints why) when the fork follows a kodi other than the one CoreELEC builds.
+upstream_target() { # <coreelec-branch>
+  local sha
+  if [ -n "$UPSTREAM_TAGS" ]; then
+    sha="$(latest_tag_commit "$UPSTREAM_REPO" "$UPSTREAM_TAGS")"
+    [ -n "$sha" ] || die "no tag $UPSTREAM_TAGS in $UPSTREAM_REPO"
+    echo "$sha $UPSTREAM_REPO newest tag $UPSTREAM_TAGS"
+  elif [ -n "$UPSTREAM_BRANCH" ]; then
+    sha="$(git ls-remote "https://github.com/$UPSTREAM_REPO.git" "refs/heads/$UPSTREAM_BRANCH" | cut -f1)"
+    [ -n "$sha" ] || die "no branch $UPSTREAM_BRANCH in $UPSTREAM_REPO"
+    echo "$sha $UPSTREAM_REPO $UPSTREAM_BRANCH"
+  else
+    local repo; read -r repo sha <<< "$(coreelec_kodi "$1")"
+    [ -n "$sha" ] || die "no kodi commit for CoreELEC $1"
+    [ "$UPSTREAM_REPO" = "$repo" ] || { echo "follows $UPSTREAM_REPO, CoreELEC builds $repo" >&2; return 1; }
+    echo "$sha CoreELEC $1 kodi"
+  fi
 }
 
 # Build (once per kodi commit) the TexturePacker that kodi commit ships and print its path.
@@ -126,9 +160,8 @@ texturepacker() { # <owner/repo> <sha>
 # Leaves the fork loaded for fork_finish.
 fork_source() { # <id> <release> <dest>
   load_fork "$1" "$2"
-  local src; src="$(upstream_tree "$PIN")"
-  rm -rf "$3"; mkdir -p "$(dirname "$3")"
-  cp -a "$src" "$3"
+  rm -rf "$3"; mkdir -p "$3"
+  upstream_export "$PIN" "$3"
   local patches=("$PATCH_DIR"/*.patch)
   [ -e "${patches[0]}" ] || return 0
   # A repository of its own, so git apply resolves paths against the addon, not an enclosing repo.
