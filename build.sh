@@ -1,7 +1,7 @@
 #!/bin/bash
 # Build the Kodi repository for every release in releases.conf into an output dir (default ./dist/).
 #
-#   dist/<release>/addons.xml, addons.xml.md5, <id>/<id>-<version>.zip
+#   dist/<release>/addons.xml, addons.xml.md5, <id>/<id>-<version>.zip, <id>/<asset paths>
 #   dist/index.html, dist/repository.allolive-<version>.zip     (first-time install)
 #
 # addons/<id>/ is our own addon, zipped as it is. forks/<id>/ is an upstream addon: its pinned
@@ -46,6 +46,11 @@ while read -r release _; do
     echo "==> $release $addon_id $version"
     mkdir -p "$repo/$addon_id"
     (cd "$tree" && zip -rqX "$repo/$addon_id/${addon_id}-${version}.zip" "$addon_id")
+    # Kodi's add-on browser fetches the artwork from next to the zip, before installing
+    while read -r asset; do
+      [ -f "$addon_path/$asset" ] || die "$addon_id/addon.xml lists missing asset $asset"
+      install -Dm644 "$addon_path/$asset" "$repo/$addon_id/$asset"
+    done < <(addon_assets "$addon_path/addon.xml")
     # Strip XML declaration from per-addon addon.xml before appending.
     grep -v '<?xml' "$addon_path/addon.xml" >> "$ADDONS_XML"
   done

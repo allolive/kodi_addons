@@ -69,6 +69,11 @@ addon_attrs() { # <addon.xml> <attr>...
   python3 -c "import sys, xml.etree.ElementTree as ET; r = ET.parse(sys.argv[1]).getroot(); print(*(r.get(a) for a in sys.argv[2:]))" "$@"
 }
 
+# The files an addon.xml lists under <assets> (icon, fanart, screenshots), one path per line.
+addon_assets() { # <addon.xml>
+  python3 -c "import sys, xml.etree.ElementTree as ET; [print(e.text.strip()) for e in ET.parse(sys.argv[1]).getroot().iterfind('.//assets/*') if (e.text or '').strip()]" "$1"
+}
+
 # Fetch <sha>s of <repo> into the shared cache (shallow, no blobs) and print its directory.
 upstream_fetch() { # <owner/repo> <sha>...
   local repo=$1; shift
