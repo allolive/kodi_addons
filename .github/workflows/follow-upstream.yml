@@ -1,0 +1,58 @@
+name: Follow upstream
+
+# Daily: move each fork onto the kodi commit its CoreELEC release builds (scripts/follow-upstream.sh).
+# A fork whose patches still apply is committed to main with REVISION+1 and released at once.
+# One whose patches no longer apply gets an issue, and keeps its pin until someone rebases it
+# (scripts/fork.sh rebase).
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: follow-upstream
+  cancel-in-progress: false
+
+jobs:
+  follow:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Move pins
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          before="$(git rev-parse HEAD)"
+          scripts/follow-upstream.sh
+          if [ "$(git rev-parse HEAD)" != "$before" ]; then
+            git push origin HEAD:main
+            echo "MOVED=1" >> "$GITHUB_ENV"
+          fi
+
+      # A push made with GITHUB_TOKEN starts no workflow; a dispatch does.
+      - name: Release
+        if: env.MOVED == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run release.yml --ref main
+
+      - name: Report forks whose patches no longer apply
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while read -r release fork old new; do
+            title="$fork: patches no longer apply to CoreELEC $release kodi"
+            body="$(printf 'CoreELEC %s now builds kodi `%s`; the patches in `forks/%s` apply to `%s` but not to it.\n\nTo fix:\n\n    scripts/fork.sh edit %s %s\n    scripts/fork.sh rebase %s %s %s\n    # resolve, git rebase --continue\n    scripts/fork.sh export %s\n    # bump REVISION in forks/%s/%s.pin, commit, push\n' \
+              "$release" "$new" "$fork" "${old:0:10}" "$fork" "$release" "$fork" "$new" "$release" "$fork" "$fork" "$release")"
+            open="$(gh issue list --state open --search "in:title \"$title\"" --json number --jq 'length')"
+            if [ "$open" = 0 ]; then gh issue create --title "$title" --body "$body"; fi
+          done < build/follow-failed.txt

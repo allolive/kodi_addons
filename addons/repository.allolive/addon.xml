@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="repository.allolive" version="1.0.0" name="Allolive Repository" provider-name="allolive">
+<addon id="repository.allolive" version="1.1.0" name="Allolive Repository" provider-name="allolive">
   <extension point="xbmc.addon.repository" name="Allolive Repository">
-    <dir>
-      <info compressed="false">https://raw.githubusercontent.com/allolive/kodi_addons/main/repository/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/allolive/kodi_addons/main/repository/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/allolive/kodi_addons/main/repository/</datadir>
-    </dir>
+    <!-- build.sh writes one <dir> per CoreELEC release in releases.conf here -->
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">Allolive personal Kodi addon repository</summary>
