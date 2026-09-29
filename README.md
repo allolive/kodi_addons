@@ -5,19 +5,19 @@ Personal Kodi addon repository: our own addons, and patched versions of upstream
 ## Structure
 
 ```
-addons/<id>/                  Our own addons, zipped as they are
-  repository.allolive/          The repo addon itself (declares the URLs below)
-  service.pattern.generator/    Calman (UPGCI) / Resolve test pattern generator
+addons/<id>/                      Our own addons, zipped as they are
+  repository.allolive/              the repo addon itself (its <dir> entries come from releases.conf)
   script.library.audit/
-forks/<id>/                   Upstream addons we patch - no upstream code is stored here
-  fork.conf                     upstream repo + path, our name/provider, whether to pack textures
-  <release>.pin                 upstream commit (PIN) and our REVISION, per CoreELEC release
-  patches/*.patch               our changes, one patch per feature (git format-patch)
-  patches-<release>/            only if a release needs a different series
-  skin.estuary.custom/          Estuary as CoreELEC's kodi ships it
+forks/<id>/                       Upstream addons we patch - no upstream code is stored here
+  skin.estuary.custom/              Estuary as CoreELEC's kodi ships it
   metadata.themoviedb.org.python.adult/   the TMDB movie scraper, with adult titles
-releases.conf                 CoreELEC releases we publish for (ce22; ce23 once it exists)
-scripts/                      build helpers, fork.sh, check-versions.sh, follow-upstream.sh
+    fork.conf                       upstream repo + path, our name/provider, whether to pack textures
+    <release>.pin                   upstream commit (PIN) and our REVISION, per CoreELEC release
+    patches/*.patch                 our changes, one patch per feature (git format-patch)
+    patches-<release>/              only if a release needs a different series
+releases.conf                     CoreELEC releases we publish for (ce22; ce23 once it exists)
+scripts/                          lib.sh (shared helpers), fork.sh, check-versions.sh,
+                                  follow-upstream.sh, check-skin.py
 ```
 
 A fork's upstream is the kodi commit its CoreELEC release builds (CoreELEC/xbmc at the
@@ -37,10 +37,12 @@ kodi's own build installs Estuary.
 
   It refuses a push that changes an addon (or a fork's pin or patches) without a version
   bump, and checks that every XML file parses and every `.py` compiles.
-- **Daily** (`.github/workflows/follow-upstream.yml`): when CoreELEC moves to a new kodi
-  commit that changes a fork's upstream directory and our patches still apply, CI moves the
-  pin, bumps REVISION, commits to `main` and releases - boxes get upstream fixes on their
-  own. When the patches no longer apply it opens an issue saying how to rebase them.
+- **Daily** (`.github/workflows/follow-upstream.yml`): reads the kodi repository and commit
+  each CoreELEC release builds (`PKG_URL` / `PKG_VERSION` of its kodi `package.mk`). When that
+  commit changes a fork's upstream directory and our patches still apply, CI moves the pin,
+  bumps REVISION, commits to `main` and releases - boxes get upstream fixes on their own.
+  When the patches no longer apply it opens an issue saying how to rebase them. A fork whose
+  `UPSTREAM_REPO` is not the repository CoreELEC builds kodi from is left alone.
 
 Nothing built is committed. The repo addon picks the release directory by the kodi it runs on.
 
@@ -97,8 +99,19 @@ build writes its `<dir>` entries from `releases.conf`; CI insists on the bump), 
 `<release>.pin` to each fork that should be built for it. Our own addons are published to
 every release.
 
+Our CoreELEC builds ship a copy of the repo addon (allolive/CoreELEC, branch `yacer`,
+`patches-yacer/99-yacer-feed/kodi/`). Boxes update it from Pages on their own, but refresh
+that copy too so a fresh install already knows the new release.
+
 ## First-time install on a Kodi box
+
+Our CoreELEC builds already have the repository installed, enabled and trusted (listed in
+kodi's `ADDON_REPOS` like Kodi's and CoreELEC's own). Anywhere else:
 
 1. Download `repository.allolive-<version>.zip` from `https://allolive.github.io/kodi_addons/`.
 2. In Kodi: **Settings → Add-ons → Install from zip file** → pick the zip.
 3. After install, Kodi fetches all subsequent addon updates automatically from the repository.
+
+Kodi checks the repository at startup and every 24 hours (or on **Check for updates**): it
+compares `<release>/addons.xml.md5`, and when that changed, reads `addons.xml` and installs
+any higher version of an addon it has.
