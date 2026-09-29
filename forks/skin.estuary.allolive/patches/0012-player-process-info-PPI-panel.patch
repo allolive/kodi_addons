@@ -16,8 +16,8 @@ DialogPlayerProcessInfo.xml, Variables.xml, Font.xml, strings.
  media/buttons/ppi.png  | Bin 0 -> 2012 bytes
  xml/Font.xml           |  22 ++
  xml/Variables.xml      |   9 +
- xml/VideoOSD.xml       | 595 ++++++++++++++++++++++++++++++++++++++++-
- 7 files changed, 903 insertions(+), 2 deletions(-)
+ xml/VideoOSD.xml       | 596 ++++++++++++++++++++++++++++++++++++++++-
+ 7 files changed, 904 insertions(+), 2 deletions(-)
  create mode 100644 extras/ppi_sysfs.py
  create mode 100644 fonts/fa-solid-900.ttf
  create mode 100644 media/buttons/ppi.png
@@ -9168,7 +9168,7 @@ index a72aeab..691c36e 100644
  		<value condition="Control.HasFocus(70041)">$LOCALIZE[19069]</value>
  		<value condition="Control.HasFocus(70042)">$LOCALIZE[31065]</value>
 diff --git a/xml/VideoOSD.xml b/xml/VideoOSD.xml
-index 3500317..f0af934 100644
+index 3500317..1ac9799 100644
 --- a/xml/VideoOSD.xml
 +++ b/xml/VideoOSD.xml
 @@ -1,6 +1,9 @@
@@ -9798,3 +9798,11 @@ index 3500317..f0af934 100644
  					<control type="radiobutton" id="70043">
  						<include content="OSDButton">
  							<param name="texture" value="osd/fullscreen/buttons/information.png"/>
+@@ -187,6 +778,7 @@
+ 						</include>
+ 						<onclick>Action(Close)</onclick>
+ 						<onclick>ActivateWindow(playerprocessinfo)</onclick>
++						<visible>false</visible>
+ 					</control>
+ 					<control type="radiobutton" id="70040">
+ 						<include content="OSDButton">
