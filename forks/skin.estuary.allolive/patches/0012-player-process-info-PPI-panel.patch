@@ -11,13 +11,13 @@ OSD toggle button, status variables, FontAwesome icons (font_tiny), en_gb string
 DialogPlayerProcessInfo.xml, Variables.xml, Font.xml, strings.
 ---
  colors/defaults.xml    |   8 +
- extras/ppi_sysfs.py    | 276 +++++++++++++++++++
+ extras/ppi_sysfs.py    | 271 +++++++++++++++++++
  fonts/fa-solid-900.ttf | Bin 0 -> 1003812 bytes
  media/buttons/ppi.png  | Bin 0 -> 2012 bytes
  xml/Font.xml           |  22 ++
- xml/Variables.xml      |  18 ++
+ xml/Variables.xml      |   9 +
  xml/VideoOSD.xml       | 595 ++++++++++++++++++++++++++++++++++++++++-
- 7 files changed, 917 insertions(+), 2 deletions(-)
+ 7 files changed, 903 insertions(+), 2 deletions(-)
  create mode 100644 extras/ppi_sysfs.py
  create mode 100644 fonts/fa-solid-900.ttf
  create mode 100644 media/buttons/ppi.png
@@ -43,10 +43,10 @@ index 3d5263f..44f083c 100644
  	<color name="bg_overlay">30FFFFFF</color>
 diff --git a/extras/ppi_sysfs.py b/extras/ppi_sysfs.py
 new file mode 100644
-index 0000000..af787ab
+index 0000000..b80cb64
 --- /dev/null
 +++ b/extras/ppi_sysfs.py
-@@ -0,0 +1,276 @@
+@@ -0,0 +1,271 @@
 +# -*- coding: utf-8 -*-
 +"""
 +ppi_sysfs.py - publish Amlogic Dolby Vision / HDR / output sysfs readouts as
@@ -58,7 +58,6 @@ index 0000000..af787ab
 +only adds the extra fields that the Amlogic driver exposes in sysfs but no Kodi
 +infolabel does:
 +
-+    Window(Home).Property(ppi.source_format)   true source HDR format ("Dolby Vision")
 +    Window(Home).Property(ppi.graphic_format)  graphic-plane format ("SDR")
 +    Window(Home).Property(ppi.dv_provider)     raw provider string
 +    Window(Home).Property(ppi.dv_mode)         DV output mode ("IPT Tunnel", "HDR10", ...)
@@ -224,10 +223,6 @@ index 0000000..af787ab
 +    prov = _read(DV, "dv_provider")
 +    if prov:
 +        out["ppi.dv_provider"] = prov
-+
-+    # (DV layer detail - FEL/MEL - intentionally not shown: it isn't in sysfs
-+    # and the active-core count can't distinguish them, so there's no clean
-+    # source without a Kodi code change.)
 +
 +    # --- DV output mode: only when the source is actually Dolby Vision, so the
 +    # line hides on HDR10/SDR (where the driver reports dv_mode "off").
@@ -9147,23 +9142,14 @@ index 04b314f..d8ccf42 100644
  	</fontset>
  </fonts>
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index a72aeab..acb3c64 100644
+index a72aeab..691c36e 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
-@@ -1,5 +1,22 @@
+@@ -1,5 +1,13 @@
  <?xml version="1.0" encoding="UTF-8"?>
  <includes>
-+	<!-- Player process info page: colored status values (CPM-style) -->
-+	<!-- DV profile + enhancement-layer type from the native Kodi 22 infolabel
-+	     VideoPlayer.HdrDetail (e.g. 7FEL / 7MEL / 8.1); falls back to the sysfs
-+	     layer count when the infolabel is empty. -->
-+	<variable name="PpiSourceVar">
-+		<value condition="String.IsEqual(Window(Home).Property(ppi.source_format),Dolby Vision)">[COLOR palegreen]Dolby Vision[/COLOR]</value>
-+		<value condition="!String.IsEmpty(Window(Home).Property(ppi.source_format))">$INFO[Window(Home).Property(ppi.source_format)]</value>
-+		<value>N/A</value>
-+	</variable>
 +	<variable name="PpiVideoTypeVar">
-+		<value condition="String.IsEqual(VideoPlayer.HdrType,dolbyvision)">Dolby Vision</value>
++		<value condition="String.IsEqual(VideoPlayer.HdrType,dolbyvision)">Dolby Vision $VAR[DVProfileELVar]</value>
 +		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10plus)">HDR10+</value>
 +		<value condition="String.IsEqual(VideoPlayer.HdrType,hdr10)">HDR10</value>
 +		<value condition="String.IsEqual(VideoPlayer.HdrType,hlg)">HLG</value>
@@ -9173,7 +9159,7 @@ index a72aeab..acb3c64 100644
  	<variable name="PVRStatusImageVar">
  		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
  		<value condition="ListItem.HasTimer | ListItem.HasTimerSchedule">windows/pvr/timer.png</value>
-@@ -367,6 +384,7 @@
+@@ -367,6 +375,7 @@
  		<value condition="Control.HasFocus(608)">$LOCALIZE[264]</value>
  		<value condition="Control.HasFocus(804)">$LOCALIZE[33061]</value>
  		<value condition="Control.HasFocus(70011)">$LOCALIZE[31178]</value>
