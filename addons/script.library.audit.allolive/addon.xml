@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.library.audit"
-       name="Library Audit"
+<addon id="script.library.audit.allolive"
+       name="Library Audit (allolive)"
        version="0.1.0"
-       provider-name="olivier">
+       provider-name="allolive">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
   </requires>

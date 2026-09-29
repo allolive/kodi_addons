@@ -7,9 +7,9 @@ Personal Kodi addon repository: our own addons, and patched versions of upstream
 ```
 addons/<id>/                      Our own addons, zipped as they are
   repository.allolive/              the repo addon itself (its <dir> entries come from releases.conf)
-  script.library.audit/
+  script.library.audit.allolive/    finds duplicate movies and orphan video files
 forks/<id>/                       Upstream addons we patch - no upstream code is stored here
-  skin.estuary.custom/              Estuary as CoreELEC's kodi ships it
+  skin.estuary.allolive/                            Estuary as CoreELEC's kodi ships it
   metadata.themoviedb.org.python.allolive/          TMDB movies: adult titles, original-language art
   metadata.tvshows.themoviedb.org.python.allolive/  TMDB TV shows: original-language art
     fork.conf                       upstream repo + path (. = the repository is the addon),
@@ -70,11 +70,11 @@ lists variables, includes, strings, fonts and textures it references but no long
 ## Changing a forked addon
 
 ```bash
-scripts/fork.sh edit skin.estuary.custom      # work/skin.estuary.custom: upstream + our patches as commits
-# edit, test, git commit in work/skin.estuary.custom (one commit per feature; amend or
+scripts/fork.sh edit skin.estuary.allolive      # work/skin.estuary.allolive: upstream + our patches as commits
+# edit, test, git commit in work/skin.estuary.allolive (one commit per feature; amend or
 # git rebase -i to change an existing feature)
-scripts/fork.sh export skin.estuary.custom    # rewrites forks/skin.estuary.custom/patches/
-# bump REVISION in forks/skin.estuary.custom/ce22.pin, commit, push
+scripts/fork.sh export skin.estuary.allolive    # rewrites forks/skin.estuary.allolive/patches/
+# bump REVISION in forks/skin.estuary.allolive/ce22.pin, commit, push
 ```
 
 When CI reports that the patches no longer apply:
