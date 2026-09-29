@@ -1,0 +1,4 @@
+{"cm_version":"V29","length":1,"source_min_pq":62,"source_max_pq":3079,
+ "level5":{"active_area_left_offset":0,"active_area_right_offset":0,"active_area_top_offset":0,"active_area_bottom_offset":0},
+ "level6":{"max_display_mastering_luminance":1000,"min_display_mastering_luminance":1,"max_content_light_level":1000,"max_frame_average_light_level":400},
+ "default_metadata_blocks":[{"Level1":{"min_pq":0,"max_pq":2081,"avg_pq":1000}},{"Level255":{"dm_run_mode":1,"dm_run_version":0,"dm_debug0":0,"dm_debug1":0,"dm_debug2":0,"dm_debug3":0}}]}

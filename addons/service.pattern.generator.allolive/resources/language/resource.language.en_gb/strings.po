@@ -1,0 +1,316 @@
+# Kodi Media Center language file
+# Addon Name: Pattern Generator (allolive)
+# Addon id: service.pattern.generator.allolive
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+
+msgctxt "#30000"
+msgid "Network connections"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Calman (UPGCI)"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Listen for Calman (UPGCI)"
+msgstr ""
+
+msgctxt "#30003"
+msgid "In Calman: Find Source, SpectraCal, UPGCI, enter this box's IP."
+msgstr ""
+
+msgctxt "#30004"
+msgid "UPGCI TCP port"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Classic / GCI control port."
+msgstr ""
+
+msgctxt "#30006"
+msgid "UPGCI RPC TCP port"
+msgstr ""
+
+msgctxt "#30007"
+msgid "0 disables the RPC listener."
+msgstr ""
+
+msgctxt "#30008"
+msgid "Answer network discovery (UDP 3529)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Name shown to Calman (empty: the host name, as PGenerator)"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Blank the screen when Calman disconnects (PGenerator keeps the pattern)"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Resolve client (Calman, HCFR, DisplayCAL)"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Connect to a Resolve target"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Calman Home 5.15+ no longer offers UPGCI; select Resolve in the calibration software instead."
+msgstr ""
+
+msgctxt "#30014"
+msgid "Calibration PC address"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Resolve TCP port"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Output (both)"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Pattern clip"
+msgstr ""
+
+msgctxt "#30018"
+msgid "Resolution"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Calman's CONF_FORMAT overrides this. With 'Adjust display refresh rate' on, Kodi switches the output to match."
+msgstr ""
+
+msgctxt "#30020"
+msgid "Frame rate"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Clip length (seconds)"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Extra frames to wait before acknowledging a pattern"
+msgstr ""
+
+msgctxt "#30023"
+msgid "Calman is told a pattern is ready once it is on screen (in the continuous stream: the box displays its first frame; with clips: Kodi reports the first frame), the HDMI output carries the requested signal and any refresh-rate change delay (Settings > Display) has passed. These extra frames give the display time for its own processing. Used in both playback modes."
+msgstr ""
+
+msgctxt "#30024"
+msgid "Patterns kept in cache"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Start-up signal (until the client selects one)"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Diagnostics"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Log every protocol command"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Current display mode"
+msgstr ""
+
+msgctxt "#30036"
+msgid "1920x1080"
+msgstr ""
+
+msgctxt "#30037"
+msgid "3840x2160"
+msgstr ""
+
+msgctxt "#30038"
+msgid "1280x720"
+msgstr ""
+
+msgctxt "#30039"
+msgid "23.976"
+msgstr ""
+
+msgctxt "#30040"
+msgid "24"
+msgstr ""
+
+msgctxt "#30041"
+msgid "25"
+msgstr ""
+
+msgctxt "#30042"
+msgid "29.97"
+msgstr ""
+
+msgctxt "#30043"
+msgid "30"
+msgstr ""
+
+msgctxt "#30044"
+msgid "50"
+msgstr ""
+
+msgctxt "#30045"
+msgid "59.94"
+msgstr ""
+
+msgctxt "#30046"
+msgid "60"
+msgstr ""
+
+msgctxt "#30047"
+msgid "SDR (BT.709)"
+msgstr ""
+
+msgctxt "#30048"
+msgid "HDR10"
+msgstr ""
+
+msgctxt "#30050"
+msgid "HLG"
+msgstr ""
+
+msgctxt "#30051"
+msgid "Dolby Vision"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Notifications"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Show notifications"
+msgstr ""
+
+msgctxt "#30055"
+msgid "Signal, Dolby Vision mapping, generator and connection changes. A notification draws over the pattern, so Calman's acknowledgement waits until it has gone (about 3 s, longer for a long text)."
+msgstr ""
+
+msgctxt "#30056"
+msgid "Debug overlay on patterns"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Writes the request and the signal details in light grey at the bottom right of every pattern. It is part of the picture, so it slightly changes full-field and APL measurements: use it for debugging only."
+msgstr ""
+
+msgctxt "#30059"
+msgid "Max luminance (nits)"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Mastering peak for the manual test patterns in HDR10 and HLG: the static metadata and the chart scaling. Dolby Vision always carries PGenerator's fixed 0.005-4000 nit range, as PGenerator does. The network generator uses the values the calibration software sends."
+msgstr ""
+
+msgctxt "#30100"
+msgid "HCFR, DeviceControl and LightSpace"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Listen for HCFR / DeviceControl (TCP 85)"
+msgstr ""
+
+msgctxt "#30102"
+msgid "PGenerator's classic protocol: templates, shapes and CMD: commands, as HCFR and DeviceControl use them. Only while the generator is started."
+msgstr ""
+
+msgctxt "#30103"
+msgid "Classic protocol port"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Answer DeviceControl discovery (UDP 1977)"
+msgstr ""
+
+msgctxt "#30105"
+msgid "Replies \"I am a PGenerator <name>\" to DeviceControl's broadcast. Only while the generator is started."
+msgstr ""
+
+msgctxt "#30106"
+msgid "LightSpace / ColourSpace client (UDP 20123)"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Waits for LightSpace's UDP trigger, then connects out to the PC and draws its XML patches. Only while the generator is started."
+msgstr ""
+
+msgctxt "#30130"
+msgid "Signal (follows the calibration software)"
+msgstr ""
+
+msgctxt "#30131"
+msgid "Test pattern signal"
+msgstr ""
+
+msgctxt "#30132"
+msgid "The signal Show a test pattern starts with. While a pattern plays, Up/Down changes it and OK opens a menu for it; the last one used is kept here."
+msgstr ""
+
+msgctxt "#30140"
+msgid "400 nits"
+msgstr ""
+
+msgctxt "#30141"
+msgid "600 nits"
+msgstr ""
+
+msgctxt "#30142"
+msgid "1000 nits"
+msgstr ""
+
+msgctxt "#30143"
+msgid "1500 nits"
+msgstr ""
+
+msgctxt "#30144"
+msgid "2000 nits"
+msgstr ""
+
+msgctxt "#30145"
+msgid "4000 nits"
+msgstr ""
+
+msgctxt "#30146"
+msgid "10000 nits"
+msgstr ""
+
+msgctxt "#30150"
+msgid "Network generator"
+msgstr ""
+
+msgctxt "#30151"
+msgid "Manual patterns"
+msgstr ""
+
+msgctxt "#30152"
+msgid "Test patterns picked here, without calibration software"
+msgstr ""
+
+msgctxt "#30160"
+msgid "Pattern playback"
+msgstr ""
+
+msgctxt "#30161"
+msgid "Continuous stream: the calibration software's patterns follow each other inside one stream that never stops, so the signal (SDR, HDR10, HLG or Dolby Vision) is never turned off and on between patterns, and a pattern is on screen about 0.5 s after it is asked for. A change of signal, resolution or metadata starts a new stream. One clip per pattern: the previous way, where every pattern restarts the video and the signal. Needs an Amlogic box; elsewhere clips are used. Manual test patterns are always clips."
+msgstr ""
+
+msgctxt "#30162"
+msgid "Continuous stream (signal stays on)"
+msgstr ""
+
+msgctxt "#30163"
+msgid "One clip per pattern"
+msgstr ""
+
+msgctxt "#30164"
+msgid "Length of each pattern clip. Used by the one-clip-per-pattern mode and by the manual test patterns (which are always clips); a clip that ends is started again."
+msgstr ""

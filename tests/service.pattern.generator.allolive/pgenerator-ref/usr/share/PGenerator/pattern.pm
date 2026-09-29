@@ -1,0 +1,757 @@
+#
+# Copyright (c) 2017-2018 Biasiotto Riccardo
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# See the File README and COPYING for more detail about License
+#
+
+###############################################
+#       Create Pattern File Function          #
+###############################################
+sub pattern_patch_request_log_path (@) {
+ my $path=$calman_patch_log || "/var/log/PGenerator/calman-patches.log";
+ my $dir=$path;
+ $dir=~s|/[^/]+$||;
+ $dir="/var/log/PGenerator" if($dir eq "");
+ if($dir ne "" && ! -d $dir) {
+  mkdir $dir;
+ }
+ return (-d $dir) ? "$dir/patch-requests.log" : "/tmp/patch-requests.log";
+}
+
+sub pattern_patch_log_clean (@) {
+ my $value=shift;
+ my $limit=int(shift || 0);
+ $value="" if(!defined $value);
+ $value=~s/[\r\n]+/|/g;
+ $value=~s/[\t]/ /g;
+ $value=~s/\s+/ /g;
+ $value=~s/\s*\|\s*/|/g;
+ $value=~s/^\s+|\s+$//g;
+ $value=substr($value,0,$limit) if($limit > 0 && length($value) > $limit);
+ return $value;
+}
+
+sub pattern_log_patch_request (@) {
+ my %f=@_;
+ my $path=&pattern_patch_request_log_path();
+ my $ts=eval { require Time::HiRes; Time::HiRes::time(); };
+ $ts=time() if(!$ts);
+ my $local=scalar(localtime());
+ my $range="source_range=".($f{source_range}//"");
+ my @fields=(
+  sprintf("%.6f",$ts),
+  "local=".&pattern_patch_log_clean($local,80),
+  "source=".&pattern_patch_log_clean($f{source},80),
+  "handler=create_pattern_file",
+  "raw=".&pattern_patch_log_clean($f{raw},80),
+  "scaled=".&pattern_patch_log_clean($f{scaled},80),
+  "input_max=".&pattern_patch_log_clean($f{input_max},40),
+  "bits=".&pattern_patch_log_clean($f{bits},40),
+  "range=".&pattern_patch_log_clean($range,120),
+  "win=".&pattern_patch_log_clean($f{win},80),
+  "size=",
+  "bg=".&pattern_patch_log_clean($f{bg},80),
+  "meta=".&pattern_patch_log_clean($f{meta},700),
+  "pattern=".&pattern_patch_log_clean($f{pattern},1800)
+ );
+ if(open(my $fh,">>",$path)) {
+  print $fh join("\t",@fields)."\n";
+  close($fh);
+ }
+}
+
+sub create_pattern_file (@) {
+ my $draw=shift;
+ my $dim=shift;
+ my $resolution=shift;
+ my $rgb=shift;
+ my $bg=shift;
+ my $position=shift;
+ my $text=shift;
+ my $return_str=shift;
+ my $simple=shift;
+ my $requested_by=(($requested_by=shift) eq "") ? $requested_by_default : $requested_by;
+ my $source_range=shift;
+ my $source_max=int(shift || 0);
+ my $scaling_disabled=($requested_by eq "RGB") ? 1 : 0;
+ my ($min_rgb,$max_rgb)=(0,255);
+ my @el_rgb=split(",",$rgb);
+ my $bits="";
+ my $draw_type="";
+ my $new_rgb="";
+ my $pattern_string="";
+ return if($#el_rgb != 2);
+ # HCFR, DeviceControl Simple Template,reference flow
+ if($simple) {
+  ($draw_type,$bits)=$draw=~/([A-Z]+)(\d+)bit/;
+  $draw=$draw_type             if($draw_type ne "");
+  ($min_rgb,$max_rgb)=(0,1023) if($bits == 10);
+ }
+ $bits=$bits_default if($bits eq "");
+ $max_rgb=(1 << $bits) - 1 if($bits > 8);
+ $source_max=0 if($source_max != 255 && $source_max != 1023 && $source_max != 4095);
+ $max_rgb=$source_max if($source_max > 0);
+ for(@el_rgb) {
+  return if($_ < $min_rgb || $_ > $max_rgb);
+  $new_rgb.=int($_).",";
+ }
+ $bg=$bg_default if($bg eq "");
+ $position=$position_default if($position eq "");
+ $new_rgb=~s/,$//;
+ $options="TEXT";
+ $options="IMAGE" if($draw eq "IMAGE");
+ $dim=&round_val((split(",",$dim))[0]*($w_s/$max_x)).",".&round_val((split(",",$dim))[1]*($h_s/$max_y)) if(!$scaling_disabled);
+ # calculate and check the position
+ $position=&get_position($dim,$draw,$position,$scaling_disabled);
+ @num_sep=split(",",$position);
+ for(@num_sep) { return &error() if(/[^0-9-]/); }
+ $scaling_done=1 if(!$scaling_disabled);
+ # create the pattern file
+ $pattern_string.="PATTERN_NAME=$pname_file\n" if($pname_file ne "");
+ $pattern_string.="MOVIE_NAME=TestPattern\nBITS=$bits\n" if($simple);
+ $pattern_string.="SOURCE_MAX=$source_max\n" if($source_max > 0);
+ $pattern_string.="DRAW=$draw\nDIM=$dim\nRESOLUTION=$resolution\nRGB=$new_rgb\nBG=$bg\nPOSITION=$position\n";
+ $pattern_string.="SOURCE_RANGE=$source_range\n" if($source_range ne "");
+ $pattern_string.="$options=$text\nEND=1\n";
+ $pattern_string.="FRAME_NAME=TestPattern\nFRAME=$frame_default\n" if($simple);
+ return $pattern_string if($return_str);
+ &pattern_log_patch_request(source=>$requested_by,
+                            raw=>$rgb,
+                            scaled=>$new_rgb,
+                            input_max=>$max_rgb,
+                            bits=>$bits,
+                            source_range=>$source_range,
+                            win=>$dim,
+                            bg=>$bg,
+                            meta=>"draw=$draw;position=$position;simple=$simple;resolution=$resolution",
+                            pattern=>$pattern_string);
+ open(FILE,">$command_file.tmp");
+ print FILE $pattern_string;
+ close(FILE);
+ rename("$command_file.tmp","$command_file");
+ &load_new_pattern_file("$requested_by");
+ &stats("patterns",1);
+}
+
+###############################################
+#          Functions Pattern Function         #
+###############################################
+sub execute_functions (@) {
+ my $draw=shift;
+ my $dim=shift;
+ my $res=shift;
+ my $functions=shift;
+ open(FUNCTIONS,"$functions");
+ while(<FUNCTIONS>) {
+  eval $_;
+ }
+ close(FUNCTIONS);
+}
+
+###############################################
+#            Pattern Video Function           #
+###############################################
+sub play_video(@) {
+ my $program = shift;
+ my $video = shift;
+ my ($duration,$repeat) = split("-",shift);
+ my $width = int(shift || 0);
+ my $height = int(shift || 0);
+ my $play_as_root=($program =~ /(^|\/)(?:omxplayer(?:\.bin)?|pg_diag_video_player)$/) ? 1 : 0;
+ my $response="OK";
+ $repeat=0 if($repeat != 1);
+ &pattern_generator_stop();
+ #system("$timeout --foreground -k $duration $duration $program '$video_dir/$video' &>/dev/null");
+ &create_pattern_file("$draw_default","$w_s,$h_s",$res_default,"$rgb_default","$bg_default","$position_default","","","","play_video");
+ $program_video_to_kill=$program;
+ if($play_as_root) {
+  $response=&sudo("PLAY_VIDEO","$program","$video","$duration","$repeat","$width","$height");
+  chomp($response);
+  $response=~s/^ERR://;
+  $response="Video playback failed to start" if($response eq "");
+ } else {
+  # timeout exit with 124 and kill process exit with 143
+  system("while [ true ]; do $timeout --foreground -k $duration $duration $program '$video_dir/$video' &>/dev/null;if [ \$? == 143 ] || [ $repeat == 0 ];then exit 0;fi; done &");
+ }
+ return $response;
+ #&pattern_generator_start();
+}
+
+###############################################
+#            Pattern Conversion               # 
+###############################################
+sub pc_to_video (@) {
+ my $val = shift;
+ $val=((219/255)*$val)+16;
+ return &round_val($val);
+}
+
+###############################################
+#              File Get List                 # 
+###############################################
+sub get_file_list (@) {
+ my $dir = shift;
+ my $str = "";
+ opendir(DIR,"$dir");
+ @dir=sort(readdir(DIR));
+ closedir(DIR);
+ for(@dir) {
+  next if(! -f "$dir/$_");
+  $str.="$_\n";
+ }
+ chomp($str);
+ return $str;
+}
+
+###############################################
+#             Pattern Get Image               #  
+###############################################
+sub get_pattern_image (@) {
+ my $dir = shift;
+ my $pattern = shift;
+ my $img_content="";
+ my $response="";
+ my %frame = ();
+ my $n_frames = 0;
+ my $count = 0;
+ open(FILE,"$pattern_frames/pattern.info");
+ $pname_file=<FILE>;
+ close(FILE);
+ chomp($pname_file);
+ return $none if($pname_file ne $pattern);
+ opendir(DIR,"$dir");
+ @dir=readdir(DIR);
+ closedir(DIR);
+ for(@dir) {
+  @el=split("-",$_);
+  $frame{$el[0]}=$_;
+  $n_frames++ if (/\.png/);
+ }
+ # remove old preview frames
+ foreach my $key (sort {$a <=> $b} keys %frame) {
+  $_=$frame{$key};
+  next if (!/\.png/);
+  last if($count == ($n_frames-1));
+  ($preview="preview-".$_)=~s/\.png$/.jpg/;
+  $preview=~s/\%//g;
+  unlink("$var_dir/running/$preview");
+  $count++;
+ }
+ # convert last frame preview
+ foreach my $key (sort {$b <=> $a} keys %frame) {
+  $_=$frame{$key};
+  next if (!/\.png/);
+  ($preview="preview-".$_)=~s/\.png$/.jpg/;
+  $preview=~s/\%//g;
+  $size_str=$img_width."x".$img_height;
+  system("$convert -resize $size_str $pattern_frames/$_ $var_dir/running/$preview") if(!-f "$var_dir/running/$preview");
+  return "<img src=http://\$ip_device:\$port_device/running/$preview-".time().">";
+ }
+ return $ok_response;
+}
+
+###############################################
+#         Pattern Images Get List             # 
+###############################################
+sub get_patternimages_list (@) {
+ my $pname = shift;
+ my $str = "";
+ my @arr=();
+ my %img=();
+ my $last="";
+ my $index="";
+ my $cnt=0;
+ open(FILE,"$pattern_frames/pattern.info");
+ $pname_file=<FILE>;
+ close(FILE);
+ chomp($pname_file);
+ return "" if($pname ne $pname_file);
+ opendir(DIR,"$pattern_frames/");
+ @dir=readdir(DIR);
+ closedir(DIR);
+ for(@dir){
+  next if($_ eq "." ||  $_ eq ".." || -d "$pattern_frames/$_");
+  @el=split("-",$_);
+  $index=$el[0];
+  $pname=$duration=$el[1];
+  $pname=~s/$split_images_string.*//;
+  $duration=~s/.*$split_images_string//;
+  $duration=~s/\.png//;
+  $key=$index;
+  next if($key eq "pattern.info");
+  $key=$last="-1" if($_ =~/done$/);
+  $index="Done" if($index eq "done");
+  $pattern_info="$index";
+  $pattern_info.=")" if($index ne "Done");
+  $duration=($duration/1000000)."s" if($key ne "-1");
+  $pattern_info.=" $pname $duration";
+  $img{$key}=$pattern_info;
+  $cnt++;
+ }
+ $str="Ready" if($cnt == 0 && $pname_file ne "");
+ if($last ne "-1") {
+  foreach $key (sort {$b<=>$a} keys %img) {
+   $str.=$img{$key}."\n";
+  }
+ } else {
+  foreach $key (sort {$a<=>$b} keys %img) {
+   $str.=$img{$key}."\n";
+  }
+ }
+ chomp($str);
+ return $str;
+}
+
+###############################################
+#           Pattern SaveImages                #
+###############################################
+sub save_images_pattern (@) {
+ my $file = shift;
+ my $images = shift;
+ open(FILE,">$pattern_frames/pattern.info");
+ print FILE $file;
+ close(FILE);
+ open(FILE,">$var_dir/running/$file.save");
+ close(FILE);
+ &create_return_file();
+}
+
+###############################################
+#             Reload Pattern File             #
+###############################################
+sub load_new_pattern_file (@) {
+ my $requested_by = shift;
+ if($requested_by eq "play_video") {
+  &create_return_file() if($requested_by ne $last_pattern_requested_by || $requested_by eq "");
+  $last_pattern_requested_by=$requested_by;
+  return;
+ }
+ &video_program_stop("$program_video_to_kill");
+ # Ensure the renderer is alive. pattern_generator_start can fail
+ # transiently due to the documented DRM-master race (a helper
+ # such as pgsethdr holds DRM master while the renderer calls
+ # drmSetMaster, so the renderer exits immediately). Retry up to
+ # three more times with increasing delays so the next pattern
+ # request doesn't silently fail to appear on the TV. This covers
+ # the reference GCI flow where a CONF_HDR / apply sequence followed
+ # by a SPECIALTY pattern hits the race repeatedly. Each retry
+ # also calls pattern_generator_stop first to clear any stale
+ # DRM-master holder before re-starting. We also wait briefly
+ # after each start before checking is_running, because the
+ # background system() in pattern_generator_start returns before
+ # the renderer process has fully initialized. The final retry
+ # uses a 3s delay to let any lingering pgsethdr/drm_override
+ # DRM-master holder fully release before the renderer tries to
+ # acquire master.
+ if(!&pattern_generator_is_running()) {
+  &pattern_generator_start(1);
+  select(undef,undef,undef,0.6);
+  if(!&pattern_generator_is_running()) {
+   &log("load_new_pattern_file: renderer not running after first start, retrying (DRM master race)");
+   select(undef,undef,undef,0.4);
+   &pattern_generator_stop();
+   &pattern_generator_start(1);
+   select(undef,undef,undef,0.6);
+  }
+  if(!&pattern_generator_is_running()) {
+   &log("load_new_pattern_file: renderer still not running after second start, final retry");
+   select(undef,undef,undef,1.0);
+   &pattern_generator_stop();
+   &pattern_generator_start(1);
+   select(undef,undef,undef,0.6);
+  }
+  if(!&pattern_generator_is_running()) {
+   &log("load_new_pattern_file: renderer failed after 3 starts, waiting 3s for DRM master to settle");
+   select(undef,undef,undef,3.0);
+   &pattern_generator_stop();
+   &pattern_generator_start(1);
+   select(undef,undef,undef,0.8);
+  }
+  if(!&pattern_generator_is_running()) {
+   &log("load_new_pattern_file: renderer failed to start after all retries — pattern will not appear on TV; a service restart will recover it");
+  }
+ }
+ &create_return_file();
+ $last_pattern_requested_by=$requested_by;
+}
+
+
+###############################################
+#             Create Return File              #
+###############################################
+sub create_return_file (@) {
+ my $rf="$var_dir/running/return";
+ if(open(my $rfh,">",$rf)) {
+  close($rfh);
+ } else {
+  &log("ERROR: cannot create return file $rf: $!");
+ }
+}
+
+###############################################
+#               Pattern Get                   #
+###############################################
+sub get_pattern (@) {
+ my $type = shift;
+ my $pattern = shift;
+ my $rgb = shift;
+ my $requested_by = shift;
+ my $source_range = shift;
+ my $source_max = int(shift || 0);
+ $source_max=0 if($source_max != 255 && $source_max != 1023 && $source_max != 4095);
+ my ($str,$bg,$dim,$draw_type,$pos,$res,$frame,$str_other,$image,$bits,$rules) = "";
+ my %var=();
+ my $pattern_dir = $pattern_templates;
+ my $scaling_disabled=0;
+ #
+ # For HCFR or LS
+ #
+ if($rgb=~/;/) {
+  my @el=split(";",$rgb);
+  $rgb=$el[0];
+  $bg=$el[1];
+  $draw_type=$el[2];
+  $dim=$el[3];
+  $pos=$el[4];
+  $res=$el[5];
+  $frame=$el[6];
+  $str_other=$el[7];
+  $bits=$el[8] if($el[8] ne "");
+  $scaling_disabled=1;
+ }
+ #
+ # Read Pattern
+ #
+ $pattern_dir = "$var_dir/running/tmp" if($type eq "$test_template_ramdisk_command");
+ my $file_pattern="$pattern_dir/$pattern";
+ return &error() if(!-f $file_pattern);
+ open($pattern,"$pattern_dir/$pattern");
+ $first_row=<$pattern>;
+ $first_row=<$pattern> if($first_row =~/^PERMANENT=/);
+ chomp($first_row);
+ #
+ # EVAL Pattern
+ #
+ if($first_row eq "EVALPATTERN=") {
+  while(<$pattern>) {
+   $rules.=$_;
+  }
+  eval $rules;
+  return &error() if($@ ne "");
+  $file_pattern="$var_dir/running/$pattern.tmp";
+  open(TMP,">$file_pattern");
+  print TMP $str;
+  close(TMP);
+  $str="";
+ }
+ #
+ # Classic Pattern
+ #
+ open($pattern,"$file_pattern");
+ while(<$pattern>) {
+  $scaling_disabled=1 if(/^# SCALING=DISABLED/ || $scaling_done);
+  next if($_=~/^(#|\n|\r)/);
+  if($_=~/^VAR=(.*)=(.*)/) {
+   $var{"$1"}=&replace_string($2,$rgb);
+   next;
+  }
+  foreach $key (keys %var) {
+   $_=~s/$key/$var{$key}/g;
+  }
+  #
+  # FRAME
+  #
+  if($_=~/^FRAME=DYNAMIC/) {
+   $frame=$1             if($frame eq "" && /^FRAME=DYNAMIC\|\|(.*)/);
+   $frame=$frame_default if($frame eq "");
+   $str.="FRAME=$frame\n";
+   next;
+  }
+  #
+  # IMAGE
+  #
+  if($_=~/^IMAGE=DYNAMIC/) {
+   $str_other=$1                if($str_other eq "" && /^IMAGE=DYNAMIC\|\|(.*)/);
+   $_="IMAGE=$str_other\n";
+  }
+  if($_=~/^IMAGE=(.*)/) {
+   $image=$1;
+   $str.="IMAGE=$1\n";
+   next;
+  }
+  #
+  # TEXT
+  #
+  if($_=~/^TEXT=DYNAMIC/) {
+   $str_other=$1            if($str_other eq "" && /^TEXT=DYNAMIC\|\|(.*)/);
+   $str_other=$text_default if($str_other eq "");
+   $_="TEXT=$str_other\n";
+  } 
+  if($_=~/^TEXT=(.*)/) {
+   $str_other=&replace_string($1,$rgb);
+   $str.="TEXT=$str_other\n";
+   next;
+  }
+  #
+  # DRAW
+  #
+  if($_=~/^DRAW=DYNAMIC/) {
+   $draw_type=$1            if($draw_type eq "" && /^DRAW=DYNAMIC\|\|(.*)/);
+   $draw_type=$draw_default if($draw_type eq "");
+   $_="DRAW=$draw_type\n";
+  } 
+  if($_=~/^DRAW=(.*)/) {
+   $draw_type=$1;
+   return &error() if($draw_type !~/^RECTANGLE$|^CIRCLE$|^TRIANGLE$|^TEXT$|^IMAGE$/);
+   $str.=$_;
+   next;
+  }
+  #
+  # DIM
+  #
+  if($_=~/^DIM=DYNAMIC/) {
+   $dim=$1           if($dim eq "" && /^DIM=DYNAMIC\|\|(.*)/);
+   $dim=$dim_default if($dim eq "");
+   $_="DIM=$dim\n";
+  } 
+  if($_=~/^DIM=NATIVE/) {
+   if($draw_type eq "IMAGE") {
+    open(IDENTIFY,"$identify '$image'|");
+    $dim=(<IDENTIFY>)=~s/ /,/r;
+    close(DENTIFY);
+    $_="DIM=$dim\n" if($dim ne "");
+   }
+  }
+  if($_=~/^DIM=(.*)\%/) {
+   $sqrt=sqrt($1/100);
+   $dim=&round_val($sqrt*$w_s).",".&round_val($sqrt*$h_s);
+   $_="DIM=$dim\n";
+  } 
+  if($_=~/^DIM=(.*)/) {
+   $dim=$1;
+   if(!$scaling_disabled) {
+    $dim=&round_val((split(",",$dim))[0]*($w_s/$max_x)).",".&round_val((split(",",$dim))[1]*($h_s/$max_y));
+   }
+   $_="DIM=$dim\n";
+   @num_dim=split(",",$dim);
+   for(@num_dim) { return &error() if(/[^0-9]/); }
+   return &error() if($num_dim[0] > $w_s || $num_dim[1] > $h_s);
+   $str.=$_;
+   next;
+  }
+  #
+  # MACRO
+  #
+    if($_=~/^MACRO=(.*)/) {
+     &get_pattern($type,$1,$rgb,"MACRO",$source_range,$source_max);
+   next;
+  }
+  #
+  # EVAL DISABLED for security reason
+  #
+  return &error("eval denied") if($_=~/^EVAL=(.*)/);
+  # 
+  # POSITION
+  #
+  if($_=~/^POSITION=DYNAMIC/) {
+   $pos=$1                if($pos eq "" && /^POSITION=DYNAMIC\|\|(.*)/);
+   $pos=$position_default if($pos eq "");
+   $_="POSITION=$pos\n";
+  }
+  if($_=~/^POSITION=(.*)/) {
+   $pos=&get_position($dim,$draw_type,$1,$scaling_disabled);
+   @num_sep=split(",",$1);
+   for(@num_sep) { return &error() if(/[^0-9-]/); }
+   @num_sep=split(",",$pos);
+   for(@num_sep) { return &error() if(/[^0-9-]/); }
+   $str.="POSITION=$pos\n";
+   next;
+  }
+  #
+  # BG
+  #
+  if($_=~/^BG=DYNAMIC/) {
+   $bg=$1          if($bg eq "" && /^BG=DYNAMIC\|\|(.*)/);
+   $bg=$bg_default if($bg eq "");
+   $str.="BG=$bg\n";
+   next;
+  }
+  #
+  # RESOLUTION
+  #
+  if($_=~/^RESOLUTION=DYNAMIC/) {
+   $res=$1           if($res eq "" && /^RESOLUTION=DYNAMIC\|\|(.*)/);
+   $res=$res_default if($res eq "");
+   $str.="RESOLUTION=$res\n";
+   next;
+  }
+  #
+  # BITS
+  #
+  if($_=~/^BITS=DYNAMIC/) {
+   $bits=$1             if($bits eq "" && /^BITS=DYNAMIC\|\|(.*)/);
+   $bits=$bits_default  if($bits eq "");
+   $_="BITS=$bits\n";
+  }
+  #
+  # RGB
+  #
+  if($_=~/^RGB=DYNAMIC/) {
+   $rgb=$1             if($rgb eq "" && /^RGB=DYNAMIC\|\|(.*)/);
+   $rgb=$rgb_default   if($rgb eq "");
+   $_="RGB=$rgb\n";
+  } 
+  if($_=~/^RGB=(.*)/) {
+   $rgb=$rgb_default if($rgb eq "");
+   @num_lut=split(",",$1);
+   for(@num_lut) { return &error() if(/[^0-9]/); }
+   $lut=&lut($1);
+   @num_lut=split(",",$lut);
+   for(@num_lut) { return &error() if(/[^0-9]/); }
+   $str.="RGB=$lut\n";
+   next;
+  }
+  #
+  # DEFAULT
+  #
+  $str.=$_;
+ }
+ #
+ # Write definitive pattern
+ #
+ $bits=$bits_default if($bits eq "");
+ $str=~s/^END=(.*)$/SOURCE_MAX=$source_max\nEND=$1/mg if($source_max > 0 && $str !~/^SOURCE_MAX=/m);
+ $str=~s/^END=(.*)$/SOURCE_RANGE=$source_range\nEND=$1/mg if($source_range ne "");
+ $str.="FRAME=$frame_default\n"  if($str !~/\n^FRAME=/m);
+ open(PATTERN,">$command_file.tmp");
+ print PATTERN "PATTERN_NAME=$pattern\n" if($str !~/^PATTERN_NAME=/m);
+ print PATTERN "BITS=$bits\n"   if($str !~/\n^BITS=/m);
+ print PATTERN $str;
+ close(PATTERN);
+ rename("$command_file.tmp","$command_file");
+ &load_new_pattern_file("$requested_by");
+ unlink("$var_dir/running/$pattern.tmp") if(-f "$var_dir/running/$pattern.tmp");
+ #
+ # Stats and Return
+ #
+ &stats("patterns",1);
+ return $ok_response;
+}
+
+###############################################
+#               Pattern Pos                   #
+###############################################
+sub get_position (@) {
+ my $dim = shift;
+ my $type = shift;
+ my $pos = shift;
+ my $scaling_disabled=shift;
+ my ($w,$h)=split(",",$dim);
+ my ($x,$y,$d_x,$d_y)=split(",",$pos);
+ $d_x=0 if($w == $w_s);
+ $d_y=0 if($h == $h_s);
+ if($type eq "RECTANGLE") {
+  $x=($w_s-$w)/2 if($x == -1);
+  $y=($h_s-$h)/2 if($y == -1);
+ }
+ if($type eq "CIRCLE") {
+  $x=$w_s/2 if($x == -1 && $w != $w_s);
+  $y=$h_s/2 if($y == -1 && $h != $h_s);
+ }
+ if($type eq "TRIANGLE") {
+  $x=$w_s/2 if($x == -1 && $w != $w_s);;
+  $y=$h_s/2 if($y == -1 && $h != $h_s);;
+ }
+ $x=int($x+$d_x);
+ $y=int($y+$d_y);
+ $x=&round_val($x*($w_s/$max_x)) if(!$scaling_disabled && (split(",",$pos))[0] != "-1");
+ $y=&round_val($y*($h_s/$max_y)) if(!$scaling_disabled && (split(",",$pos))[1] != "-1");
+ return "$x,$y";
+}
+
+###############################################
+#              Replace String                 #
+###############################################
+sub replace_string (@) {
+ my $string = shift;
+ my $rgb = shift;
+ my $date = localtime(time);
+ my $eth_interface=&get_ip("$eth_interface");
+ $string=~s/\$RGB/$rgb/g;
+ $string=~s/\$DATE/$date/g;
+ $string=~s/\$ETH_INTERFACE/$eth_interface/g;
+ return $string;
+}
+
+###############################################
+#                    Lut                      #
+###############################################
+sub lut (@) {
+ my $rgb = shift;
+ ($r,$g,$b)=split(",",$rgb);
+ $file=$lut_file;
+ return if($file eq "" || !-f $file);
+ open(LUT,$file);
+ while(<LUT>) {
+  next if($_=~/^#/);
+  if($_=~/^($r|ALL),($g|ALL),($b|ALL)=(.*)/ || $_=~/.*ALL.*=(.*)/) {
+   ($r_d,$g_d,$b_d)=split(",",$4);
+   $r=$r+$r_d;
+   $g=$g+$g_d;
+   $b=$b+$b_d;
+   last;
+  }
+ }
+ close(LUT);
+ return "$r,$g,$b";
+}
+
+return 1;
+
+###############################################
+#             Create File Pattern             #
+###############################################
+sub create_tmp_file(@) {
+ my $pattern_string = shift;
+ my $source_range = shift;
+ $pattern_string=~s/^END=(.*)$/SOURCE_RANGE=$source_range\nEND=$1/mg if($source_range ne "");
+ open(FILE,">$command_file.tmp");
+ print FILE $pattern_string;
+ close(FILE);
+ rename("$command_file.tmp","$command_file");
+}
+
+###############################################
+#           Clean Pattern Files               #
+###############################################
+sub clean_pattern_files (@) {
+ &remove_files("$var_dir/tmp","\.jpg\$");
+ &remove_files("$var_dir/tmp","\.png\$");
+ &remove_files("$var_dir/running","\.jpg\$");
+ &remove_files("$var_dir/running","\.png\$");
+ &remove_files("$var_dir/running","\.save\$");
+ &remove_files("$var_dir/frames",".*");
+}
+
+###############################################
+#               Round Function                #
+###############################################
+sub round_val (@) {
+ my $value = shift;
+ return int($value+0.5);
+}
+
+return 1;

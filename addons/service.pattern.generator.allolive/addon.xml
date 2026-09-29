@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="service.pattern.generator.allolive"
+       name="Pattern Generator (allolive)"
+       version="0.5.0"
+       provider-name="allolive">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py" start="login"/>
+  <extension point="xbmc.python.script" library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Network test pattern generator for Calman, HCFR, DeviceControl, LightSpace and Resolve clients</summary>
+    <disclaimer lang="en_GB">Work in progress: the patterns may be inaccurate. If you use them, validate your results against another source.</disclaimer>
+    <description lang="en_GB">Turns Kodi into a calibration pattern source. Calman connects over UPGCI (TCP 2100 / RPC 2101, UDP discovery), HCFR and DeviceControl over PGenerator's classic protocol (TCP 85, UDP 1977 discovery), LightSpace / ColourSpace through its UDP 20123 trigger, or the generator connects out to a Resolve target (Calman, HCFR, DisplayCAL). Each requested pattern is encoded bit-exactly as HEVC Main10 and played fullscreen, so the display receives it through the normal video path: SDR, HDR10, HLG or Dolby Vision (profile 5). Tested only on CoreELEC (Amlogic). Amlogic only: the continuous stream (patterns follow each other in one stream, so the signal stays on between them), waiting for the HDR signal and for an output-mode change before a pattern counts as shown, and the HDMI output readout; elsewhere each pattern is its own clip and the HDMI readout shows "not available".</description>
+    <license>GPL-3.0-or-later</license>
+    <platform>all</platform>
+    <assets>
+      <icon>resources/icon.png</icon>
+      <fanart>resources/fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>

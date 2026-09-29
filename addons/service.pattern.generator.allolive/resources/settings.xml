@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings version="1">
+  <section id="service.pattern.generator.allolive">
+    <category id="network" label="30150">
+      <group id="1" label="30130">
+        <setting id="default_mode" type="string" label="30026">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="30047">0</option>
+              <option label="30048">1</option>
+              <option label="30050">3</option>
+              <option label="30051">4</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string"/>
+        </setting>
+      </group>
+      <group id="2" label="30053">
+        <setting id="notifications" type="boolean" label="30054" help="30055">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+    </category>
+    <category id="connection" label="30000">
+      <group id="1" label="30001">
+        <setting id="upgci_enabled" type="boolean" label="30002" help="30003">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="upgci_port" type="integer" label="30004" help="30005">
+          <level>2</level>
+          <default>2100</default>
+          <constraints><minimum>1</minimum><maximum>65535</maximum></constraints>
+          <dependencies><dependency type="enable" setting="upgci_enabled">true</dependency></dependencies>
+          <control type="edit" format="integer"/>
+        </setting>
+        <setting id="rpc_port" type="integer" label="30006" help="30007">
+          <level>2</level>
+          <default>2101</default>
+          <constraints><minimum>0</minimum><maximum>65535</maximum></constraints>
+          <dependencies><dependency type="enable" setting="upgci_enabled">true</dependency></dependencies>
+          <control type="edit" format="integer"/>
+        </setting>
+        <setting id="discovery" type="boolean" label="30008">
+          <level>1</level>
+          <default>true</default>
+          <dependencies><dependency type="enable" setting="upgci_enabled">true</dependency></dependencies>
+          <control type="toggle"/>
+        </setting>
+        <setting id="device_name" type="string" label="30009">
+          <level>1</level>
+          <default></default>
+          <constraints><allowempty>true</allowempty></constraints>
+          <control type="edit" format="string"/>
+        </setting>
+        <setting id="stop_on_disconnect" type="boolean" label="30010">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+      <group id="2" label="30011">
+        <setting id="resolve_enabled" type="boolean" label="30012" help="30013">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="resolve_host" type="string" label="30014">
+          <level>0</level>
+          <default></default>
+          <constraints><allowempty>true</allowempty></constraints>
+          <dependencies><dependency type="enable" setting="resolve_enabled">true</dependency></dependencies>
+          <control type="edit" format="string"/>
+        </setting>
+        <setting id="resolve_port" type="integer" label="30015">
+          <level>2</level>
+          <default>20002</default>
+          <constraints><minimum>1</minimum><maximum>65535</maximum></constraints>
+          <dependencies><dependency type="enable" setting="resolve_enabled">true</dependency></dependencies>
+          <control type="edit" format="integer"/>
+        </setting>
+      </group>
+      <group id="3" label="30100">
+        <setting id="classic_enabled" type="boolean" label="30101" help="30102">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="classic_port" type="integer" label="30103">
+          <level>2</level>
+          <default>85</default>
+          <constraints><minimum>1</minimum><maximum>65535</maximum></constraints>
+          <dependencies><dependency type="enable" setting="classic_enabled">true</dependency></dependencies>
+          <control type="edit" format="integer"/>
+        </setting>
+        <setting id="devicecontrol_discovery" type="boolean" label="30104" help="30105">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="lightspace_enabled" type="boolean" label="30106" help="30107">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+    </category>
+    <category id="manual" label="30151">
+      <group id="1" label="30152">
+        <setting id="test_signal" type="integer" label="30131" help="30132">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="30047">0</option>
+              <option label="30048">1</option>
+              <option label="30050">3</option>
+              <option label="30051">4</option>
+            </options>
+          </constraints>
+          <control type="list" format="string"><heading>30131</heading></control>
+        </setting>
+        <setting id="test_max_luma" type="integer" label="30059" help="30060">
+          <level>0</level>
+          <default>4000</default>
+          <constraints>
+            <options>
+              <option label="30140">400</option>
+              <option label="30141">600</option>
+              <option label="30142">1000</option>
+              <option label="30143">1500</option>
+              <option label="30144">2000</option>
+              <option label="30145">4000</option>
+              <option label="30146">10000</option>
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition operator="is" setting="test_signal">1</condition>
+                <condition operator="is" setting="test_signal">3</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string"><heading>30059</heading></control>
+        </setting>
+      </group>
+    </category>
+    <category id="output" label="30016">
+      <group id="1" label="30017">
+        <setting id="resolution" type="string" label="30018" help="30019">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="30035">0</option>
+              <option label="30036">1</option>
+              <option label="30037">2</option>
+              <option label="30038">3</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string"/>
+        </setting>
+        <setting id="framerate" type="string" label="30020">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="30035">0</option>
+              <option label="30039">1</option>
+              <option label="30040">2</option>
+              <option label="30041">3</option>
+              <option label="30042">4</option>
+              <option label="30043">5</option>
+              <option label="30044">6</option>
+              <option label="30045">7</option>
+              <option label="30046">8</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string"/>
+        </setting>
+        <setting id="pattern_playback" type="string" label="30160" help="30161">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="30162">0</option>
+              <option label="30163">1</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string"/>
+        </setting>
+        <setting id="duration" type="integer" label="30021" help="30164">
+          <level>1</level>
+          <default>300</default>
+          <constraints><minimum>10</minimum><maximum>3600</maximum></constraints>
+          <dependencies><dependency type="visible" setting="pattern_playback">1</dependency></dependencies>
+          <control type="edit" format="integer"/>
+        </setting>
+        <setting id="settle_frames" type="integer" label="30022" help="30023">
+          <level>1</level>
+          <default>2</default>
+          <constraints><minimum>0</minimum><maximum>600</maximum></constraints>
+          <control type="edit" format="integer"/>
+        </setting>
+        <setting id="cache_keep" type="integer" label="30024">
+          <level>2</level>
+          <default>1000</default>
+          <constraints><minimum>1</minimum><maximum>5000</maximum></constraints>
+          <control type="edit" format="integer"/>
+        </setting>
+      </group>
+      <group id="2" label="30033">
+        <setting id="debug_overlay" type="boolean" label="30056" help="30057">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="debug_log" type="boolean" label="30034">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>
