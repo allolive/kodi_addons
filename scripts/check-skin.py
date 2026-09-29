@@ -9,7 +9,9 @@ referenced but not defined, and variables, includes, strings, fonts and colours 
 With a baseline (e.g. the unpatched upstream skin), problems the baseline already has are
 not reported. Exit status 1 when anything new is found.
 """
-import os, re, sys
+import os
+import re
+import sys
 from collections import Counter
 
 def load(d):
@@ -38,41 +40,50 @@ def problems(d):
     var_defs = Counter(re.findall(r'<variable\s+name="([^"]+)"', alltext))
     inc_defs = Counter(re.findall(r'<include\s+name="([^"]+)"', alltext))
     for n, c in var_defs.items():
-        if c > 1: out.add(('variable defined twice', n))
+        if c > 1:
+            out.add(('variable defined twice', n))
     for n, c in inc_defs.items():
-        if c > 1: out.add(('include defined twice', n))
+        if c > 1:
+            out.add(('include defined twice', n))
     for n in set(re.findall(r'\$VAR\[([^\],]+)', alltext)):
-        if n not in var_defs: out.add(('undefined variable', n))
+        if n not in var_defs:
+            out.add(('undefined variable', n))
     used_inc = ({b.strip() for b in re.findall(r'<include\b[^>]*>([^<]*)</include>', alltext)}
                 | set(re.findall(r'<include\s+content="([^"]+)"', alltext)))
     for n in used_inc:
-        if n and '$' not in n and n not in inc_defs: out.add(('undefined include', n))
+        if n and '$' not in n and n not in inc_defs:
+            out.add(('undefined include', n))
 
     po = os.path.join(d, 'language', 'resource.language.en_gb', 'strings.po')
     ids = Counter(int(i) for i in re.findall(r'^msgctxt "#(\d+)"', open(po, encoding='utf-8').read(), re.M))
     for i, c in ids.items():
-        if c > 1: out.add(('string defined twice', str(i)))
+        if c > 1:
+            out.add(('string defined twice', str(i)))
     for i in set(int(x) for x in re.findall(r'(?:\$LOCALIZE\[|<label>|<label2>|idloc=")(3\d{4})\b', alltext)):
-        if i not in ids: out.add(('undefined string', str(i)))
+        if i not in ids:
+            out.add(('undefined string', str(i)))
 
     fonts = xml.get('Font.xml', '')
     for fs in re.findall(r'<fontset\b.*?</fontset>', fonts, re.S):
         fs_id = re.search(r'id="([^"]+)"', fs).group(1)
         names = Counter(re.findall(r'<name>([^<]+)</name>', fs))
         for n, c in names.items():
-            if c > 1: out.add(('font defined twice', f'{fs_id}/{n}'))
+            if c > 1:
+                out.add(('font defined twice', f'{fs_id}/{n}'))
         for f in set(re.findall(r'<filename>([^<]+)</filename>', fs)):
             if not os.path.exists(os.path.join(d, 'fonts', f)) and f != 'arial.ttf':
                 out.add(('missing font file', f))
     default = re.search(r'<fontset\b[^>]*id="Default".*?</fontset>', fonts, re.S)
     default_names = set(re.findall(r'<name>([^<]+)</name>', default.group(0))) if default else set()
     for n in set(re.findall(r'<font>([^<$]+)</font>', alltext)):
-        if n not in default_names: out.add(('font not in Default fontset', n))
+        if n not in default_names:
+            out.add(('font not in Default fontset', n))
 
     for f in os.listdir(os.path.join(d, 'colors')):
         c = Counter(re.findall(r'<color\s+name="([^"]+)"', open(os.path.join(d, 'colors', f), encoding='utf-8').read()))
         for n, k in c.items():
-            if k > 1: out.add(('colour defined twice', f'{f}/{n}'))
+            if k > 1:
+                out.add(('colour defined twice', f'{f}/{n}'))
 
     media = media_files(d)
     if media:
@@ -80,7 +91,8 @@ def problems(d):
             t = t.strip()
             if '://' in t or t.startswith('special:'):
                 continue
-            if t.lower() not in media: out.add(('missing texture', t))
+            if t.lower() not in media:
+                out.add(('missing texture', t))
     return out
 
 new = problems(sys.argv[1])

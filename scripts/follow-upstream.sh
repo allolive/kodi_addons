@@ -7,6 +7,7 @@
 # One whose patches no longer apply is left alone and listed in build/follow-failed.txt as
 # "<release> <id> <old-pin> <new-pin>"; the exit status is 0 either way.
 set -euo pipefail
+# shellcheck source=scripts/lib.sh
 . "$(dirname "$0")/lib.sh"
 cd "$ROOT"
 
@@ -26,6 +27,7 @@ while read -r release _ _ branch; do
       continue
     fi
 
+    # shellcheck disable=SC2153  # REVISION comes from the pin load_fork read
     revision="$(printf "%0${#REVISION}d" $((10#$REVISION + 1)))"
     write_pin "$fork" "$release" "$target" "$revision"
     # Whether the patches still apply is all that is decided here; the release build packs.

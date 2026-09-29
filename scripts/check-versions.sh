@@ -5,6 +5,7 @@
 # A release is the tag <release>/<id>-<version>; an addon with no such tag is new and passes.
 # Prints "<release> <id> <version>" for every addon whose version has not been released yet.
 set -euo pipefail
+# shellcheck source=scripts/lib.sh
 . "$(dirname "$0")/lib.sh"
 cd "$ROOT"
 

@@ -159,7 +159,7 @@ def movie_key(m):
 
 
 def find_duplicates(movies):
-    groups = {}
+    groups: dict[str, list[dict]] = {}
     for m in movies:
         k = movie_key(m)
         if not k:
@@ -509,7 +509,7 @@ def deletion_plan(losers, library_files, sources):
     if library_files is None:
         library_files = set()
     deleting = {m.get("file") or "" for m in losers if m.get("file")}
-    by_parent = {}
+    by_parent: dict[str, list[dict]] = {}
     stack_movies = []
     for m in losers:
         parent = _effective_parent(m.get("file") or "")
@@ -594,8 +594,8 @@ def apply_deletion_plan(plan):
     Live and simulate take the SAME path; the only difference is the gate in
     _run_or_record() - in simulate each command is recorded instead of run, and
     the collected commands are shown in a popup."""
-    recorded = []
-    for kind, target, movies, reason in plan:
+    recorded: list[str] = []
+    for kind, target, movies, _reason in plan:
         for m in movies:
             mid = m.get("movieid")
             _run_or_record(
@@ -1070,7 +1070,7 @@ def _log_orphan_reasons(orphans, found, library_files):
     )
     if not orphans:
         return
-    by_base = {}
+    by_base: dict[str, list[str]] = {}
     for f in library_files:
         by_base.setdefault(f.rsplit("/", 1)[-1], []).append(f)
     mismatch = genuine = 0
@@ -1100,8 +1100,8 @@ def _log_orphan_reasons(orphans, found, library_files):
 
 def find_orphan_files(sources):
     library_files = get_library_files()
-    found = set()
-    visited = set()
+    found: set[str] = set()
+    visited: set[str] = set()
     progress = xbmcgui.DialogProgress()
     progress.create(ADDON_NAME, "Scanning video sources...")
     try:

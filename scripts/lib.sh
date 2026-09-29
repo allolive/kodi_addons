@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Shared helpers, sourced by the other scripts.
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -22,11 +23,15 @@ load_fork() { # <id> <release>
   local dir="$ROOT/forks/$1"
   [ -f "$dir/fork.conf" ] || die "no fork $1"
   [ -f "$dir/$2.pin" ] || die "fork $1 has no pin for $2 ($dir/$2.pin)"
-  UPSTREAM_REPO= UPSTREAM_PATH= UPSTREAM_BRANCH= UPSTREAM_TAGS= NAME= PROVIDER= PACK_TEXTURES=0 PIN= REVISION=
+  UPSTREAM_REPO='' UPSTREAM_PATH='' UPSTREAM_BRANCH='' UPSTREAM_TAGS='' NAME='' PROVIDER=''
+  PACK_TEXTURES=0 PIN='' REVISION=
   # shellcheck source=/dev/null
-  . "$dir/fork.conf"; . "$dir/$2.pin"
+  . "$dir/fork.conf"
+  # shellcheck source=/dev/null
+  . "$dir/$2.pin"
   [ -n "$UPSTREAM_REPO" ] && [ -n "$UPSTREAM_PATH" ] && [ -n "$PIN" ] && [ -n "$REVISION" ] \
     || die "fork $1: UPSTREAM_REPO, UPSTREAM_PATH, PIN and REVISION must be set"
+  # shellcheck disable=SC2034  # read by the scripts that source this file
   PIN_FILE="$dir/$2.pin"
   PATCH_DIR="$dir/patches"
   [ -d "$dir/patches-$2" ] && PATCH_DIR="$dir/patches-$2"
@@ -44,7 +49,7 @@ write_pin() { # <id> <release> <pin> <revision>
 addon_sources() { # <release> <id>
   if [ -d "$ROOT/forks/$2" ]; then
     load_fork "$2" "$1"
-    printf '%s\n' "forks/$2/fork.conf" "forks/$2/$1.pin" "${PATCH_DIR#$ROOT/}"
+    printf '%s\n' "forks/$2/fork.conf" "forks/$2/$1.pin" "${PATCH_DIR#"$ROOT"/}"
   else
     echo "addons/$2"
     # a repository addon's <dir> entries are written from releases.conf
@@ -146,10 +151,14 @@ texturepacker() { # <owner/repo> <sha>
   if [ ! -x "$out/TexturePacker" ]; then
     local src; src="$(upstream_checkout "$1" "$2" /tools/depends/native/TexturePacker/src/ \
       '/xbmc/guilib/XBTF*' /xbmc/guilib/TextureFormats.h /xbmc/utils/EndianSwap.h)"
-    cmake -S "$src/tools/depends/native/TexturePacker/src" -B "$out/build" \
-      -DKODI_SOURCE_DIR="$src" -DARCH_DEFINES="TARGET_POSIX;TARGET_LINUX" -DCMAKE_BUILD_TYPE=Release ${CMAKE_ARGS:-} >&2 \
-      && cmake --build "$out/build" -j"$(nproc)" >&2 \
-      || die "TexturePacker build failed (needs cmake, liblzo2-dev, libpng-dev, libgif-dev, libjpeg-dev)"
+    # CMAKE_ARGS: extra cmake options, split on spaces on purpose
+    # shellcheck disable=SC2086
+    if ! cmake -S "$src/tools/depends/native/TexturePacker/src" -B "$out/build" \
+           -DKODI_SOURCE_DIR="$src" -DARCH_DEFINES="TARGET_POSIX;TARGET_LINUX" \
+           -DCMAKE_BUILD_TYPE=Release ${CMAKE_ARGS:-} >&2 \
+       || ! cmake --build "$out/build" -j"$(nproc)" >&2; then
+      die "TexturePacker build failed (needs cmake, liblzo2-dev, libpng-dev, libgif-dev, libjpeg-dev)"
+    fi
     cp "$out/build/TexturePacker" "$out/TexturePacker"
     rm -rf "$out/build"
   fi
@@ -195,7 +204,7 @@ PY
   for theme in "$2"/themes/*/; do
     [ -d "$theme" ] && "$tp" -input "$theme" -output "$packed/$(basename "$theme").xbt" -dupecheck >/dev/null
   done
-  rm -rf "$2/media"; mv "$packed" "$2/media"; chmod 755 "$2/media"
+  rm -rf "${2:?}/media"; mv "$packed" "$2/media"; chmod 755 "$2/media"
 }
 
 # Give a repository addon one <dir> per release in releases.conf, chosen by kodi's xbmc.addon

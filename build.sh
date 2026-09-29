@@ -9,6 +9,7 @@
 # The assembled addon directories are kept in build/<release>/ for scripts/check-versions.sh.
 # CI runs this and publishes the result; the output is never committed.
 set -euo pipefail
+# shellcheck source=scripts/lib.sh
 . "$(dirname "$0")/scripts/lib.sh"
 
 OUT_DIR="$(realpath -m "${1:-$ROOT/dist}")"
@@ -29,9 +30,9 @@ while read -r release _; do
     fork_source "$fork" "$release" "$tree/$fork"
     fork_finish "$fork" "$tree/$fork"
   done
-  for repo_xml in $(grep -l 'xbmc.addon.repository' "$tree"/*/addon.xml); do
+  while IFS= read -r repo_xml; do
     repository_dirs "$repo_xml"
-  done
+  done < <(grep -l 'xbmc.addon.repository' "$tree"/*/addon.xml)
 
   repo="$OUT_DIR/$release"
   mkdir -p "$repo"
@@ -54,9 +55,9 @@ while read -r release _; do
 done < <(releases)
 
 # The repository addon is the same for every release: offer it at the top for first-time install.
-repo_zip="$(cd "$OUT_DIR" && ls -1 */repository.allolive/repository.allolive-*.zip | head -1)"
-cp "$OUT_DIR/$repo_zip" "$OUT_DIR/"
-repo_zip="$(basename "$repo_zip")"
+repo_zips=("$OUT_DIR"/*/repository.allolive/repository.allolive-*.zip)
+cp "${repo_zips[0]}" "$OUT_DIR/"
+repo_zip="$(basename "${repo_zips[0]}")"
 cat > "$OUT_DIR/index.html" <<EOF
 <!doctype html><meta charset="utf-8"><title>Allolive Kodi repository</title>
 <p>Kodi add-on repository. Install <a href="$repo_zip">$repo_zip</a>

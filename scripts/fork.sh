@@ -9,6 +9,7 @@
 #
 # release defaults to the first one in releases.conf. work/ is gitignored.
 set -euo pipefail
+# shellcheck source=scripts/lib.sh
 . "$(dirname "$0")/lib.sh"
 
 cmd=${1:-}; id=${2:-}
@@ -51,7 +52,9 @@ export)
   mkdir -p "$PATCH_DIR"
   rm -f "$PATCH_DIR"/*.patch
   git_w format-patch -q --zero-commit --no-signature --binary -o "$PATCH_DIR" upstream..HEAD
-  echo "forks/$id: $(ls "$PATCH_DIR"/*.patch 2>/dev/null | wc -l) patches in ${PATCH_DIR#$ROOT/}"
+  patches=("$PATCH_DIR"/*.patch)
+  [ -e "${patches[0]}" ] || patches=()
+  echo "forks/$id: ${#patches[@]} patches in ${PATCH_DIR#"$ROOT"/}"
   echo "bump REVISION in forks/$id/$release.pin before committing"
   ;;
 rebase)

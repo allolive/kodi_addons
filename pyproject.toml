@@ -1,0 +1,22 @@
+# Tooling for the add-ons in this repository (not a Python package).
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --import-mode=importlib"
+
+[tool.ruff]
+line-length = 110
+extend-exclude = ["tests/service.pattern.generator/pgenerator-ref", "work", "build", "dist", ".cache"]
+
+[tool.ruff.lint]
+# correctness: pyflakes, syntax/statement errors, bugbear
+select = ["E4", "E7", "E9", "F", "B"]
+
+[tool.mypy]
+ignore_missing_imports = true      # xbmc, xbmcgui, ... exist only inside Kodi
+check_untyped_defs = true
+
+[tool.ruff.lint.per-file-ignores]
+# the pattern generator's check scripts are written densely (several statements a line, short
+# names); correctness rules (F, B) still apply to them
+"tests/service.pattern.generator/*.py" = ["E401", "E402", "E701", "E702", "E741"]

@@ -19,7 +19,61 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  checks:
+    name: Static checks
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"      # the Python CoreELEC 22 runs
+      - name: Install the checkers
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y --no-install-recommends shellcheck
+          pip install ruff==0.16.9 mypy==1.19.1
+      - run: scripts/check-code.sh
+
+  test-list:
+    name: Find addon tests
+    runs-on: ubuntu-26.04
+    outputs:
+      addons: ${{ steps.list.outputs.addons }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: list
+        # every tests/<addon-id>/ holding test_*.py files is one job below
+        run: |
+          addons="$(for d in tests/*/; do ls "$d"test_*.py >/dev/null 2>&1 && basename "$d"; done | jq -Rnc '[inputs]')"
+          echo "addons=$addons" >> "$GITHUB_OUTPUT"
+
+  tests:
+    name: Tests (${{ matrix.addon }})
+    needs: test-list
+    if: needs.test-list.outputs.addons != '[]'
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        addon: ${{ fromJSON(needs.test-list.outputs.addons) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: Install what the tests need
+        run: |
+          apt_file="tests/${{ matrix.addon }}/apt-packages.txt"
+          if [ -f "$apt_file" ]; then
+            sudo apt-get update -q
+            xargs -a "$apt_file" sudo apt-get install -y --no-install-recommends
+          fi
+          pip install pytest==9.0.2
+      - run: pytest "tests/${{ matrix.addon }}"
+
   build:
+    needs: [checks, tests]
+    # no addon with tests leaves "tests" skipped, which must not skip the build
+    if: always() && needs.checks.result == 'success' && contains(fromJSON('["success", "skipped"]'), needs.tests.result)
     runs-on: ubuntu-26.04
     outputs:
       unreleased: ${{ steps.versions.outputs.unreleased }}

@@ -67,6 +67,24 @@ After changing a skin, `scripts/check-skin.py work/<id> <unpatched-upstream-dir>
 lists variables, includes, strings, fonts and textures it references but no longer defines
 (a manual check; CI does not run it).
 
+## Tests and checks
+
+Every push and pull request runs, before anything is built:
+
+- **Static checks** (`scripts/check-code.sh`): ruff (lint), mypy (types, each addon on its
+  own) and shellcheck on the scripts. Settings are in `pyproject.toml`.
+- **Tests**: `tests/<addon-id>/` holds an addon's pytest suite; CI runs each folder as its own
+  job, on the Python CoreELEC runs (3.14). A folder's `apt-packages.txt` lists the system
+  packages its tests need.
+
+Nothing is released unless both pass. Locally:
+
+```bash
+scripts/check-code.sh                 # needs ruff, mypy, shellcheck
+pytest                                # every addon's tests
+pytest tests/script.library.audit.allolive
+```
+
 ## Changing a forked addon
 
 ```bash
