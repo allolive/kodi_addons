@@ -28,8 +28,8 @@ jobs:
         with:
           fetch-depth: 0   # the version check diffs against release tags
 
-      - name: Install TexturePacker build dependencies
-        run: sudo apt-get update -q && sudo apt-get install -y --no-install-recommends cmake liblzo2-dev libpng-dev libgif-dev libjpeg-dev
+      - name: Install build and validation tools
+        run: sudo apt-get update -q && sudo apt-get install -y --no-install-recommends libxml2-utils cmake liblzo2-dev libpng-dev libgif-dev libjpeg-dev
 
       - uses: actions/cache@v4
         with:
