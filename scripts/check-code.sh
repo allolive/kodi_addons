@@ -30,6 +30,8 @@ for addon in addons/*/; do
   fi
 done
 
-step shellcheck -x build.sh scripts/*.sh
+setups=(tests/*/setup.sh)
+[ -e "${setups[0]}" ] || setups=()
+step shellcheck -x build.sh scripts/*.sh "${setups[@]}"
 
 exit $fail

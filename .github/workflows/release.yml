@@ -67,6 +67,8 @@ jobs:
             sudo apt-get update -q
             xargs -a "$apt_file" sudo apt-get install -y --no-install-recommends
           fi
+          setup="tests/${{ matrix.addon }}/setup.sh"
+          if [ -f "$setup" ]; then bash "$setup"; fi
           pip install pytest==9.0.2
       - run: pytest "tests/${{ matrix.addon }}"
 
