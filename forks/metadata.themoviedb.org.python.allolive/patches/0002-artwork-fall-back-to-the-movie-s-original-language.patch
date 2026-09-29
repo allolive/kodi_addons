@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:54:13 -0400
-Subject: [PATCH 2/2] artwork: fall back to the movie's original language
+Subject: [PATCH 2/3] artwork: fall back to the movie's original language
 
 After the user's language and English, prefer images in the language the
 movie was made in before taking any image at all, and never list the
