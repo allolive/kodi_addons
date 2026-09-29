@@ -1,0 +1,348 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:28 -0400
+Subject: [PATCH 09/13] player info panel redesign
+
+Reworks the fullscreen info (DialogSeekBar): a right-aligned media
+flag row replaces the MediaFlags include, and the info panel becomes
+taller with a TV eyebrow, wrapping title, facts and rating lines, the
+plot, and a new credits column (director and cast).
+---
+ xml/DialogSeekBar.xml | 248 +++++++++++++++++++++++++++++++++++++++---
+ xml/Includes.xml      |  18 +++
+ 2 files changed, 248 insertions(+), 18 deletions(-)
+
+diff --git a/xml/DialogSeekBar.xml b/xml/DialogSeekBar.xml
+index b63c7bb..bca5780 100644
+--- a/xml/DialogSeekBar.xml
++++ b/xml/DialogSeekBar.xml
+@@ -49,14 +49,115 @@
+ 						<label>[COLOR red][B]$LOCALIZE[19158][/B][/COLOR]</label>
+ 					</control>
+ 				</control>
+-				<control type="group">
+-					<top>185</top>
+-					<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
++				<control type="grouplist">
++					<right>20</right>
++					<centertop>125</centertop>
++					<width>800</width>
++					<height>50</height>
++					<align>right</align>
++					<include>Animation_BottomSlide</include>
++					<orientation>horizontal</orientation>
++					<itemgap>5</itemgap>
++					<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
++					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
++						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoCodec)" />
++					</include>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]" />
++						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoResolution)" />
++					</include>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[VideoPlayer.HdrType,flags/videohdr/,.png]" />
++						<param name="visible" value="!String.IsEmpty(VideoPlayer.HdrType)" />
++					</include>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
++						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoAspect)" />
++					</include>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
++						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)" />
++					</include>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
++						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
++					</include>
++				</control>
++				<control type="grouplist">
++					<right>20</right>
++					<centertop>125</centertop>
++					<width>800</width>
++					<height>50</height>
++					<align>right</align>
++					<include>Animation_BottomSlide</include>
++					<orientation>horizontal</orientation>
++					<itemgap>10</itemgap>
++					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>
++					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
++					<include content="MediaFlag">
++						<param name="texture" value="flags/rds/rds.png" />
++						<param name="visible" value="RDS.HasRDS" />
++					</include>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]" />
++						<param name="visible" value="!String.IsEmpty(MusicPlayer.Codec)" />
++					</include>
++					<include content="MediaFlag">
++						<param name="texture" value="$INFO[MusicPlayer.Channels,flags/audiochannel/,.png]" />
++						<param name="visible" value="!String.IsEmpty(MusicPlayer.Channels)" />
++					</include>
++					<control type="group">
++						<visible>!String.IsEmpty(MusicPlayer.SampleRate)</visible>
++						<width>115</width>
++						<control type="label">
++							<width>115</width>
++							<height>60</height>
++							<align>center</align>
++							<aligny>center</aligny>
++							<label>$INFO[MusicPlayer.SampleRate, ,kHz]</label>
++							<font>font_flag</font>
++						</control>
++						<include content="MediaFlag">
++							<param name="texture" value="flags/flag.png" />
++						</include>
++					</control>
++					<control type="group">
++						<visible>!String.IsEmpty(MusicPlayer.BitRate)</visible>
++						<width>115</width>
++						<control type="label">
++							<width>115</width>
++							<height>60</height>
++							<align>center</align>
++							<aligny>center</aligny>
++							<label>$INFO[MusicPlayer.BitRate, ,kbps ]</label>
++							<font>font_flag</font>
++						</control>
++						<include content="MediaFlag">
++							<param name="texture" value="flags/flag.png" />
++						</include>
++					</control>
++					<control type="group">
++						<visible>!String.IsEmpty(MusicPlayer.BitsPerSample)</visible>
++						<width>115</width>
++						<control type="label">
++							<width>115</width>
++							<height>60</height>
++							<align>center</align>
++							<aligny>center</aligny>
++							<label>$INFO[MusicPlayer.BitsPerSample, ,bit]</label>
++							<font>font_flag</font>
++						</control>
++						<include content="MediaFlag">
++							<param name="texture" value="flags/flag.png" />
++						</include>
++					</control>
+ 				</control>
+ 			</control>
+ 			<control type="label">
+ 				<centerleft>50%</centerleft>
+-				<centertop>120</centertop>
++				<centertop>125</centertop>
+ 				<width>50%</width>
+ 				<height>60</height>
+ 				<align>center</align>
+@@ -69,8 +170,8 @@
+ 			<control type="label" id="40000">
+ 				<centerleft>50%</centerleft>
+ 				<centertop>175</centertop>
+-				<width>380</width>
+-				<height>60</height>
++				<width>50%</width>
++				<height>50</height>
+ 				<align>center</align>
+ 				<aligny>top</aligny>
+ 				<label>$VAR[SeekLabel]</label>
+@@ -289,11 +390,11 @@
+ 			<animation effect="fade" start="0" end="100" time="300" delay="250">Visible</animation>
+ 			<animation effect="fade" start="100" end="0" time="100">Hidden</animation>
+ 			<bottom>0</bottom>
+-			<height>470</height>
++			<height>620</height>
+ 			<control type="image">
+ 				<left>0</left>
+ 				<width>100%</width>
+-				<height>330</height>
++				<height>480</height>
+ 				<texture>dialogs/dialog-bg-nobo.png</texture>
+ 			</control>
+ 			<control type="image">
+@@ -308,34 +409,145 @@
+ 				<bordersize>20</bordersize>
+ 				<include>OpenClose_Left</include>
+ 			</control>
++			<!-- MIDDLE COLUMN: title / facts / rating / tags / plot.
++			     Wider now that the credits column is narrower. -->
+ 			<control type="grouplist">
+ 				<left>420</left>
+-				<top>10</top>
+-				<right>20</right>
+-				<height>300</height>
++				<top>40</top>
++				<right>460</right>
++				<height>440</height>
+ 				<align>left</align>
+ 				<orientation>vertical</orientation>
+ 				<itemgap>10</itemgap>
++				<!-- TV eyebrow: Show • S<n>E<n> -->
++				<control type="label">
++					<height>22</height>
++					<font>font12</font>
++					<textcolor>grey</textcolor>
++					<label>$INFO[VideoPlayer.TVShowTitle]$INFO[VideoPlayer.Season, • S]$INFO[VideoPlayer.Episode,E]</label>
++					<visible>!String.IsEmpty(VideoPlayer.TVShowTitle)</visible>
++				</control>
++				<!-- Title — textbox so long titles wrap to a second line
++				     instead of getting truncated. Two-line cap. -->
+ 				<control type="textbox">
+-					<height>294</height>
+-					<label fallback="10005">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
++					<height>72</height>
++					<font>font13_title</font>
++					<textcolor>white</textcolor>
++					<align>left</align>
++					<label>$INFO[VideoPlayer.Title]</label>
++				</control>
++				<!-- Facts: year • mpaa • genre (Duration dropped — seek bar
++				     directly below already shows position/runtime). -->
++				<control type="label">
++					<height>22</height>
++					<font>font12</font>
++					<textcolor>white</textcolor>
++					<label>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.mpaa, • ]$INFO[VideoPlayer.Genre, • ]</label>
++				</control>
++				<!-- Numeric rating with star glyph (U+2605). -->
++				<control type="label">
++					<height>22</height>
++					<font>font12</font>
++					<textcolor>white</textcolor>
++					<label>&#9733; $INFO[VideoPlayer.Rating]$INFO[VideoPlayer.Votes, [COLOR grey]( ,)[/COLOR]]</label>
++					<visible>!String.IsEmpty(VideoPlayer.Rating)</visible>
++				</control>
++				<!-- Tags row. VideoPlayer.Tags doesn't exist as an info-label;
++				     the singular ListItem.Tag is what Kodi exposes (joined
++				     with the videoItemSeparator from advancedsettings). It
++				     resolves the playing item's tags during fullscreen video
++				     because the player publishes that as the active ListItem. -->
++				<control type="textbox">
++					<height>44</height>
++					<font>font12</font>
++					<textcolor>grey</textcolor>
++					<label>[UPPERCASE]$LOCALIZE[20459][/UPPERCASE]  $INFO[ListItem.Tag]</label>
++					<align>left</align>
++					<visible>!String.IsEmpty(ListItem.Tag)</visible>
++				</control>
++				<!-- Plot. Tagline rendered italic with a blank line above
++				     the body. font13 gives the description more visual weight.
++				     Height sized to fill the remaining vertical room in the
++				     panel so plots rarely need scrolling — autoscroll removed
++				     (Kodi has no skin-side way to reset its scroll position
++				     between dialog opens, so static is the cleaner UX). -->
++				<control type="textbox">
++					<height>340</height>
++					<label fallback="10005">$INFO[VideoPlayer.Tagline,[I],[/I][CR][CR]]$INFO[VideoPlayer.Plot]</label>
++					<font>font13</font>
++					<textcolor>white</textcolor>
+ 					<align>left</align>
+-					<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+ 					<visible>Integer.IsGreaterOrEqual(Playlist.Position(video), Playlist.Length(video))</visible>
+ 				</control>
+ 				<control type="textbox">
+-					<height>250</height>
+-					<label fallback="10005">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
++					<height>310</height>
++					<label fallback="10005">$INFO[VideoPlayer.Tagline,[I],[/I][CR][CR]]$INFO[VideoPlayer.Plot]</label>
++					<font>font13</font>
++					<textcolor>white</textcolor>
+ 					<align>left</align>
+-					<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+ 					<visible>Integer.IsLess(Playlist.Position(video), Playlist.Length(video))</visible>
+ 				</control>
++				<!-- Next-up label for playlist context. Stays in middle
++				     column at the bottom of the plot, where it makes
++				     contextual sense. -->
+ 				<control type="label">
+-					<height>50</height>
++					<height>26</height>
++					<font>font12</font>
+ 					<label>$VAR[OSDNextLabelVar]</label>
+ 					<visible>Integer.IsLess(Playlist.Position(video), Playlist.Length(video))</visible>
+ 				</control>
+ 			</control>
++			<!-- RIGHT COLUMN: credits (director + cast). Kodi's Cast info-label
++			     is hard-coded newline-separated, so this is a tall narrow
++			     column. Width 400 fits typical "First Last" names on one
++			     line; longer names wrap automatically — that's the
++			     "responsive" behavior since skin XML has no String.Length
++			     for content-based sizing. -->
++			<control type="grouplist">
++				<left>1500</left>
++				<top>40</top>
++				<right>20</right>
++				<height>440</height>
++				<align>left</align>
++				<orientation>vertical</orientation>
++				<itemgap>14</itemgap>
++				<!-- DIRECTOR section -->
++				<control type="label">
++					<height>20</height>
++					<font>font12</font>
++					<textcolor>grey</textcolor>
++					<label>[UPPERCASE]$LOCALIZE[20339][/UPPERCASE]</label>
++					<visible>!String.IsEmpty(VideoPlayer.Director)</visible>
++				</control>
++				<control type="textbox">
++					<height>54</height>
++					<font>font12</font>
++					<textcolor>white</textcolor>
++					<label>$INFO[VideoPlayer.Director]</label>
++					<align>left</align>
++					<visible>!String.IsEmpty(VideoPlayer.Director)</visible>
++				</control>
++				<!-- CAST section — fills remaining vertical room. Autoscroll
++				     removed: Kodi has no skin-side way to reset scroll
++				     position between dialog opens. Long casts will clip
++				     at the bottom rather than cycle indefinitely. Tall
++				     height (340) makes that rare for most films. -->
++				<control type="label">
++					<height>20</height>
++					<font>font12</font>
++					<textcolor>grey</textcolor>
++					<label>[UPPERCASE]$LOCALIZE[206][/UPPERCASE]</label>
++					<visible>!String.IsEmpty(VideoPlayer.Cast)</visible>
++				</control>
++				<control type="textbox">
++					<height>340</height>
++					<font>font12</font>
++					<textcolor>white</textcolor>
++					<label>$INFO[VideoPlayer.Cast]</label>
++					<align>left</align>
++					<visible>!String.IsEmpty(VideoPlayer.Cast)</visible>
++				</control>
++			</control>
+ 		</control>
+ 	</controls>
+ </window>
+diff --git a/xml/Includes.xml b/xml/Includes.xml
+index 66cfb82..0e188c9 100644
+--- a/xml/Includes.xml
++++ b/xml/Includes.xml
+@@ -304,6 +304,24 @@
+ 			</focusedlayout>
+ 		</definition>
+ 	</include>
++	<!-- Image flag used by the seek bar info panel; upstream dropped it for text flags. -->
++	<include name="MediaFlag">
++		<param name="texture">colors/white.png</param>
++		<param name="flag_visible">true</param>
++		<definition>
++			<control type="button">
++				<width>auto</width>
++				<height>33</height>
++				<align>center</align>
++				<aligny>center</aligny>
++				<font>font_flag</font>
++				<label>$PARAM[flag_label]</label>
++				<texturefocus border="2" infill="false" colordiffuse="white">$PARAM[texture]</texturefocus>
++				<texturenofocus border="2" infill="false" colordiffuse="white">$PARAM[texture]</texturenofocus>
++				<visible>$PARAM[flag_visible]</visible>
++			</control>
++		</definition>
++	</include>
+ 	<include name="MediaFlags">
+ 		<param name="visible">true</param>
+ 		<definition>

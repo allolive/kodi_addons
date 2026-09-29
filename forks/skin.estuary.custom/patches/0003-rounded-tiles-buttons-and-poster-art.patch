@@ -1,0 +1,726 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:27 -0400
+Subject: [PATCH 03/13] rounded tiles, buttons and poster art
+
+Rounded-corner look: a lists/rounded-tile.png focus/background texture
+for the settings home panel (resized to 5 x 350px tiles), settings
+category and skin settings lists; rounded button-fo/dialogbutton-fo; and
+diffuse masks (media/masks/*) that round poster art in the List, Poster,
+Shift and InfoWall views and the video info dialog, with new shadows.
+---
+ media/buttons/button-fo.png       | Bin 147 -> 652 bytes
+ media/buttons/dialogbutton-fo.png | Bin 248 -> 702 bytes
+ media/lists/rounded-tile.png      | Bin 0 -> 530 bytes
+ media/masks/overlay-fade.png      | Bin 0 -> 330 bytes
+ media/masks/p186.png              | Bin 0 -> 1021 bytes
+ media/masks/p290.png              | Bin 0 -> 1368 bytes
+ media/masks/p334.png              | Bin 0 -> 1847 bytes
+ media/masks/p476.png              | Bin 0 -> 3065 bytes
+ media/masks/p516.png              | Bin 0 -> 3008 bytes
+ media/masks/p540.png              | Bin 0 -> 3901 bytes
+ media/masks/plate.png             | Bin 0 -> 1266 bytes
+ media/masks/poster-shadow.png     | Bin 0 -> 4709 bytes
+ media/masks/shadow334.png         | Bin 0 -> 5205 bytes
+ xml/DialogVideoInfo.xml           |   8 ++--
+ xml/Includes.xml                  |  60 +++++++++++++++---------------
+ xml/Settings.xml                  |   8 ++--
+ xml/SettingsCategory.xml          |   2 +-
+ xml/SkinSettings.xml              |   2 +-
+ xml/View_50_List.xml              |   4 +-
+ xml/View_51_Poster.xml            |   6 +--
+ xml/View_53_Shift.xml             |  18 ++++++---
+ xml/View_54_InfoWall.xml          |  35 +++++++++--------
+ 22 files changed, 76 insertions(+), 67 deletions(-)
+ create mode 100644 media/lists/rounded-tile.png
+ create mode 100644 media/masks/overlay-fade.png
+ create mode 100644 media/masks/p186.png
+ create mode 100644 media/masks/p290.png
+ create mode 100644 media/masks/p334.png
+ create mode 100644 media/masks/p476.png
+ create mode 100644 media/masks/p516.png
+ create mode 100644 media/masks/p540.png
+ create mode 100644 media/masks/plate.png
+ create mode 100644 media/masks/poster-shadow.png
+ create mode 100644 media/masks/shadow334.png
+
+diff --git a/media/buttons/button-fo.png b/media/buttons/button-fo.png
+index 05936eac513eca8f18b447bd85c82c488c2beb93..c4f2a914c73b6c1a97cb2daa4b9d6d8a231c2639 100644
+GIT binary patch
+literal 652
+zcmeAS@N?(olHy`uVBq!ia0vp^DIm<j1|$m}O$}jSU<&qhaSW-L^Y*HtpLC!|>%;#&
+zg09mhwy||K$!-vHI>@E8@WO=@UJdPq3G5;sCLW5X7kF&&?=n~O>I%7GC-gj9Cp+$A
+zN&Q_(#v5V^p4zwF4@ed;$uKOsH>uJ6f!K~|CHd7%Iwxl(E1cZ6pJ9F@|L)!IcYork
+znOgGo*1>Ob8(7vgUjF$&XvT}OoUTUE4Kx1NC-0dmHhGEogC@bp&uc0ilXE6X7@H+O
+zTYjK*iTF)BmUqvX?{>Y7&Oa?=F|VOGp}y{h#O>|#e%cl2-M-)0|KDcK+fRRfJ8%1Y
+zfAQ8(;rdrs-tCnCs57gqw)t0db4%s~174wJj)zP<X0UNyR!Edm@fpg3XILt(PhSx}
+zkKyevv9DgjACBCZly~agn&<yb7|nZhBj0}UdVjm?;sdvB{EgNL2Y)R4BDyU$jU|%l
+z_~a$*54r@Oh}V|pPL?!|X9%Apmr~sy_*}|jF2CN(Z8?{!w8cLE&p#l!VTQzE_e<&z
+zgevCon;m=BVfZ-xLD4+h13?ViSUoPC`X;#e8fSsS;XS6z{RealbYI^4#u729o|&hl
+WhX0dm)&pQFWAJqKb6Mw<&;$T<oDp6C
+
+literal 147
+zcmeAS@N?(olHy`uVBq!ia0vp^0U*r50wh%=tki&1l&6bhNXEUl=Q(*96a-idukrtz
+z`hZ=akkj9a%WCG^cT5}zutWN&x@`jvkk8=HictE)w1Dv&%K}F0lm;`PEexKnelF{r
+G5}E)mfhRHm
+
+diff --git a/media/buttons/dialogbutton-fo.png b/media/buttons/dialogbutton-fo.png
+index e5bb91567c0d408824ec86ba5c2cf81467821dd8..672a8f88140d21c0464778863d0e8195df9c8457 100644
+GIT binary patch
+literal 702
+zcmeAS@N?(olHy`uVBq!ia0vp^6(G#P1|%(0%q}r7FtvKRIEGZrd3(*!D<)8+{p0&R
+zg55gGy}bz!`C_^^7O*mQ_WE8^Sa;-*Yy^i{<BZe@m2-1MzWXw1UQ#jIXMcaaq}+QE
+zal3Q1!3=j}9YU`z+uh$_{D8%RfopFnZw=$ShS#gAUcBRcvFg>V$3dZY@6K=NKd}4m
+z-0=SoB!9$&hVS21_FZlR+q%Zfl?A*$JN9~CJir!l_PlvdbcJc?Rqld=9lvYk;u7zu
+zYPxMsGqGXSTlH$`uHOPX=Cj|q_4Ib$XDN$$4aEudb(wdb-Zs0#es1;d{Y>xwSFB8Z
+z{quWtY5D)skZ!Y&ySIJXQom}`)h(}uUzAE(%xOG4A_-rI_rC<HOl=vrz7BqI^$LrP
+z;kFyT=Qh6mX~MX@NB7>FFCM?<oAoT)e)Vqq0ox5pHIw&ln!Z-D@%n*}A));TM3q1A
+z?^!i{jU;dQfzVLfu=4kYS@F!vKR=M#Ug^0ldiSjP`3=SiriMvDq4Evh4=UwM-W7=~
+zzG+-wxt%3K+@V}NAav`?cgk*mg&#0D?=MA78}m=b)|gxF`YZ)Zmkge+elF{r5}E)j
+CS3@rV
+
+literal 248
+zcmeAS@N?(olHy`uVBq!ia0vp^0U*r50wh%=tki(ieoq(2kc@k8Z*1f}WFX>tQ97$5
+zLa9mcP}5B{NrsEg{=(Z7RBYEIObKr&d3)`WebujRPvY<Xe7n_gfkPt`E0>5y0Eoeu
+z@nUAh`a8n5zLghO{kUB6;Fz7r>B-aFtq$rPYqpKGJJ@M;BZ_->NmJ>T@7wK+5gOqp
+zu>KSLAi8$<lg8;9A7ZLD)Ueb%k&;<7U*a-n-xi)Ts|$^pb2Z=3X4!ibS?`(k{M|NI
+Vs+_;K<^jFJ;OXk;vd$@?2>|N4T$ca<
+
+diff --git a/media/lists/rounded-tile.png b/media/lists/rounded-tile.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..acab87fa5d40aff173a2239cd62f21044f95400d
+GIT binary patch
+literal 530
+zcmeAS@N?(olHy`uVBq!ia0vp^0U*r51|<6gKdoh8V7%$+;uumf=j~m?JmEl*)`$Ol
+z0=cF+Iybu<<csiLaDr=s(xn}Vyn@=E2l+H6Tv8C6HjybwzRR4Mh12??rq7X|Qm1Ey
+z_tf3JSW?cC5Z$1Xn`_S=$E@GDyy3@w$sas54Chp9H`y{yOF8>-Ldxy@M)L!Y58r)n
+z|5mC(J@fD8*>BwsuvxJ8J#UsySaf;2!3Nf_&;P&oEH5$j+{Nf8`ElRb_HdJX?~i08
+zxh+n95OS$E$DY~l9J^KNZ{5o~7~^~na2A-v=j{1A&CUHlXHGriyg!8-%Rc}49lCAr
+z=Zv=|A6KW{o&WpNi43bRvNk2W5?KcVnA@Zbt~4xU<1tNG!RS1YLSM^guG`O@$+S))
+z_=e}6-Ak`uWr;CZR#1H*x+-E@Pnvjab4~sB>k8hxSg!Rn+<&=vPq$=m*ny}^so@9j
+zpS>S`&^Sr)rD(yih#mJsKWx`s{a}6L=AEJk+%B9?e6#U$v4lN?-QMcwzYTH@1LK;(
+M)78&qol`;+0J_26>i_@%
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/overlay-fade.png b/media/masks/overlay-fade.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..d7509d32e3b3d584678eabdb26b9999423742ab2
+GIT binary patch
+literal 330
+zcmeAS@N?(olHy`uVBq!ia0vp^zkt|?gAGWQh97&vz`!Wz>EaktG3V{|jk!#Y5-k^R
+z7Uz~ZNSe6GyD2T!;{MOqz~^w{O!duIlRWL-zMVCb^TV}m;rtBq{9gn(3@A$QHd-&o
+zXmd5k^W65sPp5h}wC^^rjWhl{^NIEK*?-MX9zUJN*k5$=Yk#fk&s*1`j;s8>?LP5v
+z^^Wa(;<IJ9&%Ajps$FHb%5oL^k9qC?vx;(mOi9^(&FajVZ|wCi71qD||LY|%j2Jv!
+L{an^LB{Ts5pD39y
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/p186.png b/media/masks/p186.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..122d1c44470d8937bafc139d814cd0e738554676
+GIT binary patch
+literal 1021
+zcmeAS@N?(olHy`uVBq!ia0vp^yBHW4#W~o3EUDjdr3?(rM?75|Ln`LHy>>7+EL@=B
+z;!gfkUegwI=s9J1h+Yxc*~_6~<`CLx8+qd$!zb?g=Wp)qo*h{ub@t}n*K<B^*uDSk
+znfb<_U!U1CZ>I5w&o^iOEKl2a=1hC>x%<1T=gypY_it_5KdHjco8FxHQ+RHt_3qzk
+zX?AvhYi7(0H<#tz*Z+Iw&S!;{`)zmsPED(;tP-%)KUsV^{`@<;p2@A#bLWR!?@4*S
+z>nqELdI2j=Cw0dcDjaiJ7EV?u5o+;ky5Kn~I2s^BAu+@lZ{9A)RJUPo+Oyl2kN?$G
+zZ<K$q^JRW|`Ta9zj#u7!!*BfgRa)}F@5T20;-_cM+<x8i`Q<Zv>Z?R7^^X>xet+I_
+z{<^z+&smlmf6hy@JAcOhao+RiTR-3U@O)-v`MI69@4mKQpXOG6$^K#?Fk3Tty85}S
+Ib4q9e0Az%Ye*gdg
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/p290.png b/media/masks/p290.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..afa18717b8c3592310863274c10a2c2581c4e185
+GIT binary patch
+literal 1368
+zcmeAS@N?(olHy`uVBq!ia0vp^zZe)8%Q@J9te&l5{R|AO@}4e^Ar*7pUO$){7B0|m
+zaVP&NuW1W9^qjIhL{};nNeg=9G^`S;-n8Lv<HV!?=WeckpO^MI^PTPP>bb>oW#6~Y
+z{8^k<H+SZC<6^cSH{YE3V{ROu{%n2mIeVajnKSSHtxfwUS9n<W=FFdu=M<NheZPCA
+zrs~&E1LOR-Qj-U&cg~+N?LYnd@6EgGjX$5h+<4+)nT`41w{PAZ-m&Sh?(OGS`R=SM
+z-usQ^K)-qkhkz9ehb&VIAEQ${!$RkV3yKae1QbSvN5f<^L5$4Yux{qf>vBv#7Ji#G
+z^S!_P_w|;XA0Ew{{jUyO%FH@`_8+L2$<=wV^v?Omy?@V~`Tcs%=gKrYJJ~Loyu-z(
+z<<DErUw?P+Im>e6&xvXK&Yao*_%5IQ>bb|;_MbV^UVQHEySV?%PFLK`#lIHS082~;
+MPgg&ebxsLQ08MVVssI20
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/p334.png b/media/masks/p334.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..3e5dc5ff8edadb2da494f844b163aae409330c68
+GIT binary patch
+literal 1847
+zcmeAS@N?(olHy`uVBq!ia0y~yU~~ZD2OMlbkt;o0To@SG{&~7MhE&XXd*fhlsJno}
+z#aHczH%(V?5j$pR!IiW@jh978+9%|jPo<%;;sgD^)#u*ry?5o+s$J*b#XX<1{BEti
+zas9b7`Np45pP9qBgWuZt|G6{YXZ|cX_jAwg>oaHGyn8?W*?K|S2mjul`BQkV(qi}T
+zvb24B{?yExX>Kmd``~%yoSE74rtd9JFW-Ou%zAzHN9=cYU%&RZw(NUmOl{-5+E`Y`
+ztaGKWIT`X?85(sMSvIi<oDgzQ@E+xihQVk$7|jc#<-xEm6JO7ox%aC8gZYN*XZ}?D
+ztl0BZh2j5XVBG+zL(Y6w`(a|7pJyg^;QUvM^XB)Bjo+^;K6icQ&mTn^bq8##bMG7n
+za<j|V7oR(Pre?-WU>$Y7LY(E@>2t-m_nke{4itVD_n$G$*MswYXV^zzg~;IP>gTe~
+HDWM4fc7+8W
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/p476.png b/media/masks/p476.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..13710f1fdf9da07a7ffa2300bdcc038972393236
+GIT binary patch
+literal 3065
+zcmeAS@N?(olHy`uVBq!ia0y~yV7$Y?z;uR#4JhI_m-#aT1NQ+>7srr_Id5+s%#8~b
+zXt=mje+uhq7mZkftOZ?H8t$-pEy;0O#Z(<}LyzG}&Hj{gH}{sCZ~kraecs)@=Pdbm
+z|NeaDkD0Ok*)#mc#cT{ewwI;-n>Ta4@#l|oJ|BM<m!6hZUO#i@efJc`2dZz+{HZ#(
+z(|Y&svNSu}zcn*vnw!h=GQ_q2p1Jc`;mq3dvhT0Y{P|I$u#MqE(Y)Kgp5MINUO1J9
+z;r?a2^}84jd@o)X?a#pQpS_8jf$<<~L&F0m2ZsVi1%(|90s=7%92|NKEG*&-Orz4H
+z!7`d0Mzg_a=`dO<j@AaFmE>sSV6;&*AZ^9#XWp!BXJ`n|TR-#Xw=aeDr#%@Sh*ssj
+z-oANve)_Y^HhH`FjXyt2OJ+Rqy3oGg{A7CCz1Zh-&KrMz_%a}e@j<GM`Paji&p&V7
+zeckeTUfR9$XQt2mnZ4&V(}DV}pKn~!H~#!@PVx5L*X@OKJs&RZO^O3H=@~p-{an^L
+HB{Ts5q{O%B
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/p516.png b/media/masks/p516.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..d1c26b94f8faef477b480be5c1e710c7134931e8
+GIT binary patch
+literal 3008
+zcmeAS@N?(olHy`uVBq!ia0y~yU}6E{FC1(@k>UyZ{R|A;?Vc`<Ar*7p-a42o;wa#7
+z@qY55rp3BXbPNmySPd1HH|Craf4t&Av`m?KtL(|&_j1$pN>{Ic7iqkC?N&bH&s%>5
+z)~>V*)n<6Gc;>74uTg(vvj5JTnHzfc%=TB|N(>C^PKMmS9@U?nmbZHO<<rikn_p)z
+z98ld89)0|9!){aK^;e%?W;bMDxc+$0@BeFNT0U6?)N*r9KNmy8>#f`NsxvTrQ|Dk{
+zaAaWMU}8`JQYst_4J?cd6BHO2gjg6Hniv>71Q-}NM<quCVKgO-W{1%-VYFZztsO?I
+z$kBGfXk&@mjl$y!GxoMKFqD}_e=V!3xL+*9@Ziz8-T!mXp2_`s<>QhE0e9b+i7^yt
+zzL(AC3M<{dcI&*=?U&s_joXKNKFeQ=I)D32PWIa4ul7}~{P%1>6T^=c%O0<*U-=H$
+eJT~6^m)&Tgm*J<XcXxp;a|TaWKbLh*2~7Z1f2oE5
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/p540.png b/media/masks/p540.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..4cce209dbec8b8a66c4e37bb61d66cdd4ab186f4
+GIT binary patch
+literal 3901
+zcmeAS@N?(olHy`uVBq!ia0y~yV3J{AU=HG71B&R~7Qe#4z|Z38;uumf=k2Y7y|JzW
+z4i{ggA8J~v`$WgUP=M8NfhY6LN#@4_5BhAJF_Xce`0LX3#bximE}Is9wYKcL)pMJ-
+z@6H>4zJ2D8iLw2eGm;Dq|I^Z+&7b+x%y|F&;(vGUzCLs2%{zVL&&NA>7#_TRbLLOg
+zxk`)Ozw6TM_W!AwHM87YmX~1%d%tn<+0RCg58u3-Z~Xc3>Bbuj4EIiDNB=1;`<@xI
+zl!0MxZEPt6L&&+(*PILuztt@m8s<D;U?^&0W;nsg$DlAOFd81C$ze1%j1~r?W#MSu
+zFj_T^whTraMx*V*(Pr^zH(`kPlCGb5v$maq;oYq`<IjJeKK?juG6O^T^R2r3=HIQg
+zH=h5z^72O$<M(-HVhjcPa?gLNJw0=#{q>yBscCk5Wx9A79_a2dJG#91-1O}7^~L87
+zpQ)KMbG`BB?-kb>8UEN?pV$3Znr1hzSg!2*FYynTz22VQ(P;zh7BhId`njxgN@xNA
+DF~csu
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/plate.png b/media/masks/plate.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..23b4fd7d2362d3ee9765d96241cb304ee502cb87
+GIT binary patch
+literal 1266
+zcmeAS@N?(olHy`uVBq!ia0y~yU}OT~dJZ<A$fD23{TUcoc6z!vhE&XXdt+m+sH2F(
+zMQiO~hF*nT8wxl(Iyk~xl$EkJJeBg$QQ4lzwc)S)!8)%4@te+1RJ-*=^?g>_^)qX>
+zUJE&UX8Wt`uN$kxKiskjE5F*m^;+oFGiywZS69XVU1K*l&+b9%-H`ZI_StFMUhT44
+zKX29BiiYbi3vAM_=9X^kJKy;JZ8+O`#tQ3yZ~r`<HFNhXXVaaW2cnBsgng|(dnWm}
+zC}YL!dDqUIS-G6S?{qMO0FwhpLkok)C@~raqv>EUWrGa<gO^vfGx)vAT>WnKN<MWt
+zwu;F1Z+G|KU$r_b^t`$(XGP}ux4Y}NrlqZ3xBBz9^h49?*+0yZ?R&mv*IK=8-&P-d
+z{_5EeN0tYrw{MmIT~_-&eRWi}?V7E6t4_ZP|5~w0u<`%PjkU-1uSbbzuWetoUnno=
+VDTC9ZBfzqZ!PC{xWt~$(697%ppCSMN
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/poster-shadow.png b/media/masks/poster-shadow.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..77ef704d1df53b0ff98ca1dd9ea8b7bdc1d55fd4
+GIT binary patch
+literal 4709
+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
+G%l{ub&?ZU%
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/masks/shadow334.png b/media/masks/shadow334.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..4a469b2a9931dfea44801d42d088238f366fce6c
+GIT binary patch
+literal 5205
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/xml/DialogVideoInfo.xml b/xml/DialogVideoInfo.xml
+index 4595220..ff1e55b 100644
+--- a/xml/DialogVideoInfo.xml
++++ b/xml/DialogVideoInfo.xml
+@@ -468,8 +468,8 @@
+ 								<left>20</left>
+ 								<width>186</width>
+ 								<height>279</height>
+-								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+-								<aspectratio aligny="center">scale</aspectratio>
++								<texture diffuse="masks/p186.png">$INFO[ListItem.Art(poster)]</texture>
++								<aspectratio aligny="center" scalediffuse="false">scale</aspectratio>
+ 							</control>
+ 							<control type="image">
+ 								<left>20</left>
+@@ -511,8 +511,8 @@
+ 								<left>20</left>
+ 								<width>186</width>
+ 								<height>279</height>
+-								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+-								<aspectratio aligny="center">scale</aspectratio>
++								<texture diffuse="masks/p186.png">$INFO[ListItem.Art(poster)]</texture>
++								<aspectratio aligny="center" scalediffuse="false">scale</aspectratio>
+ 							</control>
+ 							<control type="image">
+ 								<left>20</left>
+diff --git a/xml/Includes.xml b/xml/Includes.xml
+index 1456868..87422ec 100644
+--- a/xml/Includes.xml
++++ b/xml/Includes.xml
+@@ -1644,70 +1644,68 @@
+ 		</control>
+ 	</include>
+ 	<include name="SettingsPanel">
+-		<itemlayout height="260" width="400">
++		<itemlayout height="290" width="350">
+ 			<control type="image">
+-				<left>-5</left>
+-				<width>410</width>
+-				<height>270</height>
+-				<texture>dialogs/dialog-bg-nobo.png</texture>
+-				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+-				<bordersize>20</bordersize>
++				<left>0</left>
++				<width>350</width>
++				<height>290</height>
++				<texture border="16" colordiffuse="B30D0D0D">lists/rounded-tile.png</texture>
++				<bordersize>38</bordersize>
+ 			</control>
+ 			<control type="image">
+ 				<centerleft>50%</centerleft>
+-				<top>30</top>
+-				<width>240</width>
+-				<height>160</height>
++				<top>52</top>
++				<width>192</width>
++				<height>128</height>
+ 				<texture>$INFO[ListItem.Icon]</texture>
+ 				<align>center</align>
+ 				<aspectratio>scale</aspectratio>
+ 			</control>
+ 			<control type="label">
+-				<left>25</left>
+-				<top>190</top>
++				<centerleft>50%</centerleft>
++				<top>183</top>
+ 				<width>350</width>
+ 				<height>400</height>
+ 				<label>$INFO[ListItem.Label]</label>
+ 				<align>center</align>
+ 			</control>
+ 		</itemlayout>
+-		<focusedlayout height="230" width="400">
++		<focusedlayout height="290" width="350">
+ 			<control type="group">
+ 				<depth>DepthContentPopout</depth>
+ 				<animation type="Focus" reversible="false">
+-					<effect type="zoom" center="200,140" start="100" end="110" time="250" tween="sine" />
++					<effect type="zoom" center="175,150" start="100" end="110" time="250" tween="sine" />
+ 				</animation>
+ 				<animation type="UnFocus" reversible="false">
+-					<effect type="zoom" center="200,140" start="110" end="100" time="250" tween="sine" />
++					<effect type="zoom" center="175,150" start="110" end="100" time="250" tween="sine" />
+ 				</animation>
+ 				<control type="image">
+-					<left>-5</left>
+-					<width>410</width>
+-					<height>270</height>
+-					<texture>dialogs/dialog-bg-nobo.png</texture>
+-					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+-					<bordersize>20</bordersize>
++					<left>0</left>
++					<width>350</width>
++					<height>290</height>
++					<texture border="16" colordiffuse="B30D0D0D">lists/rounded-tile.png</texture>
++					<bordersize>38</bordersize>
+ 				</control>
+ 				<control type="image">
+-					<left>-5</left>
+-					<width>410</width>
+-					<height>270</height>
+-					<texture colordiffuse="button_focus">colors/grey.png</texture>
+-					<bordersize>20</bordersize>
++					<left>0</left>
++					<width>350</width>
++					<height>290</height>
++					<texture border="16" colordiffuse="button_focus">lists/rounded-tile.png</texture>
++					<bordersize>38</bordersize>
+ 					<include>Animation_FocusTextureFade</include>
+ 				</control>
+ 				<control type="image">
+ 					<centerleft>50%</centerleft>
+-					<top>30</top>
+-					<width>240</width>
+-					<height>160</height>
++					<top>52</top>
++					<width>192</width>
++					<height>128</height>
+ 					<texture>$INFO[ListItem.Icon]</texture>
+ 					<align>center</align>
+ 					<aspectratio>scale</aspectratio>
+ 				</control>
+ 				<control type="label">
+-					<left>25</left>
+-					<top>190</top>
++					<centerleft>50%</centerleft>
++					<top>183</top>
+ 					<width>350</width>
+ 					<height>400</height>
+ 					<label>$INFO[ListItem.Label]</label>
+diff --git a/xml/Settings.xml b/xml/Settings.xml
+index a074d89..fae76b0 100644
+--- a/xml/Settings.xml
++++ b/xml/Settings.xml
+@@ -17,14 +17,14 @@
+ 		</control>
+ 		<control type="group">
+ 			<centerleft>50%</centerleft>
+-			<width>1600</width>
++			<width>1750</width>
+ 			<top>0</top>
+ 			<bottom>0</bottom>
+ 			<include>OpenClose_Right</include>
+ 			<control type="label">
+ 				<left>0</left>
+ 				<right>0</right>
+-				<top>420</top>
++				<top>390</top>
+ 				<height>400</height>
+ 				<label>$LOCALIZE[5]</label>
+ 				<align>center</align>
+@@ -33,7 +33,7 @@
+ 			<control type="panel" id="9000">
+ 				<left>0</left>
+ 				<width>100%</width>
+-				<top>120</top>
++				<top>80</top>
+ 				<height>300</height>
+ 				<onup>Control.SetFocus(9001,$INFO[Container(9000).Position],absolute)</onup>
+ 				<onup>Down</onup>
+@@ -65,7 +65,7 @@
+ 			<control type="panel" id="9001">
+ 				<left>0</left>
+ 				<right>0</right>
+-				<top>470</top>
++				<top>430</top>
+ 				<bottom>0</bottom>
+ 				<onup>Control.SetFocus(9000,$INFO[Container(9001).Position],absolute)</onup>
+ 				<ondown>Up</ondown>
+diff --git a/xml/SettingsCategory.xml b/xml/SettingsCategory.xml
+index cd305a1..560a418 100644
+--- a/xml/SettingsCategory.xml
++++ b/xml/SettingsCategory.xml
+@@ -110,7 +110,7 @@
+ 				<textoffsetx>40</textoffsetx>
+ 				<aligny>center</aligny>
+ 				<font>font37</font>
+-				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
++				<texturefocus colordiffuse="button_focus" border="16">lists/rounded-tile.png</texturefocus>
+ 				<texturenofocus />
+ 			</control>
+ 		</control>
+diff --git a/xml/SkinSettings.xml b/xml/SkinSettings.xml
+index 60f1150..8979f42 100644
+--- a/xml/SkinSettings.xml
++++ b/xml/SkinSettings.xml
+@@ -384,7 +384,7 @@
+ 					<control type="image">
+ 						<width>470</width>
+ 						<height>85</height>
+-						<texture colordiffuse="button_focus">lists/focus.png</texture>
++						<texture colordiffuse="button_focus" border="16">lists/rounded-tile.png</texture>
+ 						<animation effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)">Conditional</animation>
+ 					</control>
+ 					<control type="label">
+diff --git a/xml/View_50_List.xml b/xml/View_50_List.xml
+index 82b231e..d8f97ed 100644
+--- a/xml/View_50_List.xml
++++ b/xml/View_50_List.xml
+@@ -60,8 +60,8 @@
+ 						<height>850</height>
+ 						<bottom>124</bottom>
+ 						<fadetime>200</fadetime>
+-						<aspectratio aligny="bottom">keep</aspectratio>
+-						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoWallThumbVar]</texture>
++						<aspectratio aligny="bottom" scalediffuse="false">scale</aspectratio>
++						<texture fallback="DefaultVideo.png" diffuse="masks/p540.png">$VAR[InfoWallThumbVar]</texture>
+ 					</control>
+ 					<control type="group">
+ 						<left>291</left>
+diff --git a/xml/View_51_Poster.xml b/xml/View_51_Poster.xml
+index 32b5a47..c4b091a 100644
+--- a/xml/View_51_Poster.xml
++++ b/xml/View_51_Poster.xml
+@@ -123,7 +123,7 @@
+ 				<left>-16</left>
+ 				<width>516</width>
+ 				<height>756</height>
+-				<texture>colors/black.png</texture>
++				<texture diffuse="masks/p516.png">colors/black.png</texture>
+ 				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+ 				<bordersize>20</bordersize>
+ 			</control>
+@@ -133,8 +133,8 @@
+ 				<width>476</width>
+ 				<height>716</height>
+ 				<fadetime>200</fadetime>
+-				<aspectratio>scale</aspectratio>
+-				<texture fallback="DefaultMovies.png" background="true">$VAR[PosterThumbVar]</texture>
++				<aspectratio scalediffuse="false">scale</aspectratio>
++				<texture fallback="DefaultMovies.png" diffuse="masks/p476.png">$VAR[PosterThumbVar]</texture>
+ 			</control>
+ 			<control type="group">
+ 				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBType,season) | ListItem.IsRecording | ListItem.HasReminder | ListItem.HasTimer | ListItem.IsCollection | ListItem.HasVideoVersions | ListItem.IsPlaying | ListItem.IsResumable | ListItem.HasVideoExtras | ListItem.HasArchive | Integer.IsGreater(ListItem.Playcount,0)</visible>
+diff --git a/xml/View_53_Shift.xml b/xml/View_53_Shift.xml
+index e5a827f..415285f 100644
+--- a/xml/View_53_Shift.xml
++++ b/xml/View_53_Shift.xml
+@@ -145,16 +145,22 @@
+ 			<bordersize>20</bordersize>
+ 			<visible>String.IsEmpty(ListItem.Art(poster))</visible>
+ 		</control>
++		<control type="image">
++			<left>1</left>
++			<top>72</top>
++			<width>368</width>
++			<height>528</height>
++			<texture>masks/shadow334.png</texture>
++			<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
++		</control>
+ 		<control type="image">
+ 			<depth>DepthContentPopout</depth>
+-			<left>18</left>
++			<left>25</left>
+ 			<top>90</top>
+-			<width>334</width>
++			<width>320</width>
+ 			<height>480</height>
+-			<aspectratio aligny="center">scale</aspectratio>
+-			<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
+-			<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+-			<bordersize>20</bordersize>
++			<aspectratio aligny="center" scalediffuse="false">scale</aspectratio>
++			<texture fallback="DefaultVideo.png" diffuse="masks/p334.png">$VAR[ShiftThumbVar]</texture>
+ 			<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+ 		</control>
+ 		<control type="textbox">
+diff --git a/xml/View_54_InfoWall.xml b/xml/View_54_InfoWall.xml
+index d744c2d..9a03e77 100644
+--- a/xml/View_54_InfoWall.xml
++++ b/xml/View_54_InfoWall.xml
+@@ -278,26 +278,30 @@
+ 			</control>
+ 			<control type="group">
+ 				<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
++				<control type="image">
++					<left>31</left>
++					<top>6</top>
++					<width>258</width>
++					<height>383</height>
++					<texture colordiffuse="button_focus" diffuse="masks/plate.png">colors/grey.png</texture>
++					<aspectratio scalediffuse="false">stretch</aspectratio>
++					<visible>$PARAM[focused]</visible>
++					<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
++				</control>
+ 				<control type="image">
+ 					<left>11</left>
+-					<top>-14</top>
++					<top>-8</top>
+ 					<width>298</width>
+ 					<height>423</height>
+-					<texture colordiffuse="button_focus">colors/grey.png</texture>
+-					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+-					<bordersize>20</bordersize>
+-					<visible>$PARAM[focused]</visible>
+-					<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
++					<texture>masks/poster-shadow.png</texture>
+ 				</control>
+ 				<control type="image">
+-					<left>15</left>
+-					<top>-10</top>
+-					<width>290</width>
+-					<height>415</height>
+-					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+-					<aspectratio>scale</aspectratio>
+-					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+-					<bordersize>20</bordersize>
++					<left>35</left>
++					<top>10</top>
++					<width>250</width>
++					<height>375</height>
++					<texture diffuse="masks/p290.png">$INFO[ListItem.Art(poster)]</texture>
++					<aspectratio scalediffuse="false">scale</aspectratio>
+ 				</control>
+ 			</control>
+ 			<control type="group">
+@@ -307,7 +311,8 @@
+ 					<top>335</top>
+ 					<width>250</width>
+ 					<height>50</height>
+-					<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
++					<texture colordiffuse="CCFFFFFF" diffuse="masks/overlay-fade.png">overlays/overlayfade.png</texture>
++					<aspectratio scalediffuse="false">stretch</aspectratio>
+ 					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+ 				</control>
+ 				<control type="image">

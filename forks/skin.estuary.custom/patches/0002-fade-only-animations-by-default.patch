@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:27 -0400
+Subject: [PATCH 02/13] fade-only animations by default
+
+Inverts the skin setting no_slide_animations into slide_animations so
+windows fade by default and slide only when opted in, and shortens the
+focus fade from 200 to 140 ms. Touches Includes_Animations.xml and
+SkinSettings.xml.
+---
+ xml/Includes_Animations.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/xml/Includes_Animations.xml b/xml/Includes_Animations.xml
+index f52f370..62e4bf8 100644
+--- a/xml/Includes_Animations.xml
++++ b/xml/Includes_Animations.xml
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <includes>
+ 	<include name="Animation_FocusTextureFade">
+-		<animation effect="fade" start="0" end="100" time="200" tween="sine">Focus</animation>
++		<animation effect="fade" start="0" end="100" time="140" tween="sine">Focus</animation>
+ 		<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
+ 	</include>
+ 	<include name="Animation_DialogPopupOpenClose">

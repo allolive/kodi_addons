@@ -1,0 +1,225 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:28 -0400
+Subject: [PATCH 11/13] OSD: direct audio, subtitle and video-angle buttons
+
+Reorders the video OSD button row: direct audio, subtitle and video
+stream selection buttons whose focus label shows the language name
+mapped by mediainfo.py; drops the playlist, teletext, streams and 3D
+buttons. Touches VideoOSD.xml and Variables.xml.
+---
+ media/buttons/video_angle.png                 | Bin 0 -> 800 bytes
+ .../osd/fullscreen/buttons/settings-audio.png | Bin 0 -> 2487 bytes
+ xml/Variables.xml                             |  13 ++++
+ xml/VideoOSD.xml                              |  70 ++++++++----------
+ 4 files changed, 44 insertions(+), 39 deletions(-)
+ create mode 100644 media/buttons/video_angle.png
+ create mode 100644 media/osd/fullscreen/buttons/settings-audio.png
+
+diff --git a/media/buttons/video_angle.png b/media/buttons/video_angle.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..4b84806f47444461106206c4922576c7bb595874
+GIT binary patch
+literal 800
+zcmeAS@N?(olHy`uVBq!ia0vp^4Is?H1|$#LC7xzrV0!N9;uumf=k1;It9=6{j(vRo
+zRe4J16nVk6Jg+GMO3ccsXB>`PIM8zD4`<tqg%SqAQ)U`W;L%7`Qe?KzOMEa*duRW_
+zol38)s@K=<d4A{X-=6a7z13^e_g2q87%2p_1viion;3h*e_OcME!E7qOI#yUJ*xCy
+zu3Yk4@T2X@zN#DdGJa2ctI0pT@V0u+`SbG@N1p!Xczg2B*MI!WbM?>8TkYss&3faW
+z_RF><mXW3=1^$=jb^MqX>v27ZDWQ7flIN4ArT5&wbh5)DxJvl;Y8BZDTcR!*dtO(1
+zl>D;Rz3c7cmA-rD7TzxAo>#f<ZScR}Q@@}4Hcjt&`HP$T{>~R)uWcP|_kPA(cH=wW
+zm%goxJzs3U>E3?nNyl`ruE_I$U**}anmha9rP4`dB3G_PdA(B6^_JQma{s>0w&N<X
+zSI%(%-@SFMmX--u{DZ?!=F6YuE&Dq^=$g`M<}+TpWwlmT4(wcDO7Zq<)!0iNx_|sj
+z8kn~AdsZzGjIHV93wV`N#<=ta!&GH*P-<L?ct97!l$%TL{bz6!W7H53oUi<7#gf`d
+z_tLIkW@CKe;BqJAegER=o3k^!7)n%>>|Bp1_C}a1Fvv=8&6^<FaB@kZckRpPi>BR8
+zSX3Iyx{2w7Rpy<b^|NB`ERgo`th%vjnNlR<j>#r@oU6;DB9v>(nm-E~uA05b^7d`^
+z@}Bbt?!0=ibNUUt=ke^WwHs=0v9|k9J!PZ*Vbzkqk&n&4gkHMVQE}<$*&O`|TbwS<
+zezTd~n0Z6Q-f6omSGU>udRoZ{hHv7QY}qouQP6PVy@waBZ_0XcxZ3k~+UrN&&P7o>
+z-oBmG=W$Cnvv)~r=hGgb3x1S(iZ5#hC2>4}=Nf;Wh3Dm(^?hm}Ri3VXF6*2UngH1>
+BSXKZ4
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/osd/fullscreen/buttons/settings-audio.png b/media/osd/fullscreen/buttons/settings-audio.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..2e1e6be6b9bbf6760322d9812c6d9c319b35aa03
+GIT binary patch
+literal 2487
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/xml/Variables.xml b/xml/Variables.xml
+index fa71c1a..a72aeab 100644
+--- a/xml/Variables.xml
++++ b/xml/Variables.xml
+@@ -376,6 +376,10 @@
+ 		<value condition="Control.HasFocus(70046)">$LOCALIZE[13392]</value>
+ 		<value condition="Control.HasFocus(70047)">$LOCALIZE[36501]</value>
+ 		<value condition="Control.HasFocus(70048)">$LOCALIZE[5]</value>
++		<value condition="Control.HasFocus(70060)">$LOCALIZE[13396]: [UPPERCASE]$VAR[OSDAudioLangVar][/UPPERCASE]$VAR[AudioCodecVar, - ]$VAR[AudioChannelsVar, ]</value>
++		<value condition="Control.HasFocus(70061) + !VideoPlayer.SubtitlesEnabled">$LOCALIZE[24012]: $LOCALIZE[1223]</value>
++		<value condition="Control.HasFocus(70061) + VideoPlayer.SubtitlesEnabled + String.IsEmpty(VideoPlayer.SubtitlesLanguage)">$LOCALIZE[24012]: $LOCALIZE[13205]$VAR[SubtitleCodecVar, | ]</value>
++		<value condition="Control.HasFocus(70061)">$LOCALIZE[24012]: [UPPERCASE]$VAR[OSDSubLangVar][/UPPERCASE]$VAR[SubtitleCodecVar, | ]</value>
+ 		<value condition="Control.HasFocus(70050)">$LOCALIZE[29900]</value>
+ 		<value condition="Control.HasFocus(70051)">$LOCALIZE[31066]</value>
+ 		<value condition="Control.HasFocus(70052)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
+@@ -760,6 +764,15 @@
+ 		<value condition="String.IsEmpty(VideoPlayer.AudioLanguage) | String.IsEqual(VideoPlayer.AudioLanguage,und)">$LOCALIZE[13205]</value>
+ 		<value condition="!String.IsEmpty(VideoPlayer.AudioLanguage)">$INFO[VideoPlayer.AudioLanguage]</value>
+ 	</variable>
++	<!-- OSD labels: prefer the script-mapped language name, fall back to the raw code -->
++	<variable name="OSDAudioLangVar">
++		<value condition="!String.IsEmpty(Window(Home).Property(MediaInfo.Player.AudioLanguage))">$INFO[Window(Home).Property(MediaInfo.Player.AudioLanguage)]</value>
++		<value>$VAR[ActiveVideoPlayerAudioLanguage]</value>
++	</variable>
++	<variable name="OSDSubLangVar">
++		<value condition="!String.IsEmpty(Window(Home).Property(MediaInfo.Player.SubtitleLanguage))">$INFO[Window(Home).Property(MediaInfo.Player.SubtitleLanguage)]</value>
++		<value>$INFO[VideoPlayer.SubtitlesLanguage]</value>
++	</variable>
+ 	<variable name="VideoListPosterVar">
+ 		<value condition="!String.IsEmpty(Container(6).ListItem.Art(poster))">$INFO[Container(6).ListItem.Art(poster)]</value>
+ 		<value condition="!String.IsEmpty(Container(6).ListItem.Art(thumb))">$INFO[Container(6).ListItem.Art(thumb)]</value>
+diff --git a/xml/VideoOSD.xml b/xml/VideoOSD.xml
+index 07b1fb1..3500317 100644
+--- a/xml/VideoOSD.xml
++++ b/xml/VideoOSD.xml
+@@ -143,6 +143,37 @@
+ 					<onup>87</onup>
+ 					<onleft>608</onleft>
+ 					<onright>600</onright>
++					<control type="radiobutton" id="70043">
++						<include content="OSDButton">
++							<param name="texture" value="osd/fullscreen/buttons/information.png"/>
++						</include>
++						<onclick>Skin.Reset(ppiscreen)</onclick>
++						<onclick>Info</onclick>
++					</control>
++					<control type="radiobutton" id="70061">
++						<description>Subtitle stream selection</description>
++						<include content="OSDButton">
++							<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
++						</include>
++						<onfocus>RunScript(special://skin/extras/mediainfo.py,player)</onfocus>
++							<onclick>DialogSelectSubtitle</onclick>
++						<enable>VideoPlayer.HasSubtitles</enable>
++					</control>
++					<control type="radiobutton" id="70060">
++						<description>Audio stream selection</description>
++						<include content="OSDButton">
++							<param name="texture" value="osd/fullscreen/buttons/settings-audio.png"/>
++						</include>
++						<onfocus>RunScript(special://skin/extras/mediainfo.py,player)</onfocus>
++							<onclick>DialogSelectAudio</onclick>
++					</control>
++					<control type="radiobutton" id="70062">
++						<description>Video stream / angle selection</description>
++						<include content="OSDButton">
++							<param name="texture" value="buttons/video_angle.png"/>
++						</include>
++						<onclick>DialogSelectVideo</onclick>
++					</control>
+ 					<control type="radiobutton" id="804">
+ 						<include content="OSDButton">
+ 							<param name="texture" value="osd/fullscreen/buttons/home.png"/>
+@@ -173,20 +204,6 @@
+ 						<onclick>ActivateWindow(pvrchannelguide)</onclick>
+ 						<visible>VideoPlayer.Content(livetv) + VideoPlayer.HasEPG</visible>
+ 					</control>
+-					<control type="radiobutton" id="70042">
+-						<include content="OSDButton">
+-							<param name="texture" value="osd/fullscreen/buttons/playlist.png"/>
+-						</include>
+-						<onclick>Dialog.Close(all, true)</onclick>
+-						<onclick>ActivateWindow(videoplaylist)</onclick>
+-						<visible>Integer.IsGreater(Playlist.Length(video),1)</visible>
+-					</control>
+-					<control type="radiobutton" id="70043">
+-						<include content="OSDButton">
+-							<param name="texture" value="osd/fullscreen/buttons/information.png"/>
+-						</include>
+-						<onclick>Info</onclick>
+-					</control>
+ 					<control type="radiobutton" id="70044">
+ 						<include content="OSDButton">
+ 							<param name="texture" value="osd/fullscreen/buttons/bookmarks.png"/>
+@@ -194,31 +211,6 @@
+ 						<onclick>ActivateWindow(videobookmarks)</onclick>
+ 						<visible>!VideoPlayer.Content(livetv)</visible>
+ 					</control>
+-					<control type="radiobutton" id="70045">
+-						<include content="OSDButton">
+-							<param name="texture" value="osd/fullscreen/buttons/teletext.png"/>
+-						</include>
+-						<onclick>Dialog.Close(VideoOSD)</onclick>
+-						<onclick>ActivateWindow(Teletext)</onclick>
+-						<visible>VideoPlayer.HasTeletext</visible>
+-					</control>
+-					<control type="radiobutton" id="70046">
+-						<include content="OSDButton">
+-							<param name="texture" value="osd/fullscreen/buttons/streams.png"/>
+-						</include>
+-						<onclick>SetProperty(settingsdialog_content,streamselection,home)</onclick>
+-						<onclick>SetProperty(settingsdialog_header,$LOCALIZE[13392],home)</onclick>
+-						<onclick>ActivateWindow(1101)</onclick>
+-					</control>
+-					<control type="radiobutton" id="70047">
+-						<include content="OSDButton">
+-							<param name="texture" value="osd/fullscreen/buttons/stereoscopic.png"/>
+-						</include>
+-						<visible>VideoPlayer.IsStereoscopic</visible>
+-						<onclick>SetProperty(settingsdialog_content,3d,home)</onclick>
+-						<onclick>SetProperty(settingsdialog_header,$LOCALIZE[36501],home)</onclick>
+-						<onclick>ActivateWindow(1101)</onclick>
+-					</control>
+ 					<control type="radiobutton" id="70048">
+ 						<include content="OSDButton">
+ 							<param name="texture" value="osd/fullscreen/buttons/settings.png"/>

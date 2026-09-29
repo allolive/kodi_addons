@@ -1,0 +1,81 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:28 -0400
+Subject: [PATCH 08/13] media flags: HDR10+ flag and HDR type fallback
+
+Adds the flags/videohdr/hdr10plus.png flag and makes VideoHDRType1Var
+fall back to the library ListItem.HdrType when the HdrType.1 property is
+empty, so HDR flags never render as an empty box. Touches Variables.xml.
+---
+ media/flags/videohdr/hdr10plus.png | Bin 0 -> 2215 bytes
+ xml/Variables.xml                  |   6 +++++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+ create mode 100644 media/flags/videohdr/hdr10plus.png
+
+diff --git a/media/flags/videohdr/hdr10plus.png b/media/flags/videohdr/hdr10plus.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..f6ce1fbb9e3a5e92dd227cdabe9e0542ade9bd60
+GIT binary patch
+literal 2215
+zcmb`}do&Xc8wc=_a%r2(O4$75&Y@ZPnIR?jt<9}4%w^^-jFtPP5HnLubE&x`<xNTM
+z%G{+=QvAq0rjegCtO!}J|K9VS_nh~y-#^cJ&Uya$K7Tyte4Z=^I~$OMf&>5n0HJLy
+zod5tK@O~dFCbC~2HvVM|0EmU7EzezyWv$MnT!IEFzFcn^I`(m$U|7Rw64!CaGuQ0C
+z4Rk^(cUu}h2UiOmEngrVc15x3Sk6uHjGuKU`!t;IRpXoX&Sh(j7=zSu4`HW*oHgpY
+zk<A*%-6ykZAfCY^24`U=k??n>zw$z(nt69nrHU^%x435+r(?FJDep9gW=vy_Wdbn=
+z8>(jjO_zgFw`_awS}K6mhsj!b85UW8!Z4Nd4l1BbnSWvgx_Tz0bKHD1-0WoIl7ouL
+zlBQ@CW;F;Xtuh+kW1bHD67Ih~+86HMyhNswC5NN~s%fhay@?OTdwNk#BMEOeVQ87e
+zbbaS=`=nh&6`E0Q9S_!7YU7TE+FIc4a3#W@k<Kw%OlJ}=0>s6iK>p9#roVNoF%o(q
+zx*P9{H({8Ig3^0;+T^Q>cYj9AeU}rJt18yq9>GowPTR>&ZMAS1oUol`k}ZBn@lpWo
+zX$$?$@dMxa_J<aq(SKSs%W$OhXp}!Gs;2Cl=XSOmS_RfV2ssj6-k|@o{477Ts(4eJ
+zxPyt<*-G;Nq+fq;(U^4bFTM^@@NqClL+!DN-?tx&ld5k&_<b|DVDw|Jr}5UjXL0hC
+zI9`Kx$TxFth)rJY2G6BGGB)Ohi3I_6h%C3x%$dvWBNk-?5nTY@JM0wp?9GOX^3pe`
+zO0wK%-*>-e*nP8It28n-lPuS(e001SrMHpWa;aZuY7oj!xv^S9;!4_3#iUg@-6PCp
+zqPJU-7*aZ%qre;OKIJ~q9co6KG8z=!_*)#JOtWf<5Y*-g^|xlWNsP6zmL_l#&^xws
+z(V5#IQ~G?A;R!WrUCBv;`?f2|i$QP~tt@<XYPlT-=X)UQvQgSDe2f`S2yQWZ3S4OP
+z%J@(gXYF_vYukk%bH*a$C(MIg;(_+1=!?n`8Ih#{rrM|aCcI}sHK6l4Fx)|Pc;>U~
+zC=y{%dY(7K6K==*1<%KOFUQ*rXPv(lK_Q^TTDFbcWMH3LYrmgvqcZ00#!e(sLS}{~
+zY}VrX9g{8TYAx&QDu1IS{JLA9&kOV|>&Rbxl^{LH2;ZYf`0mEQ?=FNCF+qCeiT-{d
+zV-E=F<_1~;58x2(&JFGF;{-PJ{L8~Pt+4oTP57E@#3IvvL(7rSF&TRxgLydfB1JnC
+zwisD~nl_ta^PdP4<~Z2bVt2-^BzXWQp5KS-2Twx~ds?}bcOGGa;&6`$sA2Q%Sag%3
+zXnpH6g2##xK1uM}VwNl*NLLfflITqUwgO_6z17t8s(CDD;0m+MpXM;D*V}Wyp|VK;
+zrTTv89f`XT_3>$*5<_`Fy0%QqML(<+&pKR$l(4*p6f~3@XFLB&Qyyj=eZJ^aOdjtd
+z`FpNtfst!>Q?=)dYr_(YMI)*Dwmjh#Z)=vWi%*InS{AxtcLQox1M|b>Dhu^dFrF$b
+zUzw*tzRZ^VuM2#j-qYmlWmRUm$JLyz$LRU2=#ocR6k+Zq3=*v)`WoKaAK=@H7wY`}
+zDCv_4yGuFQwa235LMvXRQ%Tm5@L(uS0mJQy#E)Ba5}Z&jz6(<Ger8F9Zq}0G^_D0H
+zGS-PD&S*57)4C**4UB#_TAtzXY=+jDS<o-PxaoL2d+?3XeOa)Fyl??u0!oghf!Lnr
+zd%=f-gm^4<SK(Ju{1TWUb)aP6`C;9%^VBK8;p~s;JJu5z*+Q+Mg73N^84ZBxBZx3X
+zpM_I+^LB$8q_yqTwv2WKOxX>wIuJbV)?s%G2#qaIH;@z14o}OxFANvu!1&e}1=|zp
+zs(oj8uA6B_OS|eRY8V=CZCPe)BUG2*Lh<y9qtDQZ>z3#wFPw+_yjTd18c~;jBr<ux
+zg8~oxDRC@oZY{w@oS)7v)gU0aM>Hd^?eg6}Wan5h0%<`h!R9?H?Qh*=_mA$n#Y*HK
+zL?twb-50Z@cpk<9tF)@cI*r%s=9|5r>mV8;(an*Cyj8)Ggx6C3dWE!4^!U2Qp1Lf9
+z%kS+>6ccmpHy{~b)Gbm2CpdfVOVM;2DuY8w>~&SB$N?MUdz)tOx2*&Rf>s}|w;!mj
+zFB2i19v~v4Kr7G6I_IRgA_;HW?i%<mx{O85`20GUk35E*OvDy-^i&SU<s;iW>P<Dm
+z;Khxx`Rj(b*7DL!+$6n7xk05ivDk>DF{rK|VjMW&yZ9CBxu6j?91yj*1pZV{<m0<0
+zy%Da=<${@v&hA+ClP(a59(k%SNYgsA_HmkAjgabb?VZ+}vS1NlXsxPsYC&p4ws<pf
+z1j8~6xN+LN!y~1lkGfs3p?CJhAK}~xeZylGN(tk-Uc@I9u9ApJKe&FJCG$XYqFW93
+ztJgKU2r|3&<E!Hfku=sqD(dzQz}^QTq}fun?57IHHO7-5^375&=Q@+)xN(Ko*!Rm8
+z;>PL=n3ZvvhUeu5YoHCkA-Yzq@SW-@mhs0I;!b_q-&ESpfFBmX{|k<4=9CE3arF0_
+zx_vVKqoI}|?0QSrzoM$^wqlSl_=u$7;eh=8M(E>5ew!DO5|>8oL#m6G?L%%SmxZP$
+z_j_Eqm;}5hx3ip^jXtaBbo8!9JlK@!T#*~CfT=M3XMFwtU<)L@D(y?yRXtt%4+sEl
+LWoP-s+$Z(llc^Ao
+
+literal 0
+HcmV?d00001
+
+diff --git a/xml/Variables.xml b/xml/Variables.xml
+index 12d2d33..fa71c1a 100644
+--- a/xml/Variables.xml
++++ b/xml/Variables.xml
+@@ -791,7 +791,11 @@
+ 		<value>$MAP[DefaultHdrMap, ListItem.HdrType]</value>
+ 	</variable>
+ 	<variable name="VideoHDRType1Var">
+-		<value>$MAP[DefaultHdrMap, ListItem.Property(HdrType.1)]</value>
++		<value condition="!String.IsEmpty(ListItem.Property(HdrType.1))">$MAP[DefaultHdrMap, ListItem.Property(HdrType.1)]</value>
++		<!-- Fallback when the custom HdrType.1 property is not populated: map the
++		     standard library ListItem.HdrType so the flag (gated on !IsEmpty(HdrType))
++		     never renders an empty box on the home/list/TV-show views. -->
++		<value>$MAP[DefaultHdrMap, ListItem.HdrType]</value>
+ 	</variable>
+ 	<variable name="VideoHDRType2Var">
+ 		<value condition="!String.IsEqual(ListItem.Property(HdrType.1),dolbyvision) + String.IsEqual(ListItem.Property(HdrType.2),dolbyvision)">Dolby Vision</value>

@@ -1,0 +1,138 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:27 -0400
+Subject: [PATCH 07/13] audio/subtitle select dialogs: offset and settings
+ buttons
+
+The audio and subtitle select dialogs get shorter lists and side
+buttons for the delay offset (showing the current value), subtitle
+download and the OSD audio/subtitle settings; the select dialog fades
+out under the slider dialog while an offset is adjusted. Touches
+DialogSelect.xml, Includes_DialogSelect.xml, Variables.xml.
+---
+ xml/DialogSelect.xml          | 21 ++++++++++++---------
+ xml/Includes_DialogSelect.xml | 33 +++++++++++++++++++++++++--------
+ xml/Variables.xml             |  8 ++++++++
+ 3 files changed, 45 insertions(+), 17 deletions(-)
+
+diff --git a/xml/DialogSelect.xml b/xml/DialogSelect.xml
+index ef828ec..f02251f 100644
+--- a/xml/DialogSelect.xml
++++ b/xml/DialogSelect.xml
+@@ -4,14 +4,17 @@
+ 	<include>Animation_DialogPopupOpenClose</include>
+ 	<depth>DepthOSD</depth>
+ 	<controls>
+-		<include condition="![Window.IsActive(dialogselectvideo) | Window.IsActive(dialogselectaudio) | Window.IsActive(dialogselectsubtitle) | Window.IsActive(gamesaves) | Window.IsActive(gamestretchmode) | Window.IsActive(gamevideofilter) | Window.IsActive(gamevideorotation) | Window.IsActive(ingamesaves)]">DefaultDialogSelectLayout</include>
+-		<include condition="Window.IsActive(dialogselectvideo)">VideoDialogSelectVideoLayout</include>
+-		<include condition="Window.IsActive(dialogselectaudio)">VideoDialogSelectAudioLayout</include>
+-		<include condition="Window.IsActive(dialogselectsubtitle)">VideoDialogSelectSubtitleLayout</include>
+-		<include condition="Window.IsActive(gamesaves)">GameDialogSelectSaveLayout</include>
+-		<include condition="Window.IsActive(gamevideofilter)">GameDialogSelectFilterLayout</include>
+-		<include condition="Window.IsActive(gamestretchmode)">GameDialogSelectViewLayout</include>
+-		<include condition="Window.IsActive(gamevideorotation)">GameDialogSelectViewLayout</include>
+-		<include condition="Window.IsActive(ingamesaves)">GameDialogSelectSaveInGameLayout</include>
++		<control type="group">
++			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
++			<include condition="![Window.IsActive(dialogselectvideo) | Window.IsActive(dialogselectaudio) | Window.IsActive(dialogselectsubtitle) | Window.IsActive(gamesaves) | Window.IsActive(gamestretchmode) | Window.IsActive(gamevideofilter) | Window.IsActive(gamevideorotation) | Window.IsActive(ingamesaves)]">DefaultDialogSelectLayout</include>
++			<include condition="Window.IsActive(dialogselectvideo)">VideoDialogSelectVideoLayout</include>
++			<include condition="Window.IsActive(dialogselectaudio)">VideoDialogSelectAudioLayout</include>
++			<include condition="Window.IsActive(dialogselectsubtitle)">VideoDialogSelectSubtitleLayout</include>
++			<include condition="Window.IsActive(gamesaves)">GameDialogSelectSaveLayout</include>
++			<include condition="Window.IsActive(gamevideofilter)">GameDialogSelectFilterLayout</include>
++			<include condition="Window.IsActive(gamestretchmode)">GameDialogSelectViewLayout</include>
++			<include condition="Window.IsActive(gamevideorotation)">GameDialogSelectViewLayout</include>
++			<include condition="Window.IsActive(ingamesaves)">GameDialogSelectSaveInGameLayout</include>
++		</control>
+ 	</controls>
+ </window>
+diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
+index ee7d629..b028dcd 100644
+--- a/xml/Includes_DialogSelect.xml
++++ b/xml/Includes_DialogSelect.xml
+@@ -412,11 +412,11 @@
+ 		<control type="group">
+ 			<centertop>50%</centertop>
+ 			<centerleft>50%</centerleft>
+-			<height>870</height>
++			<height>550</height>
+ 			<width>1270</width>
+ 			<include content="DialogBackgroundCommons">
+ 				<param name="width" value="1270" />
+-				<param name="height" value="870" />
++				<param name="height" value="550" />
+ 				<param name="header_label" value="" />
+ 				<param name="header_id" value="1" />
+ 			</include>
+@@ -583,8 +583,14 @@
+ 					<param name="label" value="" />
+ 				</include>
+ 				<include content="DefaultDialogButton">
+-					<param name="id" value="7" />
+-					<param name="label" value="$LOCALIZE[222]" />
++					<param name="id" value="70090" />
++					<param name="label" value="Offset $VAR[AudioDelayDisplayVar]" />
++					<param name="onclick" value="Action(audiodelay)" />
++				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70094" />
++					<param name="label" value="Settings" />
++					<param name="onclick" value="ActivateWindow(osdaudiosettings)" />
+ 				</include>
+ 			</control>
+ 		</control>
+@@ -598,11 +604,11 @@
+ 		<control type="group">
+ 			<centertop>50%</centertop>
+ 			<centerleft>50%</centerleft>
+-			<height>870</height>
++			<height>550</height>
+ 			<width>1220</width>
+ 			<include content="DialogBackgroundCommons">
+ 				<param name="width" value="1220" />
+-				<param name="height" value="870" />
++				<param name="height" value="550" />
+ 				<param name="header_label" value="" />
+ 				<param name="header_id" value="1" />
+ 			</include>
+@@ -769,8 +775,19 @@
+ 					<param name="label" value="" />
+ 				</include>
+ 				<include content="DefaultDialogButton">
+-					<param name="id" value="7" />
+-					<param name="label" value="$LOCALIZE[222]" />
++					<param name="id" value="70092" />
++					<param name="label" value="Download" />
++					<param name="onclick" value="ActivateWindow(SubtitleSearch)" />
++				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70091" />
++					<param name="label" value="Offset $VAR[SubtitleDelayDisplayVar]" />
++					<param name="onclick" value="Action(subtitledelay)" />
++				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70093" />
++					<param name="label" value="Settings" />
++					<param name="onclick" value="ActivateWindow(osdsubtitlesettings)" />
+ 				</include>
+ 			</control>
+ 		</control>
+diff --git a/xml/Variables.xml b/xml/Variables.xml
+index 05f3364..12d2d33 100644
+--- a/xml/Variables.xml
++++ b/xml/Variables.xml
+@@ -352,6 +352,14 @@
+ 		<value condition="Control.HasFocus(70044)">$LOCALIZE[19320]</value>
+ 		<value condition="Control.HasFocus(70045)">$LOCALIZE[19321]</value>
+ 	</variable>
++	<variable name="AudioDelayDisplayVar">
++		<value condition="String.IsEqual(Player.AudioDelay,-0.000 s)">0.000 s</value>
++		<value>$INFO[Player.AudioDelay]</value>
++	</variable>
++	<variable name="SubtitleDelayDisplayVar">
++		<value condition="String.IsEqual(Player.SubtitleDelay,-0.000 s)">0.000 s</value>
++		<value>$INFO[Player.SubtitleDelay]</value>
++	</variable>
+ 	<variable name="OSDHelpTextVar">
+ 		<value condition="Control.HasFocus(87) + !Player.Paused">$LOCALIZE[31054]</value>
+ 		<value condition="Control.HasFocus(87) + [Player.Paused + Window.IsVisible(videoosd)]">$LOCALIZE[31055]</value>

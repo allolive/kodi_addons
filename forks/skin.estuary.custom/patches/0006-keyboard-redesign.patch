@@ -1,0 +1,850 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:27 -0400
+Subject: [PATCH 06/13] keyboard redesign
+
+Redesigned DialogKeyboard: re-centred layout, reworked rows and
+navigation (no wrap-up into the edit line), outline/solid OK, cancel and
+spacebar key textures, and a tiny font6 (added to both fontsets) for the
+hidden label of the layout-language button. Touches DialogKeyboard.xml,
+Font.xml, media/keyboard/.
+---
+ media/keyboard/cancel-outline.png   | Bin 0 -> 596 bytes
+ media/keyboard/ok-outline.png       | Bin 0 -> 467 bytes
+ media/keyboard/ok-solid.png         | Bin 0 -> 421 bytes
+ media/keyboard/spacebar-outline.png | Bin 0 -> 693 bytes
+ media/keyboard/spacebar-solid.png   | Bin 0 -> 643 bytes
+ xml/DialogKeyboard.xml              | 412 +++++++++++++++-------------
+ xml/Font.xml                        |  11 +
+ 7 files changed, 233 insertions(+), 190 deletions(-)
+ create mode 100644 media/keyboard/cancel-outline.png
+ create mode 100644 media/keyboard/ok-outline.png
+ create mode 100644 media/keyboard/ok-solid.png
+ create mode 100644 media/keyboard/spacebar-outline.png
+ create mode 100644 media/keyboard/spacebar-solid.png
+
+diff --git a/media/keyboard/cancel-outline.png b/media/keyboard/cancel-outline.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..34b93ae47ea036f97617bce8708e6563d0f8cacb
+GIT binary patch
+literal 596
+zcmeAS@N?(olHy`uVBq!ia0vp^6(G#P1|%(0%q}r7FiCs5IEGZrd3)C}@3Db^OW?)t
+z`-|D*SPWP!CkS+g#{S8-oiX80rqzs%i*uQQx{yJ`y<=jlR=qkkUq0Do-q8rt7g`6S
+z^B=ui(Yet*>&EK9SB?8GJFaH^FZ%G^;q{&IuRV3ee!bn0E?d&M|6lzL{SPk+LfNC;
+zvMo=S6`pI4JeGaCI=Af(e}T-J)NB4<!f(pl+TL8mb-QqHnDCpr2={N<C9_jzACP@q
+z){!H)qd4aKiBAVO3+F0(Gpiph?bVt8V9AcY>WQrX{+uhbny|a(ou}o|Ne5nKXD_uq
+zz5d0Km!-FEe>w0neDm#4-T4VDtZ}(jvdd<0@|o*?Sao^zyd*UXna0DuoO^zKU9)G|
+z%m)Q5eC`hl`q`g-4gYO*hNWG(z=8=YQN473?v=A|>Sw1n9TtR`apv`gcmI!p%>bJI
+z>Uv4%J&+Nzr7Es!>OGYH50tsgyx#1n>c1O(HBFP1rysnh(ir}S;g-PLNV9`4!%Jt@
+zEDEY~Rd>@{yw`(y_ushVNAB;}1p4nps@Qd<0<R}VJ=wxLs-GD3W{d8~eqz-3J8kO>
+zz5c5&H@WTReD^74QI^p6vqgdH+9N?>TUDsX->xI)XUX0_op<g7TR8z)xgX;F75w~v
+tQr;x~JA64(aP|)69~_*ZM1lgMXUI49d-Ss|I&BXU_jL7hS?83{1OTXW36uZ;
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/keyboard/ok-outline.png b/media/keyboard/ok-outline.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..ecf584446956bd091432bdf6f9c06ae0be53fb2d
+GIT binary patch
+literal 467
+zcmeAS@N?(olHy`uVBq!ia0vp^mw>o}gAGWw%dI)Zz`!`m)5S5QV$R#^2eVoY1RMe{
+z|NsA7gsb)V;?>_~t*}jhs>f9<Ys&{zj}Ct9EsQxZr}*7I_IKGm8*BTv-)m^7@Cu0L
+z6BF>~&Wcf7q`fBXU3Of;vSa7ifkHFa_lL4~c5L3;zWI}QQl!WF9Hn_?(cVr~wZ<Jl
+z(Q`Let=*EUeDLxdxk<T4>Th_N39+=WFe*AacnAp4lc}JxgH4)~$*HMff`Wny2M3(F
+z!`UOb=VPty^Ev7B+23#eX4Ra&apD6##hYF>mD0JlJ?uVK+{)4Ae);#Tf?C#l<E>fJ
+zwR1~#z6CpI%g=Z|Q+&osUFIC=!ez4h&(_X%2$)h<cQfYEWUqift?|t0K?~&f&Hl}@
+WA~B<5<GS6?LDHVCelF{r5}E+NLX@EZ
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/keyboard/ok-solid.png b/media/keyboard/ok-solid.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..3fc1c4f88e3b85f93e5ce6a072a3d9a4d53c742c
+GIT binary patch
+literal 421
+zcmeAS@N?(olHy`uVBq!ia0vp^mw>o}gAGWw%dI)Zz`&T}>EaktG3V{ggM~*F1Q;A2
+z{wY3Yd87Dr=PN%3+p;Xpk2XNH=-@;7>z_>3?`wZaSFGQ9?W3jLFGi+E(-!o}=qTiI
+zze@k*AXxagr?*W-DR1u9jT2msY&khodjGA1y>3pMdM#43zU8P?ID2dpT<&{jK`#rV
+zqN9U{fPfH73q6?}oco%w+Pz0{$<}MXzDO2SvE`~%czbLUTJCdpUN1{N*U7M?TTjmP
+z=BXGKzFyNC|Mtj{UgNSa*T3AWo^LaM_nKyZ-T05klr{bx)@4TzFb0N(=TGYxIb3Xd
+TOk>VAgQPuO{an^LB{Ts5<phAw
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/keyboard/spacebar-outline.png b/media/keyboard/spacebar-outline.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..0bb5e25425234cb06973d2e44dc10ba72e9beffe
+GIT binary patch
+literal 693
+zcmeAS@N?(olHy`uVBq!ia0y~yV44DCS8%WaNuO&;Z-4?do-U3d6?5L+I+%6DK)}UO
+z`~Uy*!W=ATCV5}d?p+fyw`Ou}^_H4gpa$}R&B+~R0ijp_@-Z;@n;gq{zw?^7z$6BS
+z^Zci$HMgoT9I#BZEbBNayDW;KL46hPt*nx|4HH-xD(cc}*I0S@Ffp9@EHy#9-Y`aN
+zO8GQThK6FPY|nsu+>s!e;{3It+Nr0VIDw`tV_#Y-#PHzF)Js6FgG&GtgMc8=zb-7Q
+z3=D#f^cHFoVrZ}v^I~970<k(4urMenX)rQ$aL`ofhPB3ViO0WpuFCpW$-wYG_U^3L
+z_mVb804=^@udx;w8tLmM=W;JyoevJi$bfxfn^pjWdj9ooQCt1$=9cPy3-(y|CxM}1
+z@)fq+t3pNBfZ=Uv)wb(eYCr@N!yfnNz3;`s&mIB>bN(MI4)T)(1H*x@-t%81W^{bG
+RqxThLj;E`i%Q~loCIGxZsw@Bi
+
+literal 0
+HcmV?d00001
+
+diff --git a/media/keyboard/spacebar-solid.png b/media/keyboard/spacebar-solid.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..c276180cec0ec2df65ebcbf1fb66038c6aa9298a
+GIT binary patch
+literal 643
+zcmeAS@N?(olHy`uVBq!ia0y~yV44DCS8%WaNuO&;Z-4?`o-U3d6?5L+xtOb<D8h2^
+z>8JCO#~)<>+}OQJsNwuIg^xBswd8}ElT~pE@AvxOXJmNLeJ$#E^}83WEh-ELz90T{
+z;-Hfd!-IJn{+QP;n8CuZWA#?I<{%#?hCA0|k{vbG7#W`VY`gwrvN;1oxg@98YoMk*
+zE7>*&Ffn|1w_uAO6T=+ii%DW$3=Be!oD2?18jK7cEUF9)oeNkP6a<0ZRA~}oXm9~4
+zpTI#wMIcLxb?9at$afF!I_|s{RbLB?#OG0GoH!W{{BFMF#mQihzv>{!B{j+#Yk^d;
+z+U@L;g(6cK7`~eVgK_%`a1i&^z1;l$p89!qh8;((euO^O{?{Qgje+6+@z?s~M>0_7
+bdHuf(X&p8_)1Loo0~zG$>gTe~DWM4fmYkh+
+
+literal 0
+HcmV?d00001
+
+diff --git a/xml/DialogKeyboard.xml b/xml/DialogKeyboard.xml
+index 8659ef0..aa81299 100644
+--- a/xml/DialogKeyboard.xml
++++ b/xml/DialogKeyboard.xml
+@@ -61,305 +61,364 @@
+ 				<texturenofocus />
+ 			</control>
+ 			<control type="group" id="78500">
+-				<centerleft>59%</centerleft>
++				<centerleft>50%</centerleft>
+ 				<bottom>0</bottom>
+ 				<height>480</height>
+ 				<width>1920</width>
+-				<animation effect="slide" end="-60,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(110) | Control.IsVisible(130) | Control.IsVisible(150) | Control.IsVisible(170)">conditional</animation>
+-				<animation effect="slide" end="-110,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(111) | Control.IsVisible(131) | Control.IsVisible(151) | Control.IsVisible(171)">conditional</animation>
+-				<!-- 1st row -->
++				<!-- Row 1: numbers -->
+ 				<control type="grouplist">
+-					<left>320</left>
++					<left>360</left>
++					<top>0</top>
+ 					<itemgap>-30</itemgap>
+ 					<orientation>horizontal</orientation>
+-					<onright>95200</onright>
++					<onleft>112</onleft>
++					<onright>100</onright>
+ 					<control type="button" id="100">
+ 						<description>(0,0) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">304</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>120</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="101">
+ 						<description>(0,1) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">303</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>121</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="102">
+ 						<description>(0,2) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">302</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>122</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="103">
+ 						<description>(0,3) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>123</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="104">
+ 						<description>(0,4) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>124</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="105">
+ 						<description>(0,5) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>125</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="106">
+ 						<description>(0,6) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>126</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="107">
+ 						<description>(0,7) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">305</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>127</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="108">
+ 						<description>(0,8) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">306</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>128</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="109">
+ 						<description>(0,9) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>129</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="110">
+ 						<description>(0,10) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">170</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>130</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="111">
+ 						<description>(0,11) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">171</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>131</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="112">
+ 						<description>(0,12) key button</description>
+-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">172</onup>
++						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">noop</onup>
+ 						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+ 						<ondown>132</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 				</control>
+-				<!-- 2nd row -->
++				<!-- Row 2: letters -->
+ 				<control type="grouplist">
+-					<left>320</left>
++					<left>360</left>
+ 					<top>90</top>
+ 					<itemgap>-30</itemgap>
+ 					<orientation>horizontal</orientation>
+-					<onright>95200</onright>
++					<onleft>132</onleft>
++					<onright>120</onright>
+ 					<control type="button" id="120">
+ 						<description>(1,0) key button</description>
+ 						<onup>100</onup>
+-						<ondown>140</ondown>
++						<ondown>302</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="121">
+ 						<description>(1,1) key button</description>
+ 						<onup>101</onup>
+-						<ondown>141</ondown>
++						<ondown>140</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="122">
+ 						<description>(1,2) key button</description>
+ 						<onup>102</onup>
+-						<ondown>142</ondown>
++						<ondown>141</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="123">
+ 						<description>(1,3) key button</description>
+ 						<onup>103</onup>
+-						<ondown>143</ondown>
++						<ondown>142</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="124">
+ 						<description>(1,4) key button</description>
+ 						<onup>104</onup>
+-						<ondown>144</ondown>
++						<ondown>143</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="125">
+ 						<description>(1,5) key button</description>
+ 						<onup>105</onup>
+-						<ondown>145</ondown>
++						<ondown>144</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="126">
+ 						<description>(1,6) key button</description>
+ 						<onup>106</onup>
+-						<ondown>146</ondown>
++						<ondown>145</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="127">
+ 						<description>(1,7) key button</description>
+ 						<onup>107</onup>
+-						<ondown>147</ondown>
++						<ondown>146</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="128">
+ 						<description>(1,8) key button</description>
+ 						<onup>108</onup>
+-						<ondown>148</ondown>
++						<ondown>147</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="129">
+ 						<description>(1,9) key button</description>
+ 						<onup>109</onup>
+-						<ondown>149</ondown>
++						<ondown>148</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="130">
+ 						<description>(1,10) key button</description>
+ 						<onup>110</onup>
+-						<ondown>150</ondown>
++						<ondown>149</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="131">
+ 						<description>(1,11) key button</description>
+ 						<onup>111</onup>
+-						<ondown>151</ondown>
++						<ondown>150</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="132">
+ 						<description>(1,12) key button</description>
+ 						<onup>112</onup>
+-						<ondown>152</ondown>
++						<ondown>309</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 				</control>
+-				<!-- 3rd row -->
++				<!-- Row 3: shift under Q, then letters, layout key at right -->
+ 				<control type="grouplist">
+-					<left>320</left>
++					<left>360</left>
+ 					<top>180</top>
+-					<orientation>horizontal</orientation>
+-					<onright>95200</onright>
+ 					<itemgap>-30</itemgap>
++					<orientation>horizontal</orientation>
++					<onleft>309</onleft>
++					<onright>302</onright>
++					<control type="radiobutton" id="302">
++						<description>SHIFT button</description>
++						<width>120</width>
++						<height>120</height>
++						<onup>120</onup>
++						<ondown>303</ondown>
++						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
++						<texturenofocus />
++						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioonfocus>
++						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/shift.png</textureradioonnofocus>
++						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioofffocus>
++						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradiooffnofocus>
++						<radioposx>42</radioposx>
++						<radiowidth>36</radiowidth>
++						<radioheight>36</radioheight>
++					</control>
+ 					<control type="button" id="140">
+ 						<description>(2,0) key button</description>
+-						<onup>120</onup>
++						<onup>121</onup>
+ 						<ondown>160</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="141">
+ 						<description>(2,1) key button</description>
+-						<onup>121</onup>
++						<onup>122</onup>
+ 						<ondown>161</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="142">
+ 						<description>(2,2) key button</description>
+-						<onup>122</onup>
++						<onup>123</onup>
+ 						<ondown>162</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="143">
+ 						<description>(2,3) key button</description>
+-						<onup>123</onup>
++						<onup>124</onup>
+ 						<ondown>163</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="144">
+ 						<description>(2,4) key button</description>
+-						<onup>124</onup>
++						<onup>125</onup>
+ 						<ondown>164</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="145">
+ 						<description>(2,5) key button</description>
+-						<onup>125</onup>
++						<onup>126</onup>
+ 						<ondown>165</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="146">
+ 						<description>(2,6) key button</description>
+-						<onup>126</onup>
++						<onup>127</onup>
+ 						<ondown>166</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="147">
+ 						<description>(2,7) key button</description>
+-						<onup>127</onup>
++						<onup>128</onup>
+ 						<ondown>167</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="148">
+ 						<description>(2,8) key button</description>
+-						<onup>128</onup>
+-						<ondown>168</ondown>
++						<onup>129</onup>
++						<ondown>169</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="149">
+ 						<description>(2,9) key button</description>
+-						<onup>129</onup>
+-						<ondown>169</ondown>
++						<onup>130</onup>
++						<ondown>305</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="150">
+ 						<description>(2,10) key button</description>
+-						<onup>130</onup>
+-						<ondown>170</ondown>
++						<onup>131</onup>
++						<ondown>306</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="151">
+ 						<description>(2,11) key button</description>
+ 						<onup>131</onup>
+-						<ondown>171</ondown>
++						<ondown>306</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="152">
+ 						<description>(2,12) key button</description>
+ 						<onup>132</onup>
+-						<ondown>172</ondown>
++						<ondown>8</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
++					<control type="radiobutton" id="309">
++						<description>Keyboard layout button</description>
++						<width>120</width>
++						<height>120</height>
++						<onup>132</onup>
++						<ondown>8</ondown>
++						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
++						<texturenofocus />
++						<textureradioonfocus colordiffuse="FFFFFFFF">DefaultAddonLanguage.png</textureradioonfocus>
++						<textureradioonnofocus colordiffuse="FFFFFFFF">DefaultAddonLanguage.png</textureradioonnofocus>
++						<textureradioofffocus colordiffuse="FFFFFFFF">DefaultAddonLanguage.png</textureradioofffocus>
++						<textureradiooffnofocus colordiffuse="FFFFFFFF">DefaultAddonLanguage.png</textureradiooffnofocus>
++						<radioposx>24</radioposx>
++						<radioposy>0</radioposy>
++						<radiowidth>72</radiowidth>
++						<radioheight>72</radioheight>
++						<font>font6</font>
++						<textcolor>00FFFFFF</textcolor>
++						<focusedcolor>FFFFFFFF</focusedcolor>
++						<align>center</align>
++						<aligny>top</aligny>
++						<textoffsety>80</textoffsety>
++					</control>
+ 				</control>
+-				<!-- 4th row -->
++				<!-- Row 4: capslock, letters, left/right above backspace -->
+ 				<control type="grouplist">
+-					<left>320</left>
++					<left>360</left>
+ 					<top>270</top>
+ 					<itemgap>-30</itemgap>
+ 					<orientation>horizontal</orientation>
+-					<onright>95200</onright>
++					<onleft>8</onleft>
++					<onright>303</onright>
++					<control type="radiobutton" id="303">
++						<description>CAPS LOCK button</description>
++						<width>120</width>
++						<height>120</height>
++						<onup>302</onup>
++						<ondown>304</ondown>
++						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
++						<texturenofocus />
++						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioonfocus>
++						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/capslock.png</textureradioonnofocus>
++						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioofffocus>
++						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradiooffnofocus>
++						<radioposx>40</radioposx>
++						<radioposy>42</radioposy>
++						<radiowidth>42</radiowidth>
++						<radioheight>47</radioheight>
++					</control>
+ 					<control type="button" id="160">
+ 						<description>(3,0) key button</description>
+ 						<onup>140</onup>
+-						<ondown>304</ondown>
++						<ondown>307</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="161">
+ 						<description>(3,1) key button</description>
+ 						<onup>141</onup>
+-						<ondown>303</ondown>
++						<ondown>32</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="162">
+ 						<description>(3,2) key button</description>
+ 						<onup>142</onup>
+-						<ondown>302</ondown>
++						<ondown>32</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="163">
+@@ -389,118 +448,39 @@
+ 					<control type="button" id="167">
+ 						<description>(3,7) key button</description>
+ 						<onup>147</onup>
+-						<ondown>305</ondown>
+-						<include>KeyboardButton</include>
+-					</control>
+-					<control type="button" id="168">
+-						<description>(3,8) key button</description>
+-						<onup>148</onup>
+-						<ondown>306</ondown>
++						<ondown>32</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="169">
+ 						<description>(3,9) key button</description>
+-						<onup>149</onup>
+-						<ondown>8</ondown>
++						<onup>148</onup>
++						<ondown>168</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="170">
+ 						<description>(3,10) key button</description>
+ 						<onup>150</onup>
+-						<ondown>110</ondown>
++						<ondown>301</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="171">
+ 						<description>(3,11) key button</description>
+-						<onup>151</onup>
+-						<ondown>111</ondown>
++						<onup>150</onup>
++						<ondown>300</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+ 					<control type="button" id="172">
+ 						<description>(3,12) key button</description>
+-						<onup>152</onup>
+-						<ondown>112</ondown>
++						<onup>150</onup>
++						<ondown>300</ondown>
+ 						<include>KeyboardButton</include>
+ 					</control>
+-				</control>
+-				<!-- 5th row -->
+-				<control type="grouplist">
+-					<left>320</left>
+-					<top>360</top>
+-					<itemgap>-30</itemgap>
+-					<orientation>horizontal</orientation>
+-					<onright>95200</onright>
+-					<control type="radiobutton" id="304">
+-						<description>Symbols button</description>
+-						<width>120</width>
+-						<height>120</height>
+-						<onup>160</onup>
+-						<ondown>100</ondown>
+-						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+-						<texturenofocus />
+-						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonfocus>
+-						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonnofocus>
+-						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/accents.png</textureradioofffocus>
+-						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/accents.png</textureradiooffnofocus>
+-						<radioposx>32l</radioposx>
+-						<radiowidth>56</radiowidth>
+-						<radioheight>36</radioheight>
+-					</control>
+-					<control type="radiobutton" id="303">
+-						<description>CAPS LOCK button</description>
+-						<width>120</width>
+-						<height>120</height>
+-						<onup>161</onup>
+-						<ondown>101</ondown>
+-						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+-						<texturenofocus />
+-						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioonfocus>
+-						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/capslock.png</textureradioonnofocus>
+-						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioofffocus>
+-						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradiooffnofocus>
+-						<radioposx>40</radioposx>
+-						<radioposy>42</radioposy>
+-						<radiowidth>42</radiowidth>
+-						<radioheight>47</radioheight>
+-					</control>
+-					<control type="radiobutton" id="302">
+-						<description>SHIFT button</description>
+-						<width>120</width>
+-						<height>120</height>
+-						<onup>162</onup>
+-						<ondown>102</ondown>
+-						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+-						<texturenofocus />
+-						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioonfocus>
+-						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/shift.png</textureradioonnofocus>
+-						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioofffocus>
+-						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradiooffnofocus>
+-						<radioposx>42</radioposx>
+-						<radiowidth>36</radiowidth>
+-						<radioheight>36</radioheight>
+-					</control>
+-					<control type="radiobutton" id="32">
+-						<description>SPACE button</description>
+-						<width>390</width>
+-						<height>120</height>
+-						<onup>164</onup>
+-						<ondown>104</ondown>
+-						<texturefocus />
+-						<texturenofocus />
+-						<textureradioonfocus colordiffuse="button_focus">icons/keyboard/spacebar.png</textureradioonfocus>
+-						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/spacebar.png</textureradioonnofocus>
+-						<textureradioofffocus colordiffuse="button_focus">icons/keyboard/spacebar.png</textureradioofffocus>
+-						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/spacebar.png</textureradiooffnofocus>
+-						<radioposx>34</radioposx>
+-						<radiowidth>328</radiowidth>
+-						<radioheight>36</radioheight>
+-					</control>
+ 					<control type="radiobutton" id="305">
+ 						<description>previous button</description>
+ 						<width>120</width>
+ 						<height>120</height>
+-						<ondown>107</ondown>
+-						<onup>167</onup>
++						<onup>149</onup>
++						<ondown>301</ondown>
+ 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+ 						<texturenofocus />
+ 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonfocus>
+@@ -515,8 +495,8 @@
+ 						<description>next button</description>
+ 						<width>120</width>
+ 						<height>120</height>
+-						<ondown>108</ondown>
+-						<onup>168</onup>
++						<onup>150</onup>
++						<ondown>300</ondown>
+ 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+ 						<texturenofocus />
+ 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonfocus>
+@@ -531,8 +511,8 @@
+ 						<description>BACKSPACE button</description>
+ 						<width>120</width>
+ 						<height>120</height>
+-						<onup>169</onup>
+-						<ondown>109</ondown>
++						<onup>309</onup>
++						<ondown>300</ondown>
+ 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+ 						<texturenofocus />
+ 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioonfocus>
+@@ -544,42 +524,94 @@
+ 						<radioheight>36</radioheight>
+ 					</control>
+ 				</control>
+-			</control>
+-			<control type="grouplist" id="95200">
+-				<bottom>0</bottom>
+-				<height>460</height>
+-				<centerleft>88%</centerleft>
+-				<itemgap>dialogbuttons_itemgap</itemgap>
+-				<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">95200</onup>
+-				<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+-				<ondown>95200</ondown>
+-				<onleft>78500</onleft>
+-				<onright>140</onright>
+-				<width>350</width>
+-				<orientation>vertical</orientation>
+-				<include content="DefaultDialogButton">
+-					<param name="id" value="300" />
+-					<param name="label" value="$LOCALIZE[12321]" />
+-					<param name="width" value="350" />
+-				</include>
+-				<include content="DefaultDialogButton">
+-					<param name="id" value="301" />
+-					<param name="label" value="$LOCALIZE[222]" />
+-					<param name="width" value="350" />
+-				</include>
+-				<include content="DefaultDialogButton">
+-					<param name="id" value="310" />
+-					<param name="width" value="350" />
+-				</include>
+-				<include content="DefaultDialogButton">
+-					<param name="id" value="309" />
+-					<param name="width" value="350" />
+-				</include>
+-				<include content="DefaultDialogButton">
+-					<param name="id" value="307" />
+-					<param name="label" value="$LOCALIZE[1006]" />
+-					<param name="width" value="350" />
+-				</include>
++				<!-- Row 5: function row, . next to space -->
++				<control type="grouplist">
++					<left>360</left>
++					<top>360</top>
++					<itemgap>-30</itemgap>
++					<orientation>horizontal</orientation>
++					<onleft>300</onleft>
++					<onright>304</onright>
++					<control type="radiobutton" id="304">
++						<description>Symbols button</description>
++						<width>120</width>
++						<height>120</height>
++						<onup>303</onup>
++						<ondown>noop</ondown>
++						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
++						<texturenofocus />
++						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonfocus>
++						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonnofocus>
++						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/accents.png</textureradioofffocus>
++						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/accents.png</textureradiooffnofocus>
++						<radioposx>32l</radioposx>
++						<radiowidth>56</radiowidth>
++						<radioheight>36</radioheight>
++					</control>
++					<control type="radiobutton" id="307">
++						<description>IP address button</description>
++						<width>120</width>
++						<height>120</height>
++						<onup>160</onup>
++						<ondown>noop</ondown>
++						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
++						<texturenofocus />
++						<textureradioonfocus colordiffuse="FFFFFFFF">icons/settings/network.png</textureradioonfocus>
++						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/settings/network.png</textureradioonnofocus>
++						<textureradioofffocus colordiffuse="FFFFFFFF">icons/settings/network.png</textureradioofffocus>
++						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/settings/network.png</textureradiooffnofocus>
++						<radioposx>18</radioposx>
++						<radioposy>18</radioposy>
++						<radiowidth>84</radiowidth>
++						<radioheight>84</radioheight>
++					</control>
++					<control type="button" id="32">
++						<description>SPACE button</description>
++						<width>660</width>
++						<height>120</height>
++						<onup>164</onup>
++						<ondown>noop</ondown>
++						<texturefocus colordiffuse="button_focus">keyboard/spacebar-solid.png</texturefocus>
++						<texturenofocus>keyboard/spacebar-outline.png</texturenofocus>
++					</control>
++					<control type="button" id="168">
++						<description>(3,8) key button</description>
++						<onup>169</onup>
++						<ondown>noop</ondown>
++						<include>KeyboardButton</include>
++					</control>
++					<control type="radiobutton" id="301">
++						<description>Cancel button</description>
++						<width>120</width>
++						<height>120</height>
++						<onup>305</onup>
++						<ondown>noop</ondown>
++						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
++						<texturenofocus>keyboard/cancel-outline.png</texturenofocus>
++						<textureradioonfocus colordiffuse="FFFFFFFF">dialogs/close.png</textureradioonfocus>
++						<textureradioonnofocus colordiffuse="FFFFFFFF">dialogs/close.png</textureradioonnofocus>
++						<textureradioofffocus colordiffuse="FFFFFFFF">dialogs/close.png</textureradioofffocus>
++						<textureradiooffnofocus colordiffuse="FFFFFFFF">dialogs/close.png</textureradiooffnofocus>
++						<radioposx>36</radioposx>
++						<radioposy>36</radioposy>
++						<radiowidth>48</radiowidth>
++						<radioheight>48</radioheight>
++					</control>
++					<control type="button" id="300">
++						<description>Done button</description>
++						<width>210</width>
++						<height>120</height>
++						<onup>8</onup>
++						<ondown>noop</ondown>
++						<texturefocus colordiffuse="button_focus">keyboard/ok-solid.png</texturefocus>
++						<texturenofocus>keyboard/ok-outline.png</texturenofocus>
++						<label>$LOCALIZE[12321]</label>
++						<font>font32</font>
++						<textcolor>FFFFFFFF</textcolor>
++						<align>center</align>
++						<aligny>center</aligny>
++					</control>
++				</control>
+ 			</control>
+ 			<control type="panel" id="9010">
+ 				<centerleft>50%</centerleft>
+diff --git a/xml/Font.xml b/xml/Font.xml
+index f34236e..04b314f 100644
+--- a/xml/Font.xml
++++ b/xml/Font.xml
+@@ -2,6 +2,12 @@
+ <fonts>
+ 	<fontset id="Default" idloc="15109">
+ 		<!-- Normal Fonts -->
++		<font>
++			<name>font6</name>
++			<filename>NotoSans-Regular.ttf</filename>
++			<size>14</size>
++			<style>lighten</style>
++		</font>
+ 		<font>
+ 			<name>font10</name>
+ 			<filename>NotoSans-Regular.ttf</filename>
+@@ -158,6 +164,11 @@
+ 	</fontset>
+ 	<fontset id="Arial" idloc="31053">
+ 		<!-- Arial Font better for non English -->
++		<font>
++			<name>font6</name>
++			<filename>arial.ttf</filename>
++			<size>11</size>
++		</font>
+ 		<font>
+ 			<name>font10</name>
+ 			<filename>arial.ttf</filename>
