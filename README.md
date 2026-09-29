@@ -31,7 +31,8 @@ kodi's own build installs Estuary.
 
 - **Every push to `main`** (`.github/workflows/release.yml`): builds every addon for every
   release, and publishes
-  - **GitHub Pages** at `https://allolive.github.io/kodi_addons/<release>/` - what Kodi reads;
+  - **GitHub Pages** at [allolive.github.io/kodi_addons](https://allolive.github.io/kodi_addons/),
+    one directory per release (`ce22/`, ...) - what Kodi reads;
   - **a GitHub Release per addon version**, tagged `<release>/<id>-<version>`, zip attached -
     the history, and where to grab an older version to roll back.
 
@@ -108,7 +109,7 @@ that copy too so a fresh install already knows the new release.
 Our CoreELEC builds already have the repository installed, enabled and trusted (listed in
 kodi's `ADDON_REPOS` like Kodi's and CoreELEC's own). Anywhere else:
 
-1. Download `repository.allolive-<version>.zip` from `https://allolive.github.io/kodi_addons/`.
+1. Download `repository.allolive-<version>.zip` from [allolive.github.io/kodi_addons](https://allolive.github.io/kodi_addons/).
 2. In Kodi: **Settings → Add-ons → Install from zip file** → pick the zip.
 3. After install, Kodi fetches all subsequent addon updates automatically from the repository.
 
