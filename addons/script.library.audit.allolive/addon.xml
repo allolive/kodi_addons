@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.library.audit.allolive"
        name="Library Audit (allolive)"
-       version="0.1.0"
+       version="0.1.1"
        provider-name="allolive">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -16,5 +16,8 @@
 2. Find orphan video files: walks every configured video source and flags video files that are not present in the movie, episode or music-video library. You can scan the parent folder into the library or delete the file from disk.</description>
     <license>GPL-2.0-or-later</license>
     <platform>all</platform>
+    <assets>
+      <icon>resources/icon.png</icon>
+    </assets>
   </extension>
 </addon>
