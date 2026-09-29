@@ -1,0 +1,171 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 14:04:08 -0400
+Subject: [PATCH] artwork: fall back to the show's original language
+
+TMDB filters images by language on its side, and the scraper only asks
+for the user's language, English and no language. A show whose art is
+only in its own language - Kaamelott for an English user - got no
+poster, logo or season poster at all.
+
+Ask for the show's original language too: the show's images are fetched
+again with it once its details are known, and the season and episode
+requests include it. It ranks after the user's language and English and
+before language-less art, as the movie scraper does.
+---
+ lib/api/tmdb.py | 36 +++++++++++++++++++++++++++++++-----
+ lib/artwork.py  | 14 +++++++++-----
+ 2 files changed, 40 insertions(+), 10 deletions(-)
+
+diff --git a/lib/api/tmdb.py b/lib/api/tmdb.py
+index 65ccebc..1f2e7fb 100644
+--- a/lib/api/tmdb.py
++++ b/lib/api/tmdb.py
+@@ -35,6 +35,11 @@ def _read_json(resp):
+     return json.loads(raw.decode('utf-8'))
+ 
+ 
++def original_language(show):
++    """The show's original language as a two-letter code, or ''."""
++    return ((show or {}).get('original_language') or '')[:2].lower()
++
++
+ def get_image_base():
+     """Image base URL from /configuration, fetched once per session."""
+     global _img_base
+@@ -90,6 +95,13 @@ class TmdbApi:
+             else '{},en,null'.format(img_lang)
+         self._is_english = self._lang.startswith('en')
+ 
++    def _img_lang_for(self, show):
++        """Image languages to ask for: the user's, English, the show's own, then none."""
++        orig = original_language(show)
++        if not orig or orig in self._img_lang.split(','):
++            return self._img_lang
++        return self._img_lang.replace(',null', ',{},null'.format(orig))
++
+     def search_shows(self, title, year=''):
+         """Search results for a title, narrowed by first-air year if given."""
+         params = {'query': title, 'language': self._lang}
+@@ -133,6 +145,16 @@ class TmdbApi:
+         if not show:
+             return None
+ 
++        # TMDB filters images by language server-side: a show with art only in its own
++        # language (a French series for an English user) would otherwise get none.
++        show['_img_lang'] = img_lang = self._img_lang_for(show)
++        if img_lang != self._img_lang:
++            images = self._get('/tv/{}/images'.format(show_id), {
++                'include_image_language': img_lang,
++            })
++            if images:
++                show['images'] = images
++
+         if not self._is_english and not show.get('overview'):
+             en = self._get('/tv/{}'.format(show_id), {'language': 'en-US'})
+             if en and en.get('overview'):
+@@ -183,7 +205,7 @@ class TmdbApi:
+             data = self._get('/tv/{}'.format(show_id), {
+                 'language': self._lang,
+                 'append_to_response': ','.join(appends),
+-                'include_image_language': self._img_lang,
++                'include_image_language': show['_img_lang'],
+             })
+             if not data:
+                 continue
+@@ -214,7 +236,7 @@ class TmdbApi:
+ 
+         all_seasons = self._fetch_all_seasons(show_id, season_nums)
+         episodes = self._fetch_episode_extras(
+-            show_id, season_nums, all_seasons
++            show_id, season_nums, all_seasons, show['_img_lang']
+         )
+ 
+         if not self._is_english:
+@@ -241,7 +263,7 @@ class TmdbApi:
+                     result[snum] = sd
+         return result
+ 
+-    def _fetch_episode_extras(self, show_id, season_nums, all_seasons):
++    def _fetch_episode_extras(self, show_id, season_nums, all_seasons, img_lang):
+         """Phase 2: Episode images and external_ids, two appends per episode."""
+         episodes = {}
+         pending = []
+@@ -264,7 +286,7 @@ class TmdbApi:
+             params = {
+                 'language': self._lang,
+                 'append_to_response': ','.join(appends),
+-                'include_image_language': self._img_lang,
++                'include_image_language': img_lang,
+             }
+             data = self._get('/tv/{}'.format(show_id), params)
+             if data is None:
+@@ -323,13 +345,17 @@ class TmdbApi:
+         if cached and not cached.get('_retry'):
+             return cached
+ 
++        # the show decides which image languages to ask for; cache-first, and the
++        # scraper needs its details right after anyway
++        show = self.get_show_details(show_id)
++
+         data = self._get(
+             '/tv/{}/season/{}/episode/{}'.format(
+                 show_id, season_num, episode_num
+             ), {
+                 'language': self._lang,
+                 'append_to_response': 'images,external_ids',
+-                'include_image_language': self._img_lang,
++                'include_image_language': show['_img_lang'] if show else self._img_lang,
+             }
+         )
+         if not data:
+diff --git a/lib/artwork.py b/lib/artwork.py
+index d7808c8..42ea730 100644
+--- a/lib/artwork.py
++++ b/lib/artwork.py
+@@ -7,7 +7,7 @@ resolution, and limited to byte budgets (c06/c11) to enforce
+ MySQL TEXT limit.
+ """
+ 
+-from lib.api.tmdb import get_image_base
++from lib.api.tmdb import get_image_base, original_language
+ 
+ # MySQL TEXT = 65,535 bytes
+ _C06_BUDGET = 64000
+@@ -23,6 +23,7 @@ def set_artwork(li, show_info, settings):
+     """Main entry: classify, score, select, output to ListItem."""
+     vtag = li.getVideoInfoTag()
+     user_lang = settings['lang_images'][:2].lower()
++    orig_lang = original_language(show_info)
+     cat_kart = settings.get('cat_keyart', True)
+     cat_land = settings.get('cat_landscape', True)
+ 
+@@ -53,7 +54,7 @@ def set_artwork(li, show_info, settings):
+             source_pref = is_ftv and prefer_ftv_art
+         base = (source_pref, pixels) if prefer_maxres else (source_pref,)
+         if c['art_type'] in _TEXT_BEARING:
+-            lang_tier = 4 - _lang_sort_key(c.get('language'), user_lang)[0]
++            lang_tier = 5 - _lang_sort_key(c.get('language'), user_lang, orig_lang)[0]
+             c['score'] = (lang_tier,) + base
+         else:
+             c['score'] = base
+@@ -212,13 +213,16 @@ def _make_entry(raw_image, img_base, preview_base):
+     }
+ 
+ 
+-def _lang_sort_key(lang, user_lang):
++def _lang_sort_key(lang, user_lang, orig_lang):
++    """User's language, English, the show's original language, none, then any other."""
+     if lang:
+         lang = lang.lower()
+     if lang == user_lang:
+         return (0,)
+     if lang == 'en' and user_lang != 'en':
+         return (1,)
+-    if not lang or lang == 'xx':
++    if orig_lang and lang == orig_lang:
+         return (2,)
+-    return (3, lang or '')
++    if not lang or lang == 'xx':
++        return (3,)
++    return (4, lang or '')
