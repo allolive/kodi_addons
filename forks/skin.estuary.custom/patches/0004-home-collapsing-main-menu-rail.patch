@@ -1,0 +1,138 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 11:59:27 -0400
+Subject: [PATCH 04/13] home: collapsing main menu rail
+
+The home main menu folds into a narrow icon rail when focus leaves it:
+content is laid out from the collapsed position and slides right when
+the menu is focused, labels and backgrounds fade/slide out, and the
+power/shutdown dialogs keep it expanded. Touches Home.xml and
+Includes_Home.xml (widget list top offset).
+---
+ xml/Home.xml          | 44 ++++++++++++++++++++++++++++---------------
+ xml/Includes_Home.xml |  1 +
+ 2 files changed, 30 insertions(+), 15 deletions(-)
+
+diff --git a/xml/Home.xml b/xml/Home.xml
+index 0fdcf2d..5a9783b 100644
+--- a/xml/Home.xml
++++ b/xml/Home.xml
+@@ -33,7 +33,11 @@
+ 		<control type="group">
+ 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+ 			<control type="group" id="2000">
+-				<left>462</left>
++				<!-- Base position is the COLLAPSED one (left=140) so the content's
++				     auto width fills to the right edge; when the menu is focused we
++				     slide it right into the stock position (overflow clips off-screen). -->
++				<left>90</left>
++				<animation effect="slide" start="0,0" end="372,0" time="250" tween="sine" condition="Control.HasFocus(9000) | ControlGroup(700).HasFocus | Window.IsActive(shutdownmenu) | Window.IsActive(1107)">Conditional</animation>
+ 				<animation type="Conditional" condition="Control.IsVisible(20000)" reversible="false">
+ 					<effect type="slide" end="0,20" time="60" tween="sine" />
+ 					<effect type="slide" end="0,-20" time="180" tween="sine" delay="80" />
+@@ -896,9 +900,19 @@
+ 			<control type="group">
+ 				<depth>DepthContentPanel</depth>
+ 				<include>OpenClose_Left</include>
+-				<include content="ContentPanel">
+-					<param name="width" value="522" />
+-				</include>
++				<control type="group">
++					<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
++					<include content="ContentPanel">
++						<param name="width" value="522" />
++					</include>
++				</control>
++				<!-- Folded-rail background: shown when the menu is collapsed -->
++				<control type="group">
++					<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Control.HasFocus(9000) | ControlGroup(700).HasFocus | Window.IsActive(shutdownmenu) | Window.IsActive(1107)">Conditional</animation>
++					<include content="ContentPanel">
++						<param name="width" value="150" />
++					</include>
++				</control>
+ 				<control type="fixedlist" id="9000">
+ 					<left>0</left>
+ 					<top>240</top>
+@@ -908,8 +922,8 @@
+ 					<focusposition>0</focusposition>
+ 					<onfocus>ClearProperty(listposition,home)</onfocus>
+ 					<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
+-					<onup>700</onup>
+-					<ondown>700</ondown>
++					<onup>SetFocus(802)</onup>
++					<ondown>SetFocus(802)</ondown>
+ 					<scrolltime tween="cubic" easing="out">500</scrolltime>
+ 					<focusedlayout height="95">
+ 						<control type="group">
+@@ -920,7 +934,7 @@
+ 								<width>462</width>
+ 								<height>95</height>
+ 								<texture colordiffuse="button_focus">lists/focus.png</texture>
+-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasActiveModalDialog">Conditional</animation>
++								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
+ 							</control>
+ 							<control type="image">
+ 								<left>-3</left>
+@@ -930,14 +944,6 @@
+ 								<texture colordiffuse="button_focus">$INFO[ListItem.Art(thumb)]</texture>
+ 								<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
+ 							</control>
+-							<control type="image">
+-								<left>0</left>
+-								<top>0</top>
+-								<width>95</width>
+-								<height>95</height>
+-								<texture colordiffuse="51FFFFFF">colors/black.png</texture>
+-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasActiveModalDialog">Conditional</animation>
+-							</control>
+ 						</control>
+ 						<control type="image">
+ 							<left>-3</left>
+@@ -955,6 +961,8 @@
+ 							<font>font37</font>
+ 							<label>$INFO[ListItem.Label]</label>
+ 							<shadowcolor>text_shadow</shadowcolor>
++							<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
++							<animation effect="slide" start="0,0" end="-25,0" time="200" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
+ 						</control>
+ 					</focusedlayout>
+ 					<itemlayout height="95">
+@@ -974,6 +982,8 @@
+ 							<font>font37</font>
+ 							<label>$INFO[ListItem.Label]</label>
+ 							<shadowcolor>text_shadow</shadowcolor>
++							<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
++							<animation effect="slide" start="0,0" end="-25,0" time="200" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
+ 						</control>
+ 					</itemlayout>
+ 					<content>
+@@ -1097,6 +1107,8 @@
+ 					<width>480</width>
+ 					<height>110</height>
+ 					<top>100</top>
++					<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
++					<animation effect="slide" start="0,0" end="-220,0" time="220" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
+ 					<onup>SetFocus(9000,99,absolute)</onup>
+ 					<ondown>SetFocus(9000,0,absolute)</ondown>
+ 					<onright>2000</onright>
+@@ -1168,6 +1180,8 @@
+ 				<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
+ 				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+ 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
++				<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
++				<animation effect="slide" start="0,0" end="-220,0" time="220" tween="sine" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | [System.HasActiveModalDialog + !Window.IsActive(shutdownmenu) + !Window.IsActive(1107)]">Conditional</animation>
+ 				<top>22</top>
+ 				<left>95</left>
+ 				<control type="image">
+diff --git a/xml/Includes_Home.xml b/xml/Includes_Home.xml
+index 2052b97..07bd5f8 100644
+--- a/xml/Includes_Home.xml
++++ b/xml/Includes_Home.xml
+@@ -2,6 +2,7 @@
+ <includes>
+ 	<include name="WidgetGroupListCommon">
+ 		<orientation>vertical</orientation>
++		<top>40</top>
+ 		<height>100%</height>
+ 		<scrolltime tween="cubic" easing="out">500</scrolltime>
+ 		<itemgap>-160</itemgap>
