@@ -1,0 +1,8 @@
+# The Hunspell dictionaries of this pack and their licences, fetched from LibreOffice's
+# dictionaries at the revision below when the repository is built, and checked against
+# their sha256. One line a file: <name in the pack> <path in LibreOffice/dictionaries> <sha256>
+revision 32b006a2c22a4ac7e8ed3f03346f7b3d85a970a4
+nl_NL.aff nl_NL/nl_NL.aff f0233d4f721f4661cf5f4d05ed2739549322bf3b6b66764b55a38257e1e16e6f
+nl_NL.dic nl_NL/nl_NL.dic bc28af45307700a9927ad5719184da44dfd7eed4f707b8c1477f6d8a21b586a6
+LICENSE.txt nl_NL/LICENSE.txt 2189c248cbc054445aeac6cd65b87eebd0a115efeb55ed498b0f2a73441805dd
+README.md nl_NL/README.md aa4685a78f32d0d24a67dd5043ef4e39acc8720c3e416fe5d201985980dbc004

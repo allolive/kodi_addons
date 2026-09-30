@@ -1,0 +1,8 @@
+# Subtitle repair: nl
+codes = nl dut nld dutch
+dictionaries = nl_NL
+one_letter_words = u U
+lone_one = 
+capitalised_nouns = no
+alphabet = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzàäçèéêëîïñôöûü
+accents = a:àä c:ç e:èéêë i:îï n:ñ o:ôö u:ûü
