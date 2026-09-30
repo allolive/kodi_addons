@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.module.subtitlerepair.de.allolive"
        name="Subtitle repair: German"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="allolive">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -11,7 +11,7 @@
     <summary lang="en_GB">German (Deutsch) for Kodi's subtitle repair</summary>
     <description lang="en_GB">Lets Kodi correct the letters an OCR keeps misreading in German subtitles made from disc images ("l" for "I", "rn" for "m", a dropped accent). Only a mistake a subtitle repeats is corrected, and only into a word of the language.
 
-Holds LibreOffice's German Hunspell dictionary and the few facts about the language the repair needs. Needs the allolive build of CoreELEC, where System > Yacer > Subtitles > Languages installs and removes it.</description>
+Holds LibreOffice's German Hunspell dictionary and the few facts about the language the repair needs. Needs the allolive build of CoreELEC, where System > Yacer > Subtitles > Correct misread letters installs and removes it.</description>
     <license>GPL-2.0-only OR GPL-3.0-only</license>
     <platform>all</platform>
   </extension>

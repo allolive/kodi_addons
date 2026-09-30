@@ -10,7 +10,7 @@ addons/<id>/                      Our own addons, zipped as they are
   script.library.audit.allolive/    finds duplicate movies and orphan video files
   script.module.subtitlerepair.<language>.allolive/
                                     a language for the subtitle repair of our CoreELEC build,
-                                    chosen in System > Yacer > Subtitles > Languages:
+                                    chosen in System > Yacer > Subtitles > Correct misread letters:
                                     resources/subtitlerepair/<language>/profile.txt, and
                                     dictionaries.txt - the LibreOffice Hunspell dictionaries
                                     build.sh fetches next to it, by revision and sha256
