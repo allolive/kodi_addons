@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 09/13] player info panel redesign
+Subject: [PATCH 09/14] player info panel redesign
 
 Reworks the fullscreen info (DialogSeekBar): a right-aligned media
 flag row replaces the MediaFlags include, and the info panel becomes

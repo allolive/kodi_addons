@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 08/13] media flags: HDR10+ flag and HDR type fallback
+Subject: [PATCH 08/14] media flags: HDR10+ flag and HDR type fallback
 
 Adds the flags/videohdr/hdr10plus.png flag and makes VideoHDRType1Var
 fall back to the library ListItem.HdrType when the HdrType.1 property is

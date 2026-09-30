@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 03/13] rounded tiles, buttons and poster art
+Subject: [PATCH 03/14] rounded tiles, buttons and poster art
 
 Rounded-corner look: a lists/rounded-tile.png focus/background texture
 for the settings home panel (resized to 5 x 350px tiles), settings
@@ -9,8 +9,8 @@ category and skin settings lists; rounded button-fo/dialogbutton-fo; and
 diffuse masks (media/masks/*) that round poster art in the List, Poster,
 Shift and InfoWall views and the video info dialog, with new shadows.
 ---
- media/buttons/button-fo.png       | Bin 147 -> 652 bytes
- media/buttons/dialogbutton-fo.png | Bin 248 -> 702 bytes
+ media/buttons/button-fo.png       | Bin 147 -> 259 bytes
+ media/buttons/dialogbutton-fo.png | Bin 248 -> 259 bytes
  media/lists/rounded-tile.png      | Bin 0 -> 530 bytes
  media/masks/overlay-fade.png      | Bin 0 -> 330 bytes
  media/masks/p186.png              | Bin 0 -> 1021 bytes
@@ -22,8 +22,12 @@ Shift and InfoWall views and the video info dialog, with new shadows.
  media/masks/plate.png             | Bin 0 -> 1266 bytes
  media/masks/poster-shadow.png     | Bin 0 -> 4709 bytes
  media/masks/shadow334.png         | Bin 0 -> 5205 bytes
- xml/DialogVideoInfo.xml           |   8 ++--
+ xml/Defaults.xml                  |   8 ++--
+ xml/DialogMusicInfo.xml           |   4 +-
+ xml/DialogVideoInfo.xml           |  10 ++---
  xml/Includes.xml                  |  60 +++++++++++++++---------------
+ xml/Includes_Buttons.xml          |   6 +--
+ xml/Includes_Home.xml             |   6 +--
  xml/Settings.xml                  |   8 ++--
  xml/SettingsCategory.xml          |   2 +-
  xml/SkinSettings.xml              |   2 +-
@@ -31,7 +35,7 @@ Shift and InfoWall views and the video info dialog, with new shadows.
  xml/View_51_Poster.xml            |   6 +--
  xml/View_53_Shift.xml             |  18 ++++++---
  xml/View_54_InfoWall.xml          |  35 +++++++++--------
- 22 files changed, 76 insertions(+), 67 deletions(-)
+ 26 files changed, 89 insertions(+), 80 deletions(-)
  create mode 100644 media/lists/rounded-tile.png
  create mode 100644 media/masks/overlay-fade.png
  create mode 100644 media/masks/p186.png
@@ -45,19 +49,14 @@ Shift and InfoWall views and the video info dialog, with new shadows.
  create mode 100644 media/masks/shadow334.png
 
 diff --git a/media/buttons/button-fo.png b/media/buttons/button-fo.png
-index 05936eac513eca8f18b447bd85c82c488c2beb93..c4f2a914c73b6c1a97cb2daa4b9d6d8a231c2639 100644
+index 05936eac513eca8f18b447bd85c82c488c2beb93..ef2a8afb5d918c5a071c1d114701e5dc61aef4cb 100644
 GIT binary patch
-literal 652
-zcmeAS@N?(olHy`uVBq!ia0vp^DIm<j1|$m}O$}jSU<&qhaSW-L^Y*HtpLC!|>%;#&
-zg09mhwy||K$!-vHI>@E8@WO=@UJdPq3G5;sCLW5X7kF&&?=n~O>I%7GC-gj9Cp+$A
-zN&Q_(#v5V^p4zwF4@ed;$uKOsH>uJ6f!K~|CHd7%Iwxl(E1cZ6pJ9F@|L)!IcYork
-znOgGo*1>Ob8(7vgUjF$&XvT}OoUTUE4Kx1NC-0dmHhGEogC@bp&uc0ilXE6X7@H+O
-zTYjK*iTF)BmUqvX?{>Y7&Oa?=F|VOGp}y{h#O>|#e%cl2-M-)0|KDcK+fRRfJ8%1Y
-zfAQ8(;rdrs-tCnCs57gqw)t0db4%s~174wJj)zP<X0UNyR!Edm@fpg3XILt(PhSx}
-zkKyevv9DgjACBCZly~agn&<yb7|nZhBj0}UdVjm?;sdvB{EgNL2Y)R4BDyU$jU|%l
-z_~a$*54r@Oh}V|pPL?!|X9%Apmr~sy_*}|jF2CN(Z8?{!w8cLE&p#l!VTQzE_e<&z
-zgevCon;m=BVfZ-xLD4+h13?ViSUoPC`X;#e8fSsS;XS6z{RealbYI^4#u729o|&hl
-WhX0dm)&pQFWAJqKb6Mw<&;$T<oDp6C
+delta 242
+zcmbQt*vvFRvYw5BfuT?E(^?>P%G1R$q~g}w+Xn@k3<Ml5u2Fx>^LinpMnhG}vDLN*
+zbN2=`JU+1FMK!CzN%fPOnY=(P3=9qZscF+^_Me&ax%yct&)tiUcq7kmI3APSKlOUl
+zZqdKnuXpUo|9S8-U-KL8{Jwu2+68%Q=XSHjC_M_YO$f7_pRKI4D*xerr3DR4Tp9{M
+zyr6*th?&3w9cY64@-=PlKjmPY-^y&)FHoQ*Q=lbZu(#Pptj9dB*1jryo+a2x41fB>
+XFMT`SnwF<%4HEEl^>bP0l+XkKS|VS!
 
 literal 147
 zcmeAS@N?(olHy`uVBq!ia0vp^0U*r50wh%=tki&1l&6bhNXEUl=Q(*96a-idukrtz
@@ -65,19 +64,14 @@ z`hZ=akkj9a%WCG^cT5}zutWN&x@`jvkk8=HictE)w1Dv&%K}F0lm;`PEexKnelF{r
 G5}E)mfhRHm
 
 diff --git a/media/buttons/dialogbutton-fo.png b/media/buttons/dialogbutton-fo.png
-index e5bb91567c0d408824ec86ba5c2cf81467821dd8..672a8f88140d21c0464778863d0e8195df9c8457 100644
+index e5bb91567c0d408824ec86ba5c2cf81467821dd8..ef2a8afb5d918c5a071c1d114701e5dc61aef4cb 100644
 GIT binary patch
-literal 702
-zcmeAS@N?(olHy`uVBq!ia0vp^6(G#P1|%(0%q}r7FtvKRIEGZrd3(*!D<)8+{p0&R
-zg55gGy}bz!`C_^^7O*mQ_WE8^Sa;-*Yy^i{<BZe@m2-1MzWXw1UQ#jIXMcaaq}+QE
-zal3Q1!3=j}9YU`z+uh$_{D8%RfopFnZw=$ShS#gAUcBRcvFg>V$3dZY@6K=NKd}4m
-z-0=SoB!9$&hVS21_FZlR+q%Zfl?A*$JN9~CJir!l_PlvdbcJc?Rqld=9lvYk;u7zu
-zYPxMsGqGXSTlH$`uHOPX=Cj|q_4Ib$XDN$$4aEudb(wdb-Zs0#es1;d{Y>xwSFB8Z
-z{quWtY5D)skZ!Y&ySIJXQom}`)h(}uUzAE(%xOG4A_-rI_rC<HOl=vrz7BqI^$LrP
-z;kFyT=Qh6mX~MX@NB7>FFCM?<oAoT)e)Vqq0ox5pHIw&ln!Z-D@%n*}A));TM3q1A
-z?^!i{jU;dQfzVLfu=4kYS@F!vKR=M#Ug^0ldiSjP`3=SiriMvDq4Evh4=UwM-W7=~
-zzG+-wxt%3K+@V}NAav`?cgk*mg&#0D?=MA78}m=b)|gxF`YZ)Zmkge+elF{r5}E)j
-CS3@rV
+delta 242
+zcmeyt*vvFRvYw5BfuT?E(^?>P%G1R$q~g}w+Xn@k3<Ml5u2Fx>^LinpMnhG}vDLN*
+zbN2=`JU+1FMK!CzN%fPOnY=(P3=9qZscF+^_Me&ax%yct&)tiUcq7kmI3APSKlOUl
+zZqdKnuXpUo|9S8-U-KL8{Jwu2+68%Q=XSHjC_M_YO$f7_pRKI4D*xerr3DR4Tp9{M
+zyr6*th?&3w9cY64@-=PlKjmPY-^y&)FHoQ*Q=lbZu(#Pptj9dB*1jryo+a2x41fB>
+XFMT`SnwF<%4HEEl^>bP0l+XkKxtw4e
 
 literal 248
 zcmeAS@N?(olHy`uVBq!ia0vp^0U*r50wh%=tki(ieoq(2kc@k8Z*1f}WFX>tQ97$5
@@ -398,8 +392,64 @@ fv!z}&pX*`6y!2IjxW)Wk2s*g`$UaKwf3Ex=Ahd<n
 literal 0
 HcmV?d00001
 
+diff --git a/xml/Defaults.xml b/xml/Defaults.xml
+index 2c52d57..35a4d4a 100644
+--- a/xml/Defaults.xml
++++ b/xml/Defaults.xml
+@@ -27,7 +27,7 @@
+ 		<disabledcolor>disabled</disabledcolor>
+ 	</default>
+ 	<default type="button">
+-		<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
++		<texturefocus border="25" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+ 		<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+ 		<font>font13</font>
+ 		<textcolor>white</textcolor>
+@@ -37,9 +37,9 @@
+ 		<pulseonselect>no</pulseonselect>
+ 	</default>
+ 	<default type="togglebutton">
+-		<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
++		<texturefocus border="25" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+ 		<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+-		<alttexturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</alttexturefocus>
++		<alttexturefocus border="25" colordiffuse="button_focus">buttons/button-fo.png</alttexturefocus>
+ 		<alttexturenofocus border="21">buttons/button-nofo.png</alttexturenofocus>
+ 		<textcolor>white</textcolor>
+ 		<font>font13</font>
+@@ -105,7 +105,7 @@
+ 		<textureradiooffnofocus>buttons/radio-button-off.png</textureradiooffnofocus>
+ 		<textureradioondisabled colordiffuse="disabled">buttons/radio-button-on.png</textureradioondisabled>
+ 		<textureradiooffdisabled colordiffuse="disabled">buttons/radio-button-off.png</textureradiooffdisabled>
+-		<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
++		<texturefocus border="25" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+ 		<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+ 		<font>font13</font>
+ 		<textcolor>white</textcolor>
+diff --git a/xml/DialogMusicInfo.xml b/xml/DialogMusicInfo.xml
+index 2ad81bf..8d7652e 100644
+--- a/xml/DialogMusicInfo.xml
++++ b/xml/DialogMusicInfo.xml
+@@ -210,7 +210,7 @@
+ 							<top>-10</top>
+ 							<width>595</width>
+ 							<height>100</height>
+-							<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
++							<texture border="25" colordiffuse="button_focus">buttons/button-fo.png</texture>
+ 						</control>
+ 						<control type="label">
+ 							<left>40</left>
+@@ -262,7 +262,7 @@
+ 								<top>-10</top>
+ 								<width>595</width>
+ 								<height>100</height>
+-								<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
++								<texture border="25" colordiffuse="button_focus">buttons/button-fo.png</texture>
+ 							</control>
+ 							<control type="label">
+ 								<left>40</left>
 diff --git a/xml/DialogVideoInfo.xml b/xml/DialogVideoInfo.xml
-index 4595220..ff1e55b 100644
+index 4595220..fd91390 100644
 --- a/xml/DialogVideoInfo.xml
 +++ b/xml/DialogVideoInfo.xml
 @@ -468,8 +468,8 @@
@@ -424,6 +474,15 @@ index 4595220..ff1e55b 100644
  							</control>
  							<control type="image">
  								<left>20</left>
+@@ -604,7 +604,7 @@
+ 							<top>0</top>
+ 							<width>264</width>
+ 							<height>142</height>
+-							<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
++							<texture border="25" colordiffuse="button_focus">buttons/button-fo.png</texture>
+ 							<visible>Control.HasFocus(5000)</visible>
+ 						</control>
+ 						<control type="image">
 diff --git a/xml/Includes.xml b/xml/Includes.xml
 index 1456868..87422ec 100644
 --- a/xml/Includes.xml
@@ -528,6 +587,68 @@ index 1456868..87422ec 100644
  					<width>350</width>
  					<height>400</height>
  					<label>$INFO[ListItem.Label]</label>
+diff --git a/xml/Includes_Buttons.xml b/xml/Includes_Buttons.xml
+index a6e379a..f5f9d7b 100644
+--- a/xml/Includes_Buttons.xml
++++ b/xml/Includes_Buttons.xml
+@@ -244,7 +244,7 @@
+ 			<height>142</height>
+ 			<align>center</align>
+ 			<aligny>top</aligny>
+-			<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
++			<texturefocus border="25" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+ 			<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+ 			<textoffsetx>22</textoffsetx>
+ 			<textoffsety>78</textoffsety>
+@@ -272,7 +272,7 @@
+ 				<height>142</height>
+ 				<align>center</align>
+ 				<aligny>top</aligny>
+-				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
++				<texturefocus border="25" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+ 				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+ 				<textoffsetx>22</textoffsetx>
+ 				<textoffsety>78</textoffsety>
+@@ -304,7 +304,7 @@
+ 				<height>142</height>
+ 				<align>center</align>
+ 				<aligny>top</aligny>
+-				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
++				<texturefocus border="25" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+ 				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+ 				<textoffsetx>35</textoffsetx>
+ 				<textoffsety>78</textoffsety>
+diff --git a/xml/Includes_Home.xml b/xml/Includes_Home.xml
+index 2052b97..3033cea 100644
+--- a/xml/Includes_Home.xml
++++ b/xml/Includes_Home.xml
+@@ -114,7 +114,7 @@
+ 							<textoffsetx>40</textoffsetx>
+ 							<onclick>$PARAM[button_onclick]</onclick>
+ 							<align>center</align>
+-							<texturefocus border="23" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
++							<texturefocus border="25" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+ 							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+ 							<visible>$PARAM[visible_1]</visible>
+ 						</control>
+@@ -126,7 +126,7 @@
+ 							<onclick>$PARAM[button2_onclick]</onclick>
+ 							<onclick>SetFocus(9000)</onclick>
+ 							<align>center</align>
+-							<texturefocus border="23" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
++							<texturefocus border="25" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+ 							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+ 							<visible>$PARAM[visible_2]</visible>
+ 						</control>
+@@ -138,7 +138,7 @@
+ 							<onclick>$PARAM[button3_onclick]</onclick>
+ 							<onclick>SetFocus(9000)</onclick>
+ 							<align>center</align>
+-							<texturefocus border="23" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
++							<texturefocus border="25" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+ 							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+ 							<visible>$PARAM[visible_3]</visible>
+ 						</control>
 diff --git a/xml/Settings.xml b/xml/Settings.xml
 index a074d89..fae76b0 100644
 --- a/xml/Settings.xml

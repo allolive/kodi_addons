@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 04/13] home: collapsing main menu rail
+Subject: [PATCH 04/14] home: collapsing main menu rail
 
 The home main menu folds into a narrow icon rail when focus leaves it:
 content is laid out from the collapsed position and slides right when
@@ -125,7 +125,7 @@ index 0fdcf2d..5a9783b 100644
  				<left>95</left>
  				<control type="image">
 diff --git a/xml/Includes_Home.xml b/xml/Includes_Home.xml
-index 2052b97..07bd5f8 100644
+index 3033cea..d0ad5d6 100644
 --- a/xml/Includes_Home.xml
 +++ b/xml/Includes_Home.xml
 @@ -2,6 +2,7 @@

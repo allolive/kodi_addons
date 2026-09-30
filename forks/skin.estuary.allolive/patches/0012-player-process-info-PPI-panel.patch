@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 12/13] player process info (PPI) panel
+Subject: [PATCH 12/14] player process info (PPI) panel
 
 Player process info ported from jamal2362's Estuary Hybrid: a CPM-style
 DialogPlayerProcessInfo and an OSD overlay toggled by a PPI button,

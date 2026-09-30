@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 06/13] keyboard redesign
+Subject: [PATCH 06/14] keyboard redesign
 
 Redesigned DialogKeyboard: re-centred layout, reworked rows and
 navigation (no wrap-up into the edit line), outline/solid OK, cancel and

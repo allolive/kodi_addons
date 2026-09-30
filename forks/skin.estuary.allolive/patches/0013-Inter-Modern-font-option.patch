@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 13/13] Inter (Modern) font option
+Subject: [PATCH 13/14] Inter (Modern) font option
 
 Adds an "Inter (Modern)" fontset (string 31700) using the bundled
 Inter font; it also defines font6 and font_tiny, which the keyboard

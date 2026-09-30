@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 07/13] audio/subtitle select dialogs: offset and settings
+Subject: [PATCH 07/14] audio/subtitle select dialogs: offset and settings
  buttons
 
 The audio and subtitle select dialogs get shorter lists and side

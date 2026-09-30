@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 02/13] fade-only animations by default
+Subject: [PATCH 02/14] fade-only animations by default
 
 Inverts the skin setting no_slide_animations into slide_animations so
 windows fade by default and slide only when opted in, and shortens the

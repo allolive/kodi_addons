@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 10/13] media info popup
+Subject: [PATCH 10/14] media info popup
 
 extras/mediainfo.py pulls stream details over JSON-RPC and maps codec
 and language codes to friendly names; the video info dialog's Media info
@@ -140,7 +140,7 @@ index 0000000..6e8e614
 +        seen.append(name)
 +HOME.setProperty("MediaInfo.Subtitles", ", ".join(seen))
 diff --git a/xml/DialogVideoInfo.xml b/xml/DialogVideoInfo.xml
-index ff1e55b..b77f2f9 100644
+index fd91390..03e6d38 100644
 --- a/xml/DialogVideoInfo.xml
 +++ b/xml/DialogVideoInfo.xml
 @@ -655,10 +655,11 @@

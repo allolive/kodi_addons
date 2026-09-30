@@ -1,20 +1,20 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 05/13] home: genre widgets as compact category tiles
+Subject: [PATCH 05/14] home: genre widgets as compact category tiles
 
 Moves the movie and TV genre widgets up the home widget list and
 renders category widgets with a new CategoryTileLayout (rounded tile,
 smaller icon, tighter row); hides the media flags while a genre widget
 has focus. Touches Home.xml, Includes_Home.xml, Includes.xml.
 ---
- xml/Home.xml          |  32 ++++----
+ xml/Home.xml          |  36 ++++-----
  xml/Includes.xml      |   2 +-
  xml/Includes_Home.xml | 166 ++++++++++++++++++++++--------------------
- 3 files changed, 104 insertions(+), 96 deletions(-)
+ 3 files changed, 106 insertions(+), 98 deletions(-)
 
 diff --git a/xml/Home.xml b/xml/Home.xml
-index 5a9783b..d499302 100644
+index 5a9783b..9913559 100644
 --- a/xml/Home.xml
 +++ b/xml/Home.xml
 @@ -62,6 +62,14 @@
@@ -27,7 +27,7 @@ index 5a9783b..d499302 100644
 +							<param name="widget_target" value="videos"/>
 +							<param name="list_id" value="5500"/>
 +							<param name="icon" value="$VAR[WidgetGenreIconVar]"/>
-+							<param name="icon_height" value="70"/>
++							<param name="icon_height" value="91"/>
 +						</include>
  						<include content="WidgetListPoster" condition="Library.HasContent(movies) + !Skin.HasSetting(home_no_movies_inprogress_widget)">
  							<param name="content_path" value="special://skin/playlists/inprogress_movies.xsp"/>
@@ -57,12 +57,12 @@ index 5a9783b..d499302 100644
 +							<param name="widget_target" value="videos"/>
 +							<param name="list_id" value="6400"/>
 +							<param name="icon" value="$VAR[WidgetGenreIconVar]"/>
-+							<param name="icon_height" value="70"/>
++							<param name="icon_height" value="91"/>
 +						</include>
  						<include content="WidgetListPoster" condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_tvshows_inprogress_widget)">
  							<param name="content_path" value="videodb://inprogresstvshows"/>
  							<param name="sortby" value="lastplayed"/>
-@@ -155,14 +163,6 @@
+@@ -155,21 +163,13 @@
  							<param name="onclick_condition" value="true"/>
  							<param name="onclick_action" value="$VAR[TVShowOnClickActionVar]"/>
  						</include>
@@ -77,6 +77,23 @@ index 5a9783b..d499302 100644
  						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_tvshows_studios_widget)">
  							<param name="content_path" value="videodb://tvshows/studios/"/>
  							<param name="widget_header" value="$LOCALIZE[20388]"/>
+ 							<param name="widget_target" value="videos"/>
+ 							<param name="list_id" value="6500"/>
+ 							<param name="icon" value="$VAR[WidgetStudioIconVar]"/>
+-							<param name="icon_height" value="70"/>
++							<param name="icon_height" value="91"/>
+ 						</include>
+ 					</control>
+ 					<include content="ImageWidget" condition="!Library.HasContent(tvshows)">
+@@ -814,7 +814,7 @@
+ 							<param name="widget_target" value="music"/>
+ 							<param name="list_id" value="16600"/>
+ 							<param name="icon" value="$VAR[WidgetStudioIconVar]"/>
+-							<param name="icon_height" value="70"/>
++							<param name="icon_height" value="91"/>
+ 						</include>
+ 					</control>
+ 					<include content="ImageWidget" condition="!Library.HasContent(musicvideos)">
 diff --git a/xml/Includes.xml b/xml/Includes.xml
 index 87422ec..66cfb82 100644
 --- a/xml/Includes.xml
@@ -91,7 +108,7 @@ index 87422ec..66cfb82 100644
  				<right>20</right>
  				<height>40</height>
 diff --git a/xml/Includes_Home.xml b/xml/Includes_Home.xml
-index 07bd5f8..206f14e 100644
+index d0ad5d6..c7536c5 100644
 --- a/xml/Includes_Home.xml
 +++ b/xml/Includes_Home.xml
 @@ -275,10 +275,90 @@
@@ -100,7 +117,7 @@ index 07bd5f8..206f14e 100644
  	</include>
 +	<include name="CategoryTileLayout">
 +		<param name="icon">$INFO[ListItem.Icon]</param>
-+		<param name="icon_height">64</param>
++		<param name="icon_height">83</param>
 +		<definition>
 +			<itemlayout width="310" height="250">
 +				<control type="group">
@@ -108,11 +125,11 @@ index 07bd5f8..206f14e 100644
 +					<control type="image">
 +						<left>33</left>
 +						<width>250</width>
-+						<height>162</height>
++						<height>156</height>
 +						<texture border="16" colordiffuse="B30D0D0D">lists/rounded-tile.png</texture>
 +					</control>
 +					<control type="image">
-+						<top>16</top>
++						<top>10</top>
 +						<left>92</left>
 +						<width>132</width>
 +						<height>$PARAM[icon_height]</height>
@@ -121,7 +138,7 @@ index 07bd5f8..206f14e 100644
 +					</control>
 +					<control type="textbox">
 +						<left>43</left>
-+						<top>86</top>
++						<top>76</top>
 +						<width>230</width>
 +						<height>66</height>
 +						<label>$INFO[ListItem.Label]</label>
@@ -137,26 +154,26 @@ index 07bd5f8..206f14e 100644
 +					<depth>DepthContentPopout</depth>
 +					<left>70</left>
 +					<animation type="Focus">
-+						<effect type="zoom" start="100" end="112" time="200" tween="sine" easing="inout" center="143,81" />
++						<effect type="zoom" start="100" end="112" time="200" tween="sine" easing="inout" center="143,78" />
 +					</animation>
 +					<animation type="Unfocus">
-+						<effect type="zoom" start="112" end="100" time="200" tween="sine" easing="inout" center="143,81" />
++						<effect type="zoom" start="112" end="100" time="200" tween="sine" easing="inout" center="143,78" />
 +					</animation>
 +					<control type="image">
 +						<left>33</left>
 +						<width>250</width>
-+						<height>162</height>
++						<height>156</height>
 +						<texture border="16" colordiffuse="B30D0D0D">lists/rounded-tile.png</texture>
 +					</control>
 +					<control type="image">
 +						<left>33</left>
 +						<width>250</width>
-+						<height>162</height>
++						<height>156</height>
 +						<texture border="16" colordiffuse="button_focus">lists/rounded-tile.png</texture>
 +						<include>Animation_FocusTextureFade</include>
 +					</control>
 +					<control type="image">
-+						<top>16</top>
++						<top>10</top>
 +						<left>92</left>
 +						<width>132</width>
 +						<height>$PARAM[icon_height]</height>
@@ -165,7 +182,7 @@ index 07bd5f8..206f14e 100644
 +					</control>
 +					<control type="textbox">
 +						<left>43</left>
-+						<top>86</top>
++						<top>76</top>
 +						<width>230</width>
 +						<height>66</height>
 +						<label>$INFO[ListItem.Label]</label>
@@ -182,7 +199,7 @@ index 07bd5f8..206f14e 100644
  		<param name="item_limit">20</param>
  		<param name="icon">$INFO[ListItem.Icon]</param>
 -		<param name="icon_height">120</param>
-+		<param name="icon_height">64</param>
++		<param name="icon_height">83</param>
  		<param name="additional_movie_items">false</param>
  		<param name="additional_tvshow_items">false</param>
  		<param name="visible">true</param>

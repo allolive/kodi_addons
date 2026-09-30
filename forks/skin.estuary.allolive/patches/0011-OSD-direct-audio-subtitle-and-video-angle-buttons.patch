@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 11/13] OSD: direct audio, subtitle and video-angle buttons
+Subject: [PATCH 11/14] OSD: direct audio, subtitle and video-angle buttons
 
 Reorders the video OSD button row: direct audio, subtitle and video
 stream selection buttons whose focus label shows the language name
