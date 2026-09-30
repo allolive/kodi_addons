@@ -1,0 +1,8 @@
+# Subtitle repair: pt
+codes = pt por portuguese pob pt-br pt_br
+dictionaries = pt_PT pt_BR
+one_letter_words = a A à À e E é É o O
+lone_one = 
+capitalised_nouns = no
+alphabet = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÁÂÉÍÓÚàáâãçèéêíóôõúü
+accents = A:ÁÂ E:É I:Í O:Ó U:Ú a:àáâã c:ç e:èéê i:í o:óôõ u:úü
