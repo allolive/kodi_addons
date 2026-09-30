@@ -1,0 +1,8 @@
+# Subtitle repair: fr
+codes = fr fre fra french
+dictionaries = fr
+one_letter_words = a A à À y Y ô Ô
+lone_one = 
+capitalised_nouns = no
+alphabet = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÅÈÉÎàáâãäæçèéêëíîïñóôöùûüÿńŒœś
+accents = A:Å E:ÈÉ I:Î a:àáâãä c:ç e:èéêë i:íîï n:ñń o:óôö s:ś u:ùûü y:ÿ
