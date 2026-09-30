@@ -1,0 +1,8 @@
+# Subtitle repair: it
+codes = it ita italian
+dictionaries = it_IT
+one_letter_words = a A e E è È i I o O
+lone_one = 
+capitalised_nouns = no
+alphabet = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÈÉÌÒÙàèéìòù
+accents = A:À E:ÈÉ I:Ì O:Ò U:Ù a:à e:èé i:ì o:ò u:ù
