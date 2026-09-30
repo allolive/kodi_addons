@@ -1,0 +1,8 @@
+# Subtitle repair: en
+codes = en eng english
+dictionaries = en_US en_GB
+one_letter_words = a A I
+lone_one = am was know think don't can't didn't won't have had will would want need mean love just guess thought said do did like can could should hope swear promise told saw heard wish believe remember
+capitalised_nouns = no
+alphabet = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÅàâäçèéêîïñóôöü
+accents = A:Å a:àâä c:ç e:èéê i:îï n:ñ o:óôö u:ü
