@@ -8,6 +8,12 @@ Personal Kodi addon repository: our own addons, and patched versions of upstream
 addons/<id>/                      Our own addons, zipped as they are
   repository.allolive/              the repo addon itself (its <dir> entries come from releases.conf)
   script.library.audit.allolive/    finds duplicate movies and orphan video files
+  script.module.subtitlerepair.<language>.allolive/
+                                    a language for the subtitle repair of our CoreELEC build,
+                                    chosen in System > Yacer > Subtitles > Languages:
+                                    resources/subtitlerepair/<language>/profile.txt, and
+                                    dictionaries.txt - the LibreOffice Hunspell dictionaries
+                                    build.sh fetches next to it, by revision and sha256
 forks/<id>/                       Upstream addons we patch - no upstream code is stored here
   skin.estuary.allolive/                            Estuary as CoreELEC's kodi ships it
   metadata.themoviedb.org.python.allolive/          TMDB movies: adult titles, original-language art

@@ -24,6 +24,7 @@ while read -r release _; do
   for addon_path in "$ROOT"/addons/*/; do
     [ -f "$addon_path/addon.xml" ] || { echo "skip $(basename "$addon_path") (no addon.xml)"; continue; }
     rsync -a --exclude=.git --exclude=__pycache__ --exclude='*.pyc' --exclude=.DS_Store "$addon_path" "$tree/$(basename "$addon_path")/"
+    fetch_dictionaries "$tree/$(basename "$addon_path")"
   done
   for fork in $(forks "$release"); do
     [ ! -e "$tree/$fork" ] || die "$fork is both in addons/ and forks/"

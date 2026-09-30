@@ -232,3 +232,27 @@ if n != 1:
 open(path, 'w', encoding='utf-8').write(s)
 PY
 }
+
+# An addon that lists dictionaries.txt (a subtitle-repair language pack) gets its files from
+# LibreOffice's dictionaries at the revision it names, each checked against its sha256, next
+# to its profile.txt; the list itself is not shipped. The files are cached by checksum.
+fetch_dictionaries() { # <assembled addon dir>
+  local list="$1/dictionaries.txt" rev="" name path sha file pack
+  [ -f "$list" ] || return 0
+  pack="$(dirname "$(find "$1/resources/subtitlerepair" -name profile.txt -print -quit)")"
+  [ -d "$pack" ] || die "$(basename "$1") lists dictionaries but has no resources/subtitlerepair/<language>/profile.txt"
+  mkdir -p "$CACHE/dictionaries"
+  while read -r name path sha; do
+    case "$name" in ''|'#'*) continue ;; revision) rev="$path"; continue ;; esac
+    [ -n "$rev" ] || die "$list: no revision line before $name"
+    file="$CACHE/dictionaries/$sha"
+    if [ ! -f "$file" ]; then
+      curl -fsSL -o "$file.part" "https://raw.githubusercontent.com/LibreOffice/dictionaries/$rev/$path" \
+        || die "cannot fetch LibreOffice/dictionaries $rev $path"
+      echo "$sha  $file.part" | sha256sum -c --quiet - || { rm -f "$file.part"; die "$path at $rev is not $sha"; }
+      mv "$file.part" "$file"
+    fi
+    install -m644 "$file" "$pack/$name"
+  done < "$list"
+  rm "$list"
+}
