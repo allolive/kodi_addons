@@ -1,0 +1,8 @@
+# Subtitle repair: de
+codes = de ger deu german
+dictionaries = de_DE_frami
+one_letter_words = 
+lone_one = 
+capitalised_nouns = yes
+alphabet = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÉÖÜßàáâäéêñöü
+accents = A:Ä E:É O:Ö U:Ü a:àáâä e:éê n:ñ o:ö u:ü
