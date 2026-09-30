@@ -1,0 +1,8 @@
+# Subtitle repair: es
+codes = es spa spanish
+dictionaries = es_ES
+one_letter_words = a A e E o O u U y Y
+lone_one = 
+capitalised_nouns = no
+alphabet = ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÁÉÍÑÓÚÜáéíñóúü
+accents = A:Á E:É I:Í N:Ñ O:Ó U:ÚÜ a:á e:é i:í n:ñ o:ó u:úü
