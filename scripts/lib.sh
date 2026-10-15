@@ -256,3 +256,36 @@ fetch_dictionaries() { # <assembled addon dir>
   done < "$list"
   rm "$list"
 }
+
+fetch_firmware() { # <assembled addon dir>
+  # firmware.txt: "release <owner/repo>" bundles that repository's latest
+  # release (its .tar.gz, checked against its .sha256) into resources/firmware/
+  local list="$1/firmware.txt" repo json tag archive dir
+  [ -f "$list" ] || return 0
+  repo="$(sed -n 's/^release //p' "$list")"
+  [ -n "$repo" ] || die "$list: no release line"
+  json="$(curl -fsSL ${GITHUB_TOKEN:+-H "Authorization: Bearer $GITHUB_TOKEN"} \
+    "https://api.github.com/repos/$repo/releases/latest")" || die "cannot ask $repo for its latest release"
+  read -r tag archive < <(python3 -c 'import json, sys
+r = json.load(sys.stdin)
+names = [a["name"] for a in r["assets"]]
+tars = [n for n in names if n.endswith(".tar.gz") and n + ".sha256" in names]
+print(r["tag_name"], tars[0] if len(tars) == 1 else "")' <<< "$json")
+  [ -n "$archive" ] || die "$repo $tag: no single .tar.gz with a .sha256 among its assets"
+  dir="$CACHE/firmware/${repo//\//_}/$tag"
+  if [ ! -f "$dir/$archive" ]; then
+    mkdir -p "$dir"
+    for f in "$archive" "$archive.sha256"; do
+      curl -fsSL -o "$dir/$f.part" "https://github.com/$repo/releases/download/$tag/$f" \
+        || die "cannot fetch $repo $tag $f"
+      mv "$dir/$f.part" "$dir/$f"
+    done
+    (cd "$dir" && sha256sum -c --quiet "$archive.sha256") || { rm -f "$dir/$archive"; die "$repo $tag: $archive does not match its .sha256"; }
+  fi
+  rm -rf "$1/resources/firmware"
+  mkdir -p "$1/resources/firmware"
+  tar -xzf "$dir/$archive" -C "$1/resources/firmware"
+  echo "$repo $tag" > "$1/resources/firmware/release.txt"
+  rm "$list"                       # the zip carries the firmware, not the pointer to it
+  echo "    firmware: $repo $tag"
+}

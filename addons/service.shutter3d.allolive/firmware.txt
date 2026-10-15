@@ -1,0 +1,3 @@
+# The Raspberry Pi Zero W's firmware, bundled into resources/firmware/ when the
+# add-on is built (scripts/lib.sh fetch_firmware): the latest release of
+release allolive/pi-bt3dsp-firmware

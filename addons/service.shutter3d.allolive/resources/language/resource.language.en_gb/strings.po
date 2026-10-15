@@ -1,0 +1,73 @@
+# Kodi Media Center language file
+# Addon Name: Active 3D for 120 Hz VRR displays (allolive)
+# Addon id: service.shutter3d.allolive
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+
+msgctxt "#30000"
+msgid "General"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Glasses"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Pause at the start of 3D (seconds)"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Holds the picture this long when a 3D film starts, so the glasses can sync with the emitter before the film moves on. 0 = off."
+msgstr ""
+
+msgctxt "#30020"
+msgid "Lens opening"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Close the lenses while the screen redraws"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Bluetooth glasses through the Pi. At the start of each eye's frame the screen is still being redrawn with the new picture. On: both lenses stay closed for that time, then the eye's lens opens until the next frame; no crosstalk, but darker. Off: each lens is open its whole frame, brightest, with some crosstalk. Either way the 3D glasses delay (while 3D plays) moves the eye switch earlier or later. Greyed out while a VESA board is the emitter: its emitter sets the lens timing itself."
+msgstr ""
+
+msgctxt "#30023"
+msgid "Redraw time"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Automatic: the time the box takes to send a picture, worked out from the display mode in use (1080 of the 1125 lines at 120 Hz: 8.0 ms). Manual: set it yourself."
+msgstr ""
+
+msgctxt "#30025"
+msgid "Automatic"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Manual"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Redraw time (µs)"
+msgstr ""
+
+msgctxt "#30028"
+msgid "How long both lenses stay closed at the start of each eye's frame. More if a faint copy of the other eye remains, less for a brighter picture. 8000 is the time the box takes to send a picture at 1080p 120 Hz."
+msgstr ""
+
+msgctxt "#30029"
+msgid "Whole frame: the VESA emitter sets the lens timing"
+msgstr ""
+
+msgctxt "#30030"
+msgid "3D glasses delay…"
+msgstr ""
+
+msgctxt "#30031"
+msgid "When the glasses switch eyes, for each film rate (the screen draws differently at each). Moves the eye switch earlier or later, the lens opening with it. Also set while 3D plays, with the 3D delay button or in the player's video settings."
+msgstr ""
+

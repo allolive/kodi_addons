@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="service.shutter3d.allolive"
+       name="Active 3D for 120 Hz VRR displays (allolive)"
+       version="0.1.3"
+       provider-name="allolive">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py" start="login"/>
+  <extension point="xbmc.python.script" library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Shutter glasses for frame-sequential 3D: Bluetooth glasses through a Raspberry Pi Zero W, or a VESA stereo emitter through a USB board</summary>
+    <disclaimer lang="en_GB">Needs the CoreELEC yacer-patched build (frame-sequential 3D, github.com/allolive/CoreELEC branch yacer), and either a Raspberry Pi Zero W v1.1 (not the Zero 2 W) with Bluetooth 3D glasses, or a USB board with the promicro-vesa-stereo firmware and a 3D emitter with a VESA stereo input.</disclaimer>
+    <description lang="en_GB">Keeps shutter glasses in step with the frame-sequential 3D of the CoreELEC yacer-patched build: when Kodi plays a 3D film (Blu-ray MVC, side by side or top and bottom) on a 2D display with game VRR, the box alternates the eyes on every refresh and reports each one. This add-on forwards that to the emitter: a Raspberry Pi Zero W, which it starts over USB with the firmware it carries and which broadcasts the timing to Bluetooth 3D glasses (with the lenses kept closed while the screen redraws, worked out from the display), or a USB board (a Pro Micro with the promicro-vesa-stereo firmware) that drives a 3D emitter's VESA stereo input in hardware. Its screen under Programs shows the board, tests the glasses, and plays 3D test patterns at 23.976, 24, 25, 29.97 and 30 fps for tuning Kodi's 3D glasses delay, which it can keep for each frame rate. It can also pause each 3D film for a few seconds at the start while the glasses sync. Amlogic only.</description>
+    <license>PolyForm-Noncommercial-1.0.0</license>
+    <platform>linux</platform>
+    <assets>
+      <icon>resources/icon.png</icon>
+    </assets>
+  </extension>
+</addon>
