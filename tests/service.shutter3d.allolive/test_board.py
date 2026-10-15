@@ -188,3 +188,46 @@ def test_stopping_gives_the_board_its_default(monkeypatch):
     b.close = lambda: None
     link._drop()
     assert b.lines[-1] == "P 1"
+
+
+def test_the_board_s_lines_are_read_whole(monkeypatch):
+    b = board.Board("/dev/ttyACM0", lambda m: None)
+    b.fd = 5
+    chunks = [b"pi-bt3dsp 0.1.1 build x mode 2\r\nG 00:11", b"", b":22 1 0 80\r\n"]
+
+    def read(fd, n):
+        if not chunks:
+            raise BlockingIOError
+        return chunks.pop(0)
+    monkeypatch.setattr(board.os, "read", read)
+    assert b.read_lines() == ["pi-bt3dsp 0.1.1 build x mode 2"]    # the half line waits
+    assert b.read_lines() == ["G 00:11:22 1 0 80"]
+    assert b.read_lines() == []                                     # nothing new: no wait
+
+
+def test_in_3d_the_pi_is_asked_for_its_status_and_it_is_logged():
+    logs = []
+    link = board.BoardLink(logs.append)
+    link.clock = clock = Clock()
+    b = Sent()
+    b.kind = "pi"
+    b.read_lines = lambda: ["pi-bt3dsp 0.1.1 build x fsi_jump_max_us 12"]
+    link._follow_status(b)
+    assert b.lines == ["?"] and logs == []
+    clock.t += board.STATUS_READ_S
+    link._follow_status(b)
+    assert logs == ["Pi says: pi-bt3dsp 0.1.1 build x fsi_jump_max_us 12"]
+    clock.t += board.STATUS_EVERY_S / 2
+    link._follow_status(b)
+    assert b.lines == ["?"]                                         # not yet again
+    clock.t += board.STATUS_EVERY_S
+    link._follow_status(b)
+    assert b.lines == ["?", "?"]
+
+
+def test_a_vesa_board_is_not_asked():
+    link = board.BoardLink(lambda m: None)
+    link.clock = Clock()
+    b = Sent()
+    link._follow_status(b)
+    assert b.lines == []

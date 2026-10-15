@@ -30,6 +30,8 @@ PORTS_S = 2.0                    # no board: look for a port coming or going thi
 # test, off this long after both have ended, so the next episode starts with
 # the glasses already synced.
 POWER_OFF_S = 60.0
+STATUS_EVERY_S = 10.0             # in 3D, the Pi's status into the log this often
+STATUS_READ_S = 0.5               # and read this long after asking
 
 # the board's M command
 MODE_OFF = 0
@@ -122,6 +124,7 @@ class Board:
         self.lock = threading.Lock()
         self.build = pi_build(status or "")      # a Pi's build; None: a board
         self.kind = "board" if self.build is None else "pi"
+        self.pending = b""                       # what the board said, short of a whole line
 
     def open(self):
         self.fd = open_serial(self.path)
@@ -147,6 +150,26 @@ class Board:
                 self.log("board write: %s" % e)
                 self._close()
                 return False
+
+    def read_lines(self):
+        """The whole lines the board has sent since the last call, without
+        waiting."""
+        with self.lock:
+            if self.fd is None:
+                return []
+            try:
+                while True:
+                    chunk = os.read(self.fd, 4096)
+                    if not chunk:
+                        break
+                    self.pending += chunk
+            except BlockingIOError:
+                pass
+            except OSError as e:
+                self.log("board read: %s" % e)
+                return []
+        *lines, self.pending = self.pending.split(b"\n")
+        return [line.decode("ascii", "replace").strip() for line in lines if line.strip()]
 
     def configure(self, delay_us, mode=None):
         """The delay applies on the next edge; a mode change restarts the
@@ -213,6 +236,8 @@ class BoardLink(threading.Thread):
         self.power_off_at = None         # when to switch the emitter off; None: never
         self.opening = opening
         self.expected_build = expected_build
+        self.status_at = None            # when to ask the Pi for its status next, in 3D
+        self.read_at = None              # when to read what it answered
 
     # -- from the Kodi thread
 
@@ -342,6 +367,24 @@ class BoardLink(threading.Thread):
         except Exception as e:           # never let it stop the glasses
             self.log("on 3D start: %s" % e)
 
+    def _follow_status(self, board):
+        """In 3D, the Pi's status every STATUS_EVERY_S into the log: its clock
+        fit, and how far the frame instant it broadcasts moves."""
+        now = self.clock()
+        if self.read_at is not None and now >= self.read_at:
+            self.read_at = None
+            self._log_replies(board)
+        if board.kind != "pi":
+            return
+        if self.status_at is None or now >= self.status_at:
+            board.send("?\n")
+            self.status_at = now + STATUS_EVERY_S
+            self.read_at = now + STATUS_READ_S
+
+    def _log_replies(self, board):
+        for line in board.read_lines():
+            self.log("%s says: %s" % ("Pi" if board.kind == "pi" else "board", line))
+
     def run(self):
         try:
             os.sched_setscheduler(0, os.SCHED_FIFO, os.sched_param(10))
@@ -381,10 +424,12 @@ class BoardLink(threading.Thread):
                     if self.applied_test != self.test_hz:
                         self._apply_test(board)
                     self._follow_power(board)
+                    self._log_replies(board)
                     continue
                 if not self.in_3d:
                     self._enter_3d(board)
                 board.send(core.sync_line(*sample))
+                self._follow_status(board)
         finally:
             os.close(fd)
             self._drop()
