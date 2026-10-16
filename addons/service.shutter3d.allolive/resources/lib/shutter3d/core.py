@@ -77,7 +77,7 @@ REDRAW_MIN_US, REDRAW_MAX_US, REDRAW_STEP_US = 0, 20000, 100
 
 # ---- the delay per film rate, set from the settings ----------------------------
 
-DELAY_MIN_US, DELAY_MAX_US, DELAY_STEP_US = -5300, 5300, 100   # Kodi's 3D glasses delay
+DELAY_MIN_US, DELAY_MAX_US, DELAY_STEP_US = -10500, 10500, 100   # Kodi's 3D glasses delay
 FILM_RATES = (23.976, 24.0, 25.0, 29.97, 30.0)     # 3D film rates, a test pattern each
 OTHER_RATES = (50.0, 59.94, 60.0)
 

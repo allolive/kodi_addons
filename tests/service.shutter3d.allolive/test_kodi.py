@@ -156,7 +156,7 @@ def test_the_delay_message():
     assert core.parse_delay_message("delay_25_900") == ("25", 900)
     assert core.parse_delay_message("test_96000") is None
     assert core.parse_delay_message("delay_25_x") is None
-    assert core.clamp_delay(1234) == 1200 and core.clamp_delay(-99999) == -5300
+    assert core.clamp_delay(1234) == 1200 and core.clamp_delay(-99999) == -10500
 
 
 def test_a_delay_set_in_the_settings(monkeypatch, tmp_path):

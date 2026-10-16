@@ -105,16 +105,16 @@ with the Pi and with a VESA board.
 
 The eye switch delay is Kodi's own **3D glasses delay**. While 3D plays, the
 allolive skin's video stream dialog has a *3D delay* button showing it, which
-opens the same slider as the audio offset, and a *Swap eyes* button. It is also
+opens the same slider as the audio offset. It is also
 in the player's video settings, next to the stereoscopic mode and *Invert
 stereoscopic 3D mode*, and under System → Display → Stereoscopic 3D. It is a setting for the TV and the glasses, not for a film.
 Each step reaches the board within a quarter of a second, and Kodi saves it
 when the dialog closes.
 
-It goes from -5300 to 5300 µs in steps of 100 µs, just over half a frame each
-way at 95.9 Hz (a frame lasts 10427 µs). A whole frame later is the same as
-swapping the eyes, so if it still improves at one end of the range, turn on
-*Invert stereoscopic 3D mode* and carry on from the other end.
+It goes from -10500 to 10500 µs in steps of 100 µs, just over a whole frame
+each way at 95.9 Hz (a frame lasts 10427 µs). A whole frame later is the same
+as swapping the eyes, so the delay alone reaches every timing: keep moving it
+the way the picture improves, past half a frame if need be.
 
 **Tune with test pattern** asks for a film rate (23.976, 24, 25, 29.97 or
 30 fps) and plays that pattern, side by side, which the box runs at four times
@@ -159,9 +159,13 @@ paused is left alone, and pressing play during the pause ends it.
 
 ## Swapping the eyes
 
-When the depth looks inside out, use Kodi's own *Invert stereoscopic 3D mode*
-in the player's video settings. Kodi keeps it per film, and the box tells the
-glasses about it, so the add-on has no swap of its own.
+When every film looks inside out, the glasses are a frame out: the way the box
+reaches the TV changed (an AVR taken out of the chain, another input, the TV's
+game mode), and the 3D glasses delay takes it back, a frame further along.
+
+When one film alone looks inside out, its own eyes are stored the wrong way
+round: use Kodi's *Invert stereoscopic 3D mode* in the player's video settings,
+which Kodi keeps for that film.
 
 ## License
 
