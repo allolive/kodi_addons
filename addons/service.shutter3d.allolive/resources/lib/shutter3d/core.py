@@ -27,17 +27,22 @@ def sync_line(vsync, ns, eye):
 # total lines (active and blanking) of the CEA modes, by active lines
 TOTAL_LINES = {480: 525, 576: 625, 720: 750, 1080: 1125, 2160: 2250}
 
+# the modes a sink lists in its DisplayID ("...hzV"), by active lines and rate:
+# their blanking is not the CEA one (an LG 2025 OLED's 1080p165 has 1169 lines)
+TOTAL_LINES_V = {(1080, 165): 1169}
+
 
 def picture_us(mode):
     """How long the box takes to send one picture in this HDMI mode
-    ("1080p120hz"): the active lines of a frame at the mode's own rate. VRR
-    slows the refresh by lengthening the blanking after the picture, so this
-    does not change with the film rate. None for a mode it cannot read."""
-    m = re.match(r"(\d+)[pi](\d+)", mode or "")
+    ("1080p120hz", "1920x1080p165hzV"): the active lines of a frame at the
+    mode's own rate. VRR slows the refresh by lengthening the blanking after the
+    picture, so this does not change with the film rate. None for a mode it
+    cannot read."""
+    m = re.search(r"(\d+)[pi](\d+)hz(V?)", mode or "")
     if not m:
         return None
     lines, hz = int(m.group(1)), int(m.group(2))
-    total = TOTAL_LINES.get(lines)
+    total = TOTAL_LINES_V.get((lines, hz)) if m.group(3) else TOTAL_LINES.get(lines)
     if not total or hz <= 0:
         return None
     return int(round(1e6 / hz * lines / total))

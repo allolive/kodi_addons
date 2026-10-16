@@ -170,6 +170,9 @@ def test_the_picture_time_of_a_mode():
     assert core.picture_us("1080p120hz") == 8000          # 1080 of 1125 lines at 120 Hz
     assert core.picture_us("1080p60hz") == 16000
     assert core.picture_us("720p50hz") == 19200
+    assert core.picture_us("1920x1080p120hz") == 8000     # the name HFR VRR's mode has
+    assert core.picture_us("1920x1080p165hzV") == 5599    # 1080 of 1169 lines at 165 Hz
+    assert core.picture_us("1920x1080p144hzV") is None    # a DisplayID mode not measured
     assert core.picture_us("smpte24hz") is None
     assert core.picture_us(None) is None
 
@@ -178,6 +181,7 @@ def test_the_lens_window():
     # closed for the redraw time, then open until the next frame
     assert core.opening(True, False, 0, "1080p120hz") == 8000       # automatic
     assert core.opening(True, False, 0, None) == 8000               # 3D's own base if unknown
+    assert core.opening(True, False, 0, "1920x1080p165hzV") == 5599   # the 165 Hz base
     assert core.opening(True, True, 8200, "1080p120hz") == 8200     # manual
     assert core.opening(True, True, -5, "1080p120hz") == 0
     assert core.opening(False, True, 8200, "1080p120hz") == 0       # open the whole frame
