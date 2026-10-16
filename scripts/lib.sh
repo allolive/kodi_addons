@@ -257,6 +257,43 @@ fetch_dictionaries() { # <assembled addon dir>
   rm "$list"
 }
 
+fetch_speech() { # <assembled addon dir>
+  # speech.txt: the sources, by url and sha256, and the weights taken out of one of them
+  local list="$1/speech.txt" kind name url sha tools venv tmp
+  [ -f "$list" ] || return 0
+  mkdir -p "$CACHE/speech" "$1/resources/subtitlespeech"
+  while read -r kind name url sha; do
+    [ "$kind" = source ] || continue
+    if [ ! -f "$CACHE/speech/$sha" ]; then
+      curl -fsSL -o "$CACHE/speech/$sha.part" "$url" || die "cannot fetch $url"
+      echo "$sha  $CACHE/speech/$sha.part" | sha256sum -c --quiet - || { rm -f "$CACHE/speech/$sha.part"; die "$url is not $sha"; }
+      mv "$CACHE/speech/$sha.part" "$CACHE/speech/$sha"
+    fi
+    install -m644 "$CACHE/speech/$sha" "$1/resources/subtitlespeech/$name"
+  done < "$list"
+  tools="$(sed -n 's/^converter //p' "$list")"
+  while read -r kind name url sha; do
+    [ "$kind" = weights ] || continue
+    # here url is the source the weights are taken from
+    if [ ! -f "$CACHE/speech/$sha" ]; then
+      venv="$CACHE/speech-converter"
+      [ -x "$venv/bin/python" ] || python3 -m venv "$venv" >/dev/null 2>&1 || { rm -rf "$venv"; uv venv -q --python 3.12 "$venv"; } \
+        || die "cannot make a Python environment for the speech converter"
+      # shellcheck disable=SC2086
+      { "$venv/bin/python" -m pip --version >/dev/null 2>&1 && "$venv/bin/python" -m pip install -q $tools; } \
+        || uv pip install -q --python "$venv/bin/python" $tools || die "cannot install the speech converter ($tools)"
+      tmp="$(mktemp)"
+      "$venv/bin/python" "$ROOT/scripts/speech-weights.py" "$1/resources/subtitlespeech/$url" "$tmp" || die "cannot convert $url"
+      echo "$sha  $tmp" | sha256sum -c --quiet - || { rm -f "$tmp"; die "$url converts to another $name than $sha"; }
+      mv "$tmp" "$CACHE/speech/$sha"
+    fi
+    install -m644 "$CACHE/speech/$sha" "$1/resources/subtitlespeech/$name"
+    # the network is what ships, not the file it came in
+    rm -f "$1/resources/subtitlespeech/$url"
+  done < "$list"
+  rm "$list"
+}
+
 fetch_firmware() { # <assembled addon dir>
   # firmware.txt: "release <owner/repo>" bundles that repository's latest
   # release (its .tar.gz, checked against its .sha256) into resources/firmware/

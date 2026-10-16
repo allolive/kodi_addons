@@ -1,0 +1,47 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Thu, 15 Oct 2026 18:33:34 -0400
+Subject: [PATCH 17/17] subtitle select dialog: realign on/off button
+
+The subtitle select dialog gets a side button that turns the
+realignment of a subtitle file on or off while the video plays,
+showing which: Kodi's PlayerControl(SubtitleRealign), and
+VideoPlayer.SubtitleRealign for its state, which starts as the
+"Realign with the video" setting says. Needs a Kodi with both.
+Touches Includes_DialogSelect.xml, Variables.xml.
+---
+ xml/Includes_DialogSelect.xml | 5 +++++
+ xml/Variables.xml             | 4 ++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
+index 113b712..447e4b8 100644
+--- a/xml/Includes_DialogSelect.xml
++++ b/xml/Includes_DialogSelect.xml
+@@ -797,6 +797,11 @@
+ 					<param name="label" value="Offset $VAR[SubtitleDelayDisplayVar]" />
+ 					<param name="onclick" value="Action(subtitledelay)" />
+ 				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70098" />
++					<param name="label" value="Realign $VAR[SubtitleRealignDisplayVar]" />
++					<param name="onclick" value="PlayerControl(SubtitleRealign)" />
++				</include>
+ 				<include content="DefaultDialogButton">
+ 					<param name="id" value="70093" />
+ 					<param name="label" value="Settings" />
+diff --git a/xml/Variables.xml b/xml/Variables.xml
+index 1f7f4a4..19e5cc1 100644
+--- a/xml/Variables.xml
++++ b/xml/Variables.xml
+@@ -368,6 +368,10 @@
+ 		<value condition="Player.StereoInvert">$LOCALIZE[16041]</value>
+ 		<value>$LOCALIZE[16039]</value>
+ 	</variable>
++	<variable name="SubtitleRealignDisplayVar">
++		<value condition="VideoPlayer.SubtitleRealign">$LOCALIZE[16041]</value>
++		<value>$LOCALIZE[16039]</value>
++	</variable>
+ 	<variable name="SubtitleDelayDisplayVar">
+ 		<value condition="String.IsEqual(Player.SubtitleDelay,-0.000 s)">0.000 s</value>
+ 		<value>$INFO[Player.SubtitleDelay]</value>

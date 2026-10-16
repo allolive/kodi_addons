@@ -1,0 +1,60 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Fri, 9 Oct 2026 10:27:27 -0400
+Subject: [PATCH 15/17] video select dialog: 3D delay, swap eyes and settings
+ buttons
+
+The video stream select dialog gets side buttons like the audio and
+subtitle ones: the 3D glasses delay (HFR VRR only, Kodi's fs3ddelay
+action, the audio offset's slider), the eye swap (in any 3D mode, Kodi's
+stereoinvert action, saved with the film) and the OSD video settings.
+Needs a Kodi with those actions and Player.Fs3dDelay / Player.StereoInvert.
+Touches Includes_DialogSelect.xml, Variables.xml.
+---
+ xml/Includes_DialogSelect.xml | 17 +++++++++++++++--
+ xml/Variables.xml             |  4 ++++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
+index b028dcd..113b712 100644
+--- a/xml/Includes_DialogSelect.xml
++++ b/xml/Includes_DialogSelect.xml
+@@ -397,8 +397,21 @@
+ 					<param name="label" value="" />
+ 				</include>
+ 				<include content="DefaultDialogButton">
+-					<param name="id" value="7" />
+-					<param name="label" value="$LOCALIZE[222]" />
++					<param name="id" value="70095" />
++					<param name="label" value="3D delay $INFO[Player.Fs3dDelay]" />
++					<param name="onclick" value="Action(fs3ddelay)" />
++					<param name="visible" value="String.IsEqual(System.StereoscopicMode,10)" />
++				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70096" />
++					<param name="label" value="Swap eyes $VAR[StereoInvertDisplayVar]" />
++					<param name="onclick" value="Action(stereoinvert)" />
++					<param name="visible" value="!String.IsEqual(System.StereoscopicMode,0)" />
++				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70097" />
++					<param name="label" value="Settings" />
++					<param name="onclick" value="ActivateWindow(osdvideosettings)" />
+ 				</include>
+ 			</control>
+ 		</control>
+diff --git a/xml/Variables.xml b/xml/Variables.xml
+index 691c36e..1f7f4a4 100644
+--- a/xml/Variables.xml
++++ b/xml/Variables.xml
+@@ -364,6 +364,10 @@
+ 		<value condition="String.IsEqual(Player.AudioDelay,-0.000 s)">0.000 s</value>
+ 		<value>$INFO[Player.AudioDelay]</value>
+ 	</variable>
++	<variable name="StereoInvertDisplayVar">
++		<value condition="Player.StereoInvert">$LOCALIZE[16041]</value>
++		<value>$LOCALIZE[16039]</value>
++	</variable>
+ 	<variable name="SubtitleDelayDisplayVar">
+ 		<value condition="String.IsEqual(Player.SubtitleDelay,-0.000 s)">0.000 s</value>
+ 		<value>$INFO[Player.SubtitleDelay]</value>

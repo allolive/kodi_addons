@@ -1,0 +1,10 @@
+# The voice activity model of this add-on: Silero VAD at the tag below, checked against its
+# sha256, and its 16 kHz weights taken out of it by scripts/speech-weights.py with the
+# converter versions below when the repository is built. The weights are checked against theirs.
+# source <name in resources/subtitlespeech> <url> <sha256>
+# converter <pip requirements>
+# weights <name in resources/subtitlespeech> <source it is taken from> <sha256>
+source silero_vad.onnx https://github.com/snakers4/silero-vad/raw/v5.1.2/src/silero_vad/data/silero_vad.onnx 2623a2953f6ff3d2c1e61740c6cdb7168133479b267dfef114a4a3cc5bdd788f
+source LICENSE https://github.com/snakers4/silero-vad/raw/v5.1.2/LICENSE 2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b
+converter onnx==1.23.2 numpy==2.5.4
+weights silero_vad_16k.bin silero_vad.onnx b8df2e6e32753b7aa47ab59571b0d9d0b490a223f8dc9118bb388efeaec6f8e3
