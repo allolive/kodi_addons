@@ -238,3 +238,9 @@ def test_a_value_snaps_to_its_setting():
 def test_the_film_rates():
     assert [core.rate_name(r) for r in core.FILM_RATES] == ["23.976", "24", "25", "29.97", "30"]
     assert [core.display_mhz(r) for r in core.FILM_RATES] == [95904, 96000, 100000, 119880, 120000]
+
+
+def test_a_base_picture_time_only_for_a_3d_base():
+    assert core.base_picture_us(timing(VINFO_165)) == 5700
+    assert core.base_picture_us(timing(VINFO_GUI)) is None
+    assert core.base_picture_us(None) is None

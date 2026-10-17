@@ -47,6 +47,10 @@ msgctxt "#30027"
 msgid "Redraw time adjustment (µs)"
 msgstr ""
 
+msgctxt "#30032"
+msgid "Redraw time adjustment"
+msgstr ""
+
 msgctxt "#30028"
 msgid "Both lenses stay closed at the start of each eye's frame for the time the box takes to send the picture in the display mode in use, rounded up to 100 µs (8000 µs at 1080p 120 Hz, 5700 µs at 165 Hz), plus this. 0: the lens opens as soon as the picture is sent. More if a faint copy of the other eye remains, less for a brighter picture. It holds on any display mode."
 msgstr ""

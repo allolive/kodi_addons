@@ -62,6 +62,22 @@ def picture_us(timing):
     return -(-lines * htotal * 1000 // step) * PICTURE_STEP_US
 
 
+DISPLAY_VINFO = "/sys/class/display/vinfo"   # the HDMI mode's timing: lines, line length, pixel clock
+
+
+def read_sysfs(path):
+    try:
+        with open(path) as f:
+            return f.read().strip()
+    except OSError:
+        return None
+
+
+def base_picture_us(timing):
+    """picture_us of a 3D base mode, None for any other (the GUI's)."""
+    return picture_us(timing) if is_3d_base(timing) else None
+
+
 def opening(closed, adjust_us, timing=None):
     """How long into each eye's frame its lens opens, in us (it stays open
     until the other eye's frame starts). Closed during the redraw: both lenses stay

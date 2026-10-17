@@ -146,7 +146,7 @@ class Tune(xbmcgui.WindowXMLDialog):
                  "%d µs" % (self.delay() if delay is None else delay))
         self.row(self.BOARD_INFO, ADDON.getLocalizedString(30029))
         self.row(self.CLOSED, ADDON.getLocalizedString(30021), "On" if closed else "Off")
-        self.row(self.REDRAW, ADDON.getLocalizedString(30027).replace(" (µs)", ""), "%d µs %s %d µs" % (
+        self.row(self.REDRAW, ADDON.getLocalizedString(30032), "%d µs %s %d µs" % (
             redraw_auto_us(), "-" if adjust < 0 else "+", abs(adjust)))
         for control, visible in ((self.BOARD_INFO, not pi), (self.CLOSED, pi), (self.REDRAW, pi and closed)):
             if self.texts.get(("visible", control)) != visible:
@@ -290,14 +290,8 @@ def playing_pattern(player, pattern):
 def redraw_auto_us():
     """The automatic redraw time of the mode being sent, while it is a 3D base,
     else the one the service kept from the last 3D film."""
-    try:
-        with open("/sys/class/display/vinfo") as f:
-            timing = core.parse_vinfo(f.read())
-    except OSError:
-        timing = None
-    if core.is_3d_base(timing):
-        return core.picture_us(timing)
-    return ADDON.getSettingInt("lens_redraw_auto_us")
+    base = core.base_picture_us(core.parse_vinfo(core.read_sysfs(core.DISPLAY_VINFO)))
+    return ADDON.getSettingInt("lens_redraw_auto_us") if base is None else base
 
 
 def kodi_delay():

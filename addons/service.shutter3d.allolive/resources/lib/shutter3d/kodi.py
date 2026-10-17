@@ -29,7 +29,6 @@ TICK_S = 0.25                    # how soon a delay change reaches the board
 START_WAIT_S = 5.0               # a hold waits this long for the film to be playing
 RATES = core.FILM_RATES + core.OTHER_RATES
 DELAYS_FILE = "special://profile/addon_data/%s/delays.json" % ADDON_ID
-DISPLAY_VINFO = "/sys/class/display/vinfo"   # the HDMI mode's timing: lines, line length, pixel clock
 
 
 def log(msg, level=xbmc.LOGINFO):
@@ -46,14 +45,6 @@ class Settings:
         # before 0.1.12: a manual redraw time in us, made an adjustment on the next 3D film
         self.lens_redraw_manual = a.getSettingInt("lens_redraw_manual") == 1
         self.lens_redraw_us = a.getSettingInt("lens_redraw_us")
-
-
-def read_sysfs(path):
-    try:
-        with open(path) as f:
-            return f.read().strip()
-    except OSError:
-        return None
 
 
 class Service(xbmc.Monitor):
@@ -85,13 +76,14 @@ class Service(xbmc.Monitor):
         """The lens window for the emitter, from the settings and the HDMI
         mode in use (read each time: 3D switches the mode)."""
         s = self.settings
-        timing = core.parse_vinfo(read_sysfs(DISPLAY_VINFO))
-        if core.is_3d_base(timing):
-            self.auto_seen = core.picture_us(timing)
-        if s.lens_redraw_manual and core.is_3d_base(timing):
+        timing = core.parse_vinfo(core.read_sysfs(core.DISPLAY_VINFO))
+        base = core.base_picture_us(timing)
+        if base is not None:
+            self.auto_seen = base
+        if s.lens_redraw_manual and base is not None:
             # an old manual time, on the base it was set for: the same opening now
             self.adjust_from_manual = core.snap(
-                s.lens_redraw_us - core.picture_us(timing), core.ADJUST_STEP_US,
+                s.lens_redraw_us - base, core.ADJUST_STEP_US,
                 core.ADJUST_MIN_US, core.ADJUST_MAX_US)
             return core.opening(s.lens_closed, self.adjust_from_manual, timing)
         return core.opening(s.lens_closed, s.lens_redraw_adjust_us, timing)

@@ -193,8 +193,8 @@ def test_the_redraw_time_is_automatic_plus_the_adjustment(monkeypatch, tmp_path)
     written = {}
     monkeypatch.setattr(kodi.ADDON, "setSettingInt", lambda key, value: written.__setitem__(key, value),
                         raising=False)
-    sysfs = {kodi.DISPLAY_VINFO: VINFO_165}
-    monkeypatch.setattr(kodi, "read_sysfs", sysfs.get)
+    sysfs = {kodi.core.DISPLAY_VINFO: VINFO_165}
+    monkeypatch.setattr(kodi.core, "read_sysfs", sysfs.get)
     st = s.settings
     st.lens_closed, st.lens_redraw_adjust_us, st.lens_redraw_auto_us = True, 200, 8000
     st.lens_redraw_manual, st.lens_redraw_us = False, 8000
@@ -208,7 +208,7 @@ def test_the_redraw_time_is_automatic_plus_the_adjustment(monkeypatch, tmp_path)
     s._keep_redraw_settings()
     assert written == {}                           # unchanged: not written again
 
-    sysfs[kodi.DISPLAY_VINFO] = VINFO_GUI          # the GUI's mode is no 3D base
+    sysfs[kodi.core.DISPLAY_VINFO] = VINFO_GUI          # the GUI's mode is no 3D base
     s._opening()
     s._keep_redraw_settings()
     assert written == {}
@@ -221,7 +221,7 @@ def test_an_old_manual_redraw_time_becomes_the_adjustment(monkeypatch, tmp_path)
     written = {}
     monkeypatch.setattr(kodi.ADDON, "setSettingInt", lambda key, value: written.__setitem__(key, value),
                         raising=False)
-    monkeypatch.setattr(kodi, "read_sysfs", {kodi.DISPLAY_VINFO: VINFO_165}.get)
+    monkeypatch.setattr(kodi.core, "read_sysfs", {kodi.core.DISPLAY_VINFO: VINFO_165}.get)
     st = s.settings
     st.lens_closed, st.lens_redraw_adjust_us, st.lens_redraw_auto_us = True, 0, 5700
     st.lens_redraw_manual, st.lens_redraw_us = True, 6500
