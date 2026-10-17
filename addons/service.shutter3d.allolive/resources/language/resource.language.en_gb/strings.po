@@ -1,5 +1,5 @@
 # Kodi Media Center language file
-# Addon Name: Active 3D for 120 Hz VRR displays (allolive)
+# Addon Name: Active 3D for VRR displays (allolive)
 # Addon id: service.shutter3d.allolive
 msgid ""
 msgstr ""

@@ -1,4 +1,4 @@
-# Active 3D for 120 Hz VRR displays (allolive)
+# Active 3D for VRR displays (allolive)
 
 The glasses half of frame-sequential 3D, locked to the box's vsync while Kodi
 shows the eyes alternately on a 2D display with game VRR:
@@ -18,8 +18,9 @@ shows the eyes alternately on a 2D display with game VRR:
 - The [CoreELEC yacer-patched build](https://github.com/allolive/CoreELEC/tree/yacer)
   with `18-coreelec-frame_sequential_3d`. Kodi does the
   display side itself: on a TV with game VRR and no HDMI 3D it adds the 3D mode
-  **Active 3D for 120 Hz VRR displays** for Blu-ray MVC, side-by-side and top-and-bottom films. It keeps the
-  output at 1080p 120 Hz with game mode, slows it with VRR to the film rate,
+  **Active 3D for VRR displays** for Blu-ray MVC, side-by-side and top-and-bottom films. It keeps the
+  output at the TV's fastest 1080p (120 Hz, or 144, 165, 240 Hz where it lists
+  one) with game mode, slows it with VRR to the film rate,
   and alternates the video's eyes per refresh, with the menus drawn once over
   both. `/sys/class/video/fa_sync` reports each eye, with the vsync's time
   stamped in the video interrupt.
@@ -30,7 +31,7 @@ shows the eyes alternately on a 2D display with game VRR:
   firmware, and an emitter with a VESA stereo input. The firmware's
   [guide](https://github.com/allolive/promicro-vesa-stereo-firmware/blob/main/docs/GUIDE.md)
   covers the parts, the wiring, flashing, and setting it up with this add-on.
-- Active 3D for 120 Hz VRR displays as the 3D mode: pick it when Kodi asks at the start of a 3D film, or
+- Active 3D for VRR displays as the 3D mode: pick it when Kodi asks at the start of a 3D film, or
   make it the preferred mode (Settings → System → Display → Stereoscopic 3D).
   The yacer build also carries the 3D glasses delay this add-on applies.
 
@@ -87,7 +88,7 @@ moves every eye switch, the window with it.
 
 ## The screen
 
-*Programs → Active 3D for 120 Hz VRR displays* stays open and updates every second:
+*Programs → Active 3D for VRR displays* stays open and updates every second:
 
 - **USB board:** not found, standby, on for a 3D film, or on for the glasses
   test, with the board's port and the delay in use. The board is the USB
@@ -133,9 +134,10 @@ one, Select toggles, and each change reaches the emitter at once. Back or Stop
 ends the pattern. `resources/media/crosstalk.sh` remakes the patterns with
 ffmpeg.
 
-The box sends each picture at 120 Hz speed, in about 8 ms, and the rest of the
-frame is a gap in which the whole screen shows one eye: about 2.4 ms at
-95.9 Hz, 2 ms at 100 Hz, almost none at 119.9 Hz. Glasses open for the whole
+The box sends each picture at the base mode's speed, in about 8 ms at 120 Hz
+(5.6 ms at 165 Hz), and the rest of the frame is a gap in which the whole
+screen shows one eye: on a 120 Hz base about 2.4 ms at 95.9 Hz, 2 ms at
+100 Hz, almost none at 119.9 Hz. Glasses open for the whole
 frame always see some of the other eye, and the delay only moves it: set it
 where the copy is as faint at the top as at the bottom. Glasses or an emitter
 that can shorten the opening can remove it (the Monster Vision BC100 emitter

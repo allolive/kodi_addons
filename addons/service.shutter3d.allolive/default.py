@@ -1,4 +1,4 @@
-"""Programs -> Active 3D for 120 Hz VRR displays: the emitter's status, the glasses test and the
+"""Programs -> Active 3D for VRR displays: the emitter's status, the glasses test and the
 test pattern. The window stays up; the service owns the emitter and does what
 the buttons ask. The eye switch delay is Kodi's 3D glasses delay, set while
 3D plays (over the test pattern, the skin's video stream dialog, or the
