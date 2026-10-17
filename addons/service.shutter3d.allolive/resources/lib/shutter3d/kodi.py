@@ -41,6 +41,9 @@ class Settings:
         a = xbmcaddon.Addon()
         self.start_pause = a.getSettingNumber("start_pause")
         self.lens_closed = a.getSettingBool("lens_closed")
+        self.lens_redraw_adjust_us = a.getSettingInt("lens_redraw_adjust_us")
+        self.lens_redraw_auto_us = a.getSettingInt("lens_redraw_auto_us")
+        # before 0.1.12: a manual redraw time in us, made an adjustment on the next 3D film
         self.lens_redraw_manual = a.getSettingInt("lens_redraw_manual") == 1
         self.lens_redraw_us = a.getSettingInt("lens_redraw_us")
 
@@ -71,7 +74,8 @@ class Service(xbmc.Monitor):
         self.delays = load_delays()              # film rate -> delay, with a delay per frame rate
         self.armed = False                       # the playing item may still get its start pause
         self.hold_cancel = None                  # the running start pause's cancel
-        self.auto_redraw = None                  # the automatic redraw time of a 3D base, to keep
+        self.adjust_from_manual = None           # the adjustment an old manual redraw time makes
+        self.auto_seen = None                    # the automatic redraw time of the 3D base in use
 
     def onSettingsChanged(self):
         self.settings = Settings()
@@ -82,17 +86,29 @@ class Service(xbmc.Monitor):
         mode in use (read each time: 3D switches the mode)."""
         s = self.settings
         timing = core.parse_vinfo(read_sysfs(DISPLAY_VINFO))
-        us = core.opening(s.lens_closed, s.lens_redraw_manual, s.lens_redraw_us, timing)
-        if s.lens_closed and not s.lens_redraw_manual and core.is_3d_base(timing):
-            self.auto_redraw = us
-        return us
+        if core.is_3d_base(timing):
+            self.auto_seen = core.picture_us(timing)
+        if s.lens_redraw_manual and core.is_3d_base(timing):
+            # an old manual time, on the base it was set for: the same opening now
+            self.adjust_from_manual = core.snap(
+                s.lens_redraw_us - core.picture_us(timing), core.ADJUST_STEP_US,
+                core.ADJUST_MIN_US, core.ADJUST_MAX_US)
+            return core.opening(s.lens_closed, self.adjust_from_manual, timing)
+        return core.opening(s.lens_closed, s.lens_redraw_adjust_us, timing)
 
-    def _keep_auto_redraw(self):
-        """The manual value starts from the automatic one of the 3D base in
-        use: written here, after the board has its window, not while sending it."""
-        us, self.auto_redraw = self.auto_redraw, None
-        if us is not None and us != self.settings.lens_redraw_us:
-            ADDON.setSettingInt("lens_redraw_us", us)
+    def _keep_redraw_settings(self):
+        """Written here, after the board has its window, not while sending it:
+        the automatic redraw time of the 3D base in use, shown in the settings
+        beside the adjustment, and the adjustment an old manual redraw time
+        makes (the same opening)."""
+        auto, self.auto_seen = self.auto_seen, None
+        if auto is not None and auto != self.settings.lens_redraw_auto_us:
+            ADDON.setSettingInt("lens_redraw_auto_us", auto)
+        us, self.adjust_from_manual = self.adjust_from_manual, None
+        if us is not None:
+            ADDON.setSettingInt("lens_redraw_adjust_us", us)
+            ADDON.setSettingInt("lens_redraw_manual", 0)
+            log("the manual redraw time is now an adjustment of %+d us" % us)
 
     def onNotification(self, sender, method, data):
         if sender == "xbmc":
@@ -216,7 +232,7 @@ class Service(xbmc.Monitor):
                 self._start_hold()
             self._follow_rate()
             self._follow_delay()
-            self._keep_auto_redraw()
+            self._keep_redraw_settings()
             self._publish()
         # a running hold sees the abort too and gives the film back
         self.link.stop()

@@ -207,12 +207,13 @@ def test_a_3d_base_is_a_fast_mode():
 
 def test_the_lens_window():
     # closed for the redraw time, then open until the next frame
-    assert core.opening(True, False, 0, timing(VINFO_120)) == 8000   # automatic
-    assert core.opening(True, False, 0, timing(VINFO_165)) == 5700   # the 165 Hz base
-    assert core.opening(True, False, 0) == 8000                      # 3D's own base if unknown
-    assert core.opening(True, True, 8200, timing(VINFO_165)) == 8200   # manual
-    assert core.opening(True, True, -5, timing(VINFO_165)) == 0
-    assert core.opening(False, True, 8200, timing(VINFO_165)) == 0   # open the whole frame
+    assert core.opening(True, 0, timing(VINFO_120)) == 8000       # as soon as the picture is sent
+    assert core.opening(True, 0, timing(VINFO_165)) == 5700       # the 165 Hz base
+    assert core.opening(True, 0) == 8000                          # 3D's own base if unknown
+    assert core.opening(True, 800, timing(VINFO_165)) == 6500     # adjusted, on any base
+    assert core.opening(True, 800, timing(VINFO_120)) == 8800
+    assert core.opening(True, -9000, timing(VINFO_165)) == 0
+    assert core.opening(False, 800, timing(VINFO_165)) == 0       # open the whole frame
 
 
 def test_the_booter_waits_without_firmware(tmp_path, monkeypatch):
@@ -227,11 +228,11 @@ def test_the_booter_waits_without_firmware(tmp_path, monkeypatch):
 
 
 def test_a_value_snaps_to_its_setting():
-    redraw = (core.REDRAW_STEP_US, core.REDRAW_MIN_US, core.REDRAW_MAX_US)
-    assert core.snap(8100, *redraw) == 8100
-    assert core.snap(-300, *redraw) == 0                         # never below 0
-    assert core.snap(20300, *redraw) == 20000                    # the setting's maximum
-    assert core.snap(8140, *redraw) == 8100                      # back on its 100 us steps
+    adjust = (core.ADJUST_STEP_US, core.ADJUST_MIN_US, core.ADJUST_MAX_US)
+    assert core.snap(800, *adjust) == 800
+    assert core.snap(-3300, *adjust) == -3000                    # the setting's minimum
+    assert core.snap(8300, *adjust) == 8000                      # the setting's maximum
+    assert core.snap(840, *adjust) == 800                        # back on its 100 us steps
 
 
 def test_the_film_rates():

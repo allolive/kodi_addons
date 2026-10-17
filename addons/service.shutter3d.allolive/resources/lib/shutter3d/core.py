@@ -62,19 +62,17 @@ def picture_us(timing):
     return -(-lines * htotal * 1000 // step) * PICTURE_STEP_US
 
 
-def opening(closed, manual, redraw_us, timing=None):
+def opening(closed, adjust_us, timing=None):
     """How long into each eye's frame its lens opens, in us (it stays open
     until the other eye's frame starts). Closed during the redraw: both lenses stay
     closed for the redraw time at the start of each eye's frame, then that
     eye's lens opens until the next; the redraw time is the time the box takes
-    to send a picture in this HDMI mode, or the manual value. Open: the whole
+    to send a picture in this HDMI mode, plus the adjustment. Open: the whole
     frame (brightest, some crosstalk). The 3D glasses delay moves the window
     in time, not this."""
     if not closed:
         return 0
-    if manual:
-        return max(0, redraw_us)
-    return picture_us(timing) or PICTURE_US_1080P120
+    return max(0, (picture_us(timing) or PICTURE_US_1080P120) + adjust_us)
 
 
 def snap(us, step, lo, hi):
@@ -82,8 +80,8 @@ def snap(us, step, lo, hi):
     return max(lo, min(hi, int(round(us / float(step))) * step))
 
 
-# the lens_redraw_us setting's range and step (settings.xml)
-REDRAW_MIN_US, REDRAW_MAX_US, REDRAW_STEP_US = 0, 20000, 100
+# the lens_redraw_adjust_us setting's range and step (settings.xml)
+ADJUST_MIN_US, ADJUST_MAX_US, ADJUST_STEP_US = -3000, 8000, 100
 
 
 # ---- the delay per film rate, set from the settings ----------------------------

@@ -66,7 +66,7 @@ def service(monkeypatch, tmp_path):
     s.delay, s.delay_misses = None, 0
     s.item_rate = s.rate_seen = s.rate = None
     s.armed, s.hold_cancel = False, None
-    s.auto_redraw = None
+    s.adjust_from_manual = s.auto_seen = None
     s.delays = kodi.load_delays()
     return kodi, s, k
 
@@ -186,7 +186,7 @@ def test_the_tuning_panel_has_the_lens_settings_reread(monkeypatch, tmp_path):
     assert reread == [1]
 
 
-def test_the_manual_value_starts_from_the_automatic_one(monkeypatch, tmp_path):
+def test_the_redraw_time_is_automatic_plus_the_adjustment(monkeypatch, tmp_path):
     vinfo = "height: %d\nhtotal: %d\nvtotal: %d\nvideo_clk: %d\n"
     VINFO_165, VINFO_GUI = vinfo % (1080, 2080, 1169, 401000), vinfo % (2160, 4400, 2250, 594000)
     kodi, s, k = service(monkeypatch, tmp_path)
@@ -195,22 +195,36 @@ def test_the_manual_value_starts_from_the_automatic_one(monkeypatch, tmp_path):
                         raising=False)
     sysfs = {kodi.DISPLAY_VINFO: VINFO_165}
     monkeypatch.setattr(kodi, "read_sysfs", sysfs.get)
-    s.settings.lens_closed, s.settings.lens_redraw_manual, s.settings.lens_redraw_us = True, False, 8000
-    assert s._opening() == 5700
+    st = s.settings
+    st.lens_closed, st.lens_redraw_adjust_us, st.lens_redraw_auto_us = True, 200, 8000
+    st.lens_redraw_manual, st.lens_redraw_us = False, 8000
+    assert s._opening() == 5900
     assert written == {}                           # not while the board is sent its window
-    s._keep_auto_redraw()
-    assert written == {"lens_redraw_us": 5700}     # what the manual slider will start at
+    s._keep_redraw_settings()
+    assert written == {"lens_redraw_auto_us": 5700}   # shown beside the adjustment
     written.clear()
-    s._keep_auto_redraw()
-    assert written == {}                           # once
-
-    sysfs[kodi.DISPLAY_VINFO] = VINFO_GUI          # the GUI's mode is no 3D base: kept
+    st.lens_redraw_auto_us = 5700
     s._opening()
-    s._keep_auto_redraw()
+    s._keep_redraw_settings()
+    assert written == {}                           # unchanged: not written again
+
+    sysfs[kodi.DISPLAY_VINFO] = VINFO_GUI          # the GUI's mode is no 3D base
+    s._opening()
+    s._keep_redraw_settings()
     assert written == {}
 
-    s.settings.lens_redraw_manual, s.settings.lens_redraw_us = True, 6500   # manual is never rewritten
-    sysfs[kodi.DISPLAY_VINFO] = VINFO_165
-    assert s._opening() == 6500
-    s._keep_auto_redraw()
-    assert written == {}
+
+def test_an_old_manual_redraw_time_becomes_the_adjustment(monkeypatch, tmp_path):
+    vinfo = "height: %d\nhtotal: %d\nvtotal: %d\nvideo_clk: %d\n"
+    VINFO_165 = vinfo % (1080, 2080, 1169, 401000)
+    kodi, s, k = service(monkeypatch, tmp_path)
+    written = {}
+    monkeypatch.setattr(kodi.ADDON, "setSettingInt", lambda key, value: written.__setitem__(key, value),
+                        raising=False)
+    monkeypatch.setattr(kodi, "read_sysfs", {kodi.DISPLAY_VINFO: VINFO_165}.get)
+    st = s.settings
+    st.lens_closed, st.lens_redraw_adjust_us, st.lens_redraw_auto_us = True, 0, 5700
+    st.lens_redraw_manual, st.lens_redraw_us = True, 6500
+    assert s._opening() == 6500                    # the same opening as before
+    s._keep_redraw_settings()
+    assert written == {"lens_redraw_adjust_us": 800, "lens_redraw_manual": 0}

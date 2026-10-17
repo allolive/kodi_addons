@@ -73,14 +73,16 @@ the screen shows parts of both eyes; only in the gap does it show one.
 - **On** (the default): both lenses stay closed for the redraw time at the
   start of each eye's frame, then the eye's lens opens until the next frame.
   No crosstalk, but darker than the whole frame (about 2.4 ms open in
-  10.4 ms at 95.9 Hz on a 120 Hz base, 4.7 ms on a 165 Hz one). **Redraw time:**
-  - **Automatic:** the time the box takes to send a picture, from the timing
-    of the HDMI mode in use (the kernel's vinfo), rounded up to 100 µs: the
-    lens opens as early as the picture allows (8000 µs at 1080p 120 Hz,
-    5700 µs at 165 Hz). While it is on, the manual value follows it in 3D, so
-    switching to manual starts from it.
-  - **Manual:** in microseconds. More if a faint copy of the other eye
-    remains, less for a brighter picture.
+  10.4 ms at 95.9 Hz on a 120 Hz base, 4.7 ms on a 165 Hz one). The redraw
+  time is the time the box takes to send a picture, from the timing of the
+  HDMI mode in use (the kernel's vinfo), rounded up to 100 µs (8000 µs at
+  1080p 120 Hz, 5700 µs at 165 Hz), plus the **Redraw time adjustment**:
+  0 (the default) opens the lens as early as the picture allows, more if a
+  faint copy of the other eye remains, less for a brighter picture. The
+  adjustment holds on any base mode. Settings show the redraw time of the
+  last 3D film above it, and the tuning screen shows both ("5700 µs + 200
+  µs"). A manual redraw time from before 0.1.12 becomes the adjustment that
+  gives the same opening, on the next 3D film.
 - **Off:** each lens open its whole frame. Brightest, with some crosstalk.
 
 To move the window earlier or later, use the 3D glasses delay (below): it

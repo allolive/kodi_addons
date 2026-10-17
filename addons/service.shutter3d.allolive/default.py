@@ -109,9 +109,9 @@ class Tune(xbmcgui.WindowXMLDialog):
     the 3D glasses delay for the pattern's rate, with their labels, ranges,
     steps and help, applied as they change. Left/Right change the focused
     value, Select toggles, Back or Stop ends the pattern."""
-    DELAY, CLOSED, MANUAL, REDRAW, BOARD_INFO = 41, 42, 43, 44, 45
+    DELAY, CLOSED, REDRAW, BOARD_INFO = 41, 42, 44, 45
     TITLE, HELP = 50, 60
-    HELP_IDS = {DELAY: 30031, CLOSED: 30022, MANUAL: 30024, REDRAW: 30028, BOARD_INFO: 30022}
+    HELP_IDS = {DELAY: 30031, CLOSED: 30022, REDRAW: 30028, BOARD_INFO: 30022}
 
     def __init__(self, *args, **kwargs):
         self.rate = kwargs.get("rate")
@@ -141,15 +141,14 @@ class Tune(xbmcgui.WindowXMLDialog):
         them (the redraw rows only where it shows them)."""
         pi = read_state().get("kind") != "board"
         closed = ADDON.getSettingBool("lens_closed")
-        manual = ADDON.getSettingInt("lens_redraw_manual") == 1
+        adjust = ADDON.getSettingInt("lens_redraw_adjust_us")
         self.row(self.DELAY, "%s (%s fps)" % (ADDON.getLocalizedString(30030).rstrip("…."), self.rate),
                  "%d µs" % (self.delay() if delay is None else delay))
         self.row(self.BOARD_INFO, ADDON.getLocalizedString(30029))
         self.row(self.CLOSED, ADDON.getLocalizedString(30021), "On" if closed else "Off")
-        self.row(self.MANUAL, ADDON.getLocalizedString(30023), ADDON.getLocalizedString(30026 if manual else 30025))
-        self.row(self.REDRAW, ADDON.getLocalizedString(30027), str(ADDON.getSettingInt("lens_redraw_us")))
-        for control, visible in ((self.BOARD_INFO, not pi), (self.CLOSED, pi),
-                                 (self.MANUAL, pi and closed), (self.REDRAW, pi and closed and manual)):
+        self.row(self.REDRAW, ADDON.getLocalizedString(30027).replace(" (µs)", ""), "%d µs %s %d µs" % (
+            redraw_auto_us(), "-" if adjust < 0 else "+", abs(adjust)))
+        for control, visible in ((self.BOARD_INFO, not pi), (self.CLOSED, pi), (self.REDRAW, pi and closed)):
             if self.texts.get(("visible", control)) != visible:
                 self.texts[("visible", control)] = visible
                 self.getControl(control).setVisible(visible)
@@ -181,12 +180,10 @@ class Tune(xbmcgui.WindowXMLDialog):
             return
         if control == self.CLOSED:
             ADDON.setSettingBool("lens_closed", not ADDON.getSettingBool("lens_closed"))
-        elif control == self.MANUAL:
-            ADDON.setSettingInt("lens_redraw_manual", 1 - ADDON.getSettingInt("lens_redraw_manual"))
         elif control == self.REDRAW and step:
-            ADDON.setSettingInt("lens_redraw_us", core.snap(
-                ADDON.getSettingInt("lens_redraw_us") + step * core.REDRAW_STEP_US,
-                core.REDRAW_STEP_US, core.REDRAW_MIN_US, core.REDRAW_MAX_US))
+            ADDON.setSettingInt("lens_redraw_adjust_us", core.snap(
+                ADDON.getSettingInt("lens_redraw_adjust_us") + step * core.ADJUST_STEP_US,
+                core.ADJUST_STEP_US, core.ADJUST_MIN_US, core.ADJUST_MAX_US))
         else:
             return
         tell_service("lens")                     # the service rereads them at once
@@ -288,6 +285,19 @@ def playing_pattern(player, pattern):
         return player.isPlayingVideo() and player.getPlayingFile() == pattern
     except RuntimeError:                         # it stopped in between
         return False
+
+
+def redraw_auto_us():
+    """The automatic redraw time of the mode being sent, while it is a 3D base,
+    else the one the service kept from the last 3D film."""
+    try:
+        with open("/sys/class/display/vinfo") as f:
+            timing = core.parse_vinfo(f.read())
+    except OSError:
+        timing = None
+    if core.is_3d_base(timing):
+        return core.picture_us(timing)
+    return ADDON.getSettingInt("lens_redraw_auto_us")
 
 
 def kodi_delay():
