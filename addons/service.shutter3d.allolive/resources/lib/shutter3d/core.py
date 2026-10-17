@@ -24,34 +24,68 @@ def sync_line(vsync, ns, eye):
 
 # ---- the lens window ---------------------------------------------------------
 
+PICTURE_STEP_US = 100           # the send time is rounded up to this
+
 # total lines (active and blanking) of the CEA modes, by active lines
 TOTAL_LINES = {480: 525, 576: 625, 720: 750, 1080: 1125, 2160: 2250}
 
-# the modes a sink lists in its DisplayID ("...hzV"), by active lines and rate:
-# their blanking is not the CEA one (an LG 2025 OLED's 1080p165 has 1169 lines)
-TOTAL_LINES_V = {(1080, 165): 1169}
+
+def _round_up(num, den):
+    """num / den us, rounded up to the next PICTURE_STEP_US"""
+    return -(-num // (den * PICTURE_STEP_US)) * PICTURE_STEP_US
 
 
-def picture_us(mode):
-    """How long the box takes to send one picture in this HDMI mode
-    ("1080p120hz", "1920x1080p165hzV"): the active lines of a frame at the
-    mode's own rate. VRR slows the refresh by lengthening the blanking after the
-    picture, so this does not change with the film rate. None for a mode it
-    cannot read."""
-    m = re.search(r"(\d+)[pi](\d+)hz(V?)", mode or "")
+def parse_vinfo(text):
+    """/sys/class/display/vinfo: (active lines, line length in pixels, lines
+    per frame, pixel clock in kHz) of the mode being sent, or None."""
+    fields = {}
+    for line in (text or "").splitlines():
+        key, _, value = line.partition(":")
+        fields.setdefault(key.strip(), value.strip())
+    try:
+        timing = tuple(int(fields[k]) for k in ("height", "htotal", "vtotal", "video_clk"))
+    except (KeyError, ValueError):
+        return None
+    return timing if all(v > 0 for v in timing) else None
+
+
+BASE_MIN_HZ = 96                # a mode this fast is a 3D base (120, 144, 165), not the GUI's
+
+
+def is_3d_base(vinfo):
+    """The mode being sent is fast enough to carry frame-sequential 3D."""
+    timing = parse_vinfo(vinfo)
+    if not timing:
+        return False
+    _, htotal, vtotal, clock_khz = timing
+    return clock_khz * 1000 >= BASE_MIN_HZ * htotal * vtotal
+
+
+def picture_us(vinfo=None, mode=None):
+    """How long the box takes to send one picture, in us rounded up to 100:
+    the active lines of a frame at the pixel clock of the mode being sent, as
+    the kernel's vinfo states them, so any mode a sink lists is read as it is.
+    Without vinfo, from a CEA mode's name ("1080p120hz"). VRR slows the
+    refresh by lengthening the blanking after the picture, so this does not
+    change with the film rate. None for a mode it cannot read."""
+    timing = parse_vinfo(vinfo)
+    if timing:
+        lines, htotal, _, clock_khz = timing
+        return _round_up(lines * htotal * 1000, clock_khz)
+    m = re.search(r"(\d+)[pi](\d+)hz$", mode or "")
     if not m:
         return None
     lines, hz = int(m.group(1)), int(m.group(2))
-    total = TOTAL_LINES_V.get((lines, hz)) if m.group(3) else TOTAL_LINES.get(lines)
+    total = TOTAL_LINES.get(lines)
     if not total or hz <= 0:
         return None
-    return int(round(1e6 / hz * lines / total))
+    return _round_up(lines * 1000000, hz * total)
 
 
-PICTURE_US_1080P120 = picture_us("1080p120hz")   # 3D always plays on a 1080p 120 Hz base
+PICTURE_US_1080P120 = picture_us(mode="1080p120hz")   # the base 3D plays on without a faster one
 
 
-def opening(closed, manual, redraw_us, display_mode):
+def opening(closed, manual, redraw_us, vinfo=None, mode=None):
     """How long into each eye's frame its lens opens, in us (it stays open
     until the other eye's frame starts). Closed during the redraw: both lenses stay
     closed for the redraw time at the start of each eye's frame, then that
@@ -63,7 +97,7 @@ def opening(closed, manual, redraw_us, display_mode):
         return 0
     if manual:
         return max(0, redraw_us)
-    return picture_us(display_mode) or PICTURE_US_1080P120
+    return picture_us(vinfo, mode) or PICTURE_US_1080P120
 
 
 def snap(us, step, lo, hi):

@@ -183,3 +183,27 @@ def test_the_tuning_panel_has_the_lens_settings_reread(monkeypatch, tmp_path):
     s._publish = lambda: None
     s.onNotification("service.shutter3d.allolive", "Other.lens", "")
     assert reread == [1]
+
+
+def test_the_manual_value_starts_from_the_automatic_one(monkeypatch, tmp_path):
+    vinfo = "height: %d\nhtotal: %d\nvtotal: %d\nvideo_clk: %d\n"
+    VINFO_165, VINFO_GUI = vinfo % (1080, 2080, 1169, 401000), vinfo % (2160, 4400, 2250, 594000)
+    kodi, s, k = service(monkeypatch, tmp_path)
+    written = {}
+    monkeypatch.setattr(kodi.ADDON, "setSettingInt", lambda key, value: written.__setitem__(key, value),
+                        raising=False)
+    sysfs = {kodi.DISPLAY_MODE: "1920x1080p165hzV", kodi.DISPLAY_VINFO: VINFO_165}
+    monkeypatch.setattr(kodi, "read_sysfs", sysfs.get)
+    s.settings.lens_closed, s.settings.lens_redraw_manual, s.settings.lens_redraw_us = True, False, 8000
+    assert s._opening() == 5700
+    assert written == {"lens_redraw_us": 5700}     # what the manual slider will start at
+
+    written.clear()                                 # the GUI's mode is no 3D base: kept
+    sysfs.update({kodi.DISPLAY_MODE: "2160p60hz", kodi.DISPLAY_VINFO: VINFO_GUI})
+    s._opening()
+    assert written == {}
+
+    s.settings.lens_redraw_manual, s.settings.lens_redraw_us = True, 6500   # manual is never rewritten
+    sysfs.update({kodi.DISPLAY_MODE: "1920x1080p165hzV", kodi.DISPLAY_VINFO: VINFO_165})
+    assert s._opening() == 6500
+    assert written == {}

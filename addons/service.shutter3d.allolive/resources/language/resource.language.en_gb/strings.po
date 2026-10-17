@@ -40,7 +40,7 @@ msgid "Redraw time"
 msgstr ""
 
 msgctxt "#30024"
-msgid "Automatic: the time the box takes to send a picture, worked out from the display mode in use (1080 of the 1125 lines at 120 Hz: 8.0 ms). Manual: set it yourself."
+msgid "Automatic: the time the box takes to send a picture in the display mode in use, rounded up to 100 µs, so the lens opens as early as it can (8000 µs at 1080p 120 Hz, 5700 µs at 165 Hz). Manual: set it yourself, starting from the automatic value of the last 3D film."
 msgstr ""
 
 msgctxt "#30025"
@@ -56,7 +56,7 @@ msgid "Redraw time (µs)"
 msgstr ""
 
 msgctxt "#30028"
-msgid "How long both lenses stay closed at the start of each eye's frame. More if a faint copy of the other eye remains, less for a brighter picture. 8000 is the time the box takes to send a picture at 1080p 120 Hz."
+msgid "How long both lenses stay closed at the start of each eye's frame. More if a faint copy of the other eye remains, less for a brighter picture. It starts at the automatic value of the last 3D film."
 msgstr ""
 
 msgctxt "#30029"

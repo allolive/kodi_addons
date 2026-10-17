@@ -30,6 +30,7 @@ START_WAIT_S = 5.0               # a hold waits this long for the film to be pla
 RATES = core.FILM_RATES + core.OTHER_RATES
 DELAYS_FILE = "special://profile/addon_data/%s/delays.json" % ADDON_ID
 DISPLAY_MODE = "/sys/class/display/mode"     # the HDMI mode, "1080p120hz" during 3D
+DISPLAY_VINFO = "/sys/class/display/vinfo"   # its timing: active lines, line length, pixel clock
 
 
 def log(msg, level=xbmc.LOGINFO):
@@ -45,9 +46,9 @@ class Settings:
         self.lens_redraw_us = a.getSettingInt("lens_redraw_us")
 
 
-def display_mode():
+def read_sysfs(path):
     try:
-        with open(DISPLAY_MODE) as f:
+        with open(path) as f:
             return f.read().strip()
     except OSError:
         return None
@@ -80,7 +81,14 @@ class Service(xbmc.Monitor):
         """The lens window for the emitter, from the settings and the HDMI
         mode in use (read each time: 3D switches the mode)."""
         s = self.settings
-        return core.opening(s.lens_closed, s.lens_redraw_manual, s.lens_redraw_us, display_mode())
+        vinfo = read_sysfs(DISPLAY_VINFO)
+        us = core.opening(s.lens_closed, s.lens_redraw_manual, s.lens_redraw_us,
+                          vinfo, read_sysfs(DISPLAY_MODE))
+        # the manual value starts from the automatic one of the 3D base in use
+        if s.lens_closed and not s.lens_redraw_manual and us != s.lens_redraw_us and \
+                core.is_3d_base(vinfo):
+            ADDON.setSettingInt("lens_redraw_us", us)
+        return us
 
     def onNotification(self, sender, method, data):
         if sender == "xbmc":

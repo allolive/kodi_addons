@@ -61,9 +61,10 @@ Pairing:
 
 ## Closing the lenses while the screen redraws (Bluetooth glasses)
 
-The box sends each picture at 120 Hz speed, 1080 of the 1125 lines of a
-1080p 120 Hz frame: about 8.0 ms. VRR then lengthens the gap after it to the
-film rate (10.4 ms a frame at 95.9 Hz). While the new picture is being drawn
+The box sends each picture at the speed of the 3D base mode: 1080 of the
+1125 lines of a 1080p 120 Hz frame take 8.0 ms, 1080 of the 1169 lines of an
+LG 2025 OLED's 1080p 165 Hz mode 5.6 ms. VRR then lengthens the gap after it
+to the film rate (10.4 ms a frame at 95.9 Hz). While the new picture is being drawn
 the screen shows parts of both eyes; only in the gap does it show one.
 
 *Settings → Close the lenses while the screen redraws*:
@@ -71,9 +72,12 @@ the screen shows parts of both eyes; only in the gap does it show one.
 - **On** (the default): both lenses stay closed for the redraw time at the
   start of each eye's frame, then the eye's lens opens until the next frame.
   No crosstalk, but darker than the whole frame (about 2.4 ms open in
-  10.4 ms at 95.9 Hz). **Redraw time:**
-  - **Automatic:** the time the box takes to send a picture, worked out from
-    the HDMI mode in use (8.0 ms at 1080p 120 Hz).
+  10.4 ms at 95.9 Hz on a 120 Hz base, 4.7 ms on a 165 Hz one). **Redraw time:**
+  - **Automatic:** the time the box takes to send a picture, from the timing
+    of the HDMI mode in use (the kernel's vinfo), rounded up to 100 µs: the
+    lens opens as early as the picture allows (8000 µs at 1080p 120 Hz,
+    5700 µs at 165 Hz). While it is on, the manual value follows it in 3D, so
+    switching to manual starts from it.
   - **Manual:** in microseconds. More if a faint copy of the other eye
     remains, less for a brighter picture.
 - **Off:** each lens open its whole frame. Brightest, with some crosstalk.

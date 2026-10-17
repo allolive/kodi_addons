@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.shutter3d.allolive"
        name="Active 3D for 120 Hz VRR displays (allolive)"
-       version="0.1.8"
+       version="0.1.9"
        provider-name="allolive">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>

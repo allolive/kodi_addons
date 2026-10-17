@@ -166,25 +166,57 @@ def test_without_a_bundled_image_any_pi_is_used(monkeypatch):
     assert connected
 
 
+# /sys/class/display/vinfo as the kernel writes it (trimmed)
+VINFO = """current vinfo:
+    name:                  %s
+    width:                 1920
+    height:                %d
+    htotal:                %d
+    vtotal:                %d
+    video_clk:             %d
+    cs:                    2
+"""
+
+VINFO_165 = VINFO % ("1920x1080p165hzV", 1080, 2080, 1169, 401000)   # an LG 2025 OLED's DisplayID mode
+VINFO_144 = VINFO % ("1920x1080p144hzV", 1080, 2080, 1157, 346500)   # a 144 Hz sink's, as one lists it
+VINFO_120 = VINFO % ("1080p120hz", 1080, 2200, 1125, 297000)
+VINFO_GUI = VINFO % ("2160p60hz", 2160, 4400, 2250, 594000)
+
+
 def test_the_picture_time_of_a_mode():
-    assert core.picture_us("1080p120hz") == 8000          # 1080 of 1125 lines at 120 Hz
-    assert core.picture_us("1080p60hz") == 16000
-    assert core.picture_us("720p50hz") == 19200
-    assert core.picture_us("1920x1080p120hz") == 8000     # the name HFR VRR's mode has
-    assert core.picture_us("1920x1080p165hzV") == 5599    # 1080 of 1169 lines at 165 Hz
-    assert core.picture_us("1920x1080p144hzV") is None    # a DisplayID mode not measured
-    assert core.picture_us("smpte24hz") is None
-    assert core.picture_us(None) is None
+    # from the timing the kernel sends, rounded up to 100 us
+    assert core.picture_us(VINFO_120) == 8000          # 1080 lines of 2200 pixels at 297 MHz: 8000.0
+    assert core.picture_us(VINFO_165) == 5700          # 5602.0
+    assert core.picture_us(VINFO_144) == 6500          # 6483.1
+    # without vinfo, from a CEA mode's name
+    assert core.picture_us(mode="1080p120hz") == 8000
+    assert core.picture_us(mode="1080p60hz") == 16000
+    assert core.picture_us(mode="720p50hz") == 19200
+    assert core.picture_us(mode="1920x1080p120hz") == 8000     # the name HFR VRR's mode has
+    assert core.picture_us(mode="1920x1080p165hzV") is None    # a DisplayID mode: its timing is the sink's
+    assert core.picture_us(mode="smpte24hz") is None
+    assert core.picture_us("no timing here", None) is None
+    assert core.picture_us(None, None) is None
+
+
+def test_a_3d_base_is_a_fast_mode():
+    assert core.is_3d_base(VINFO_120)
+    assert core.is_3d_base(VINFO_144)
+    assert core.is_3d_base(VINFO_165)
+    assert not core.is_3d_base(VINFO_GUI)
+    assert not core.is_3d_base(None)
 
 
 def test_the_lens_window():
     # closed for the redraw time, then open until the next frame
-    assert core.opening(True, False, 0, "1080p120hz") == 8000       # automatic
-    assert core.opening(True, False, 0, None) == 8000               # 3D's own base if unknown
-    assert core.opening(True, False, 0, "1920x1080p165hzV") == 5599   # the 165 Hz base
-    assert core.opening(True, True, 8200, "1080p120hz") == 8200     # manual
-    assert core.opening(True, True, -5, "1080p120hz") == 0
-    assert core.opening(False, True, 8200, "1080p120hz") == 0       # open the whole frame
+    assert core.opening(True, False, 0, VINFO_120) == 8000          # automatic
+    assert core.opening(True, False, 0, VINFO_165) == 5700          # the 165 Hz base
+    assert core.opening(True, False, 0, None, "1080p120hz") == 8000
+    assert core.opening(True, False, 0) == 8000                     # 3D's own base if unknown
+    assert core.opening(True, True, 8200, VINFO_165) == 8200        # manual
+    assert core.opening(True, True, -5, VINFO_165) == 0
+    assert core.opening(False, True, 8200, VINFO_165) == 0          # open the whole frame
+
 
 def test_the_booter_waits_without_firmware(tmp_path, monkeypatch):
     logs = []
