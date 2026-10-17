@@ -66,6 +66,7 @@ def service(monkeypatch, tmp_path):
     s.delay, s.delay_misses = None, 0
     s.item_rate = s.rate_seen = s.rate = None
     s.armed, s.hold_cancel = False, None
+    s.auto_redraw = None
     s.delays = kodi.load_delays()
     return kodi, s, k
 
@@ -192,18 +193,24 @@ def test_the_manual_value_starts_from_the_automatic_one(monkeypatch, tmp_path):
     written = {}
     monkeypatch.setattr(kodi.ADDON, "setSettingInt", lambda key, value: written.__setitem__(key, value),
                         raising=False)
-    sysfs = {kodi.DISPLAY_MODE: "1920x1080p165hzV", kodi.DISPLAY_VINFO: VINFO_165}
+    sysfs = {kodi.DISPLAY_VINFO: VINFO_165}
     monkeypatch.setattr(kodi, "read_sysfs", sysfs.get)
     s.settings.lens_closed, s.settings.lens_redraw_manual, s.settings.lens_redraw_us = True, False, 8000
     assert s._opening() == 5700
+    assert written == {}                           # not while the board is sent its window
+    s._keep_auto_redraw()
     assert written == {"lens_redraw_us": 5700}     # what the manual slider will start at
+    written.clear()
+    s._keep_auto_redraw()
+    assert written == {}                           # once
 
-    written.clear()                                 # the GUI's mode is no 3D base: kept
-    sysfs.update({kodi.DISPLAY_MODE: "2160p60hz", kodi.DISPLAY_VINFO: VINFO_GUI})
+    sysfs[kodi.DISPLAY_VINFO] = VINFO_GUI          # the GUI's mode is no 3D base: kept
     s._opening()
+    s._keep_auto_redraw()
     assert written == {}
 
     s.settings.lens_redraw_manual, s.settings.lens_redraw_us = True, 6500   # manual is never rewritten
-    sysfs.update({kodi.DISPLAY_MODE: "1920x1080p165hzV", kodi.DISPLAY_VINFO: VINFO_165})
+    sysfs[kodi.DISPLAY_VINFO] = VINFO_165
     assert s._opening() == 6500
+    s._keep_auto_redraw()
     assert written == {}

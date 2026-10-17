@@ -29,8 +29,7 @@ TICK_S = 0.25                    # how soon a delay change reaches the board
 START_WAIT_S = 5.0               # a hold waits this long for the film to be playing
 RATES = core.FILM_RATES + core.OTHER_RATES
 DELAYS_FILE = "special://profile/addon_data/%s/delays.json" % ADDON_ID
-DISPLAY_MODE = "/sys/class/display/mode"     # the HDMI mode, "1080p120hz" during 3D
-DISPLAY_VINFO = "/sys/class/display/vinfo"   # its timing: active lines, line length, pixel clock
+DISPLAY_VINFO = "/sys/class/display/vinfo"   # the HDMI mode's timing: lines, line length, pixel clock
 
 
 def log(msg, level=xbmc.LOGINFO):
@@ -72,6 +71,7 @@ class Service(xbmc.Monitor):
         self.delays = load_delays()              # film rate -> delay, with a delay per frame rate
         self.armed = False                       # the playing item may still get its start pause
         self.hold_cancel = None                  # the running start pause's cancel
+        self.auto_redraw = None                  # the automatic redraw time of a 3D base, to keep
 
     def onSettingsChanged(self):
         self.settings = Settings()
@@ -81,14 +81,18 @@ class Service(xbmc.Monitor):
         """The lens window for the emitter, from the settings and the HDMI
         mode in use (read each time: 3D switches the mode)."""
         s = self.settings
-        vinfo = read_sysfs(DISPLAY_VINFO)
-        us = core.opening(s.lens_closed, s.lens_redraw_manual, s.lens_redraw_us,
-                          vinfo, read_sysfs(DISPLAY_MODE))
-        # the manual value starts from the automatic one of the 3D base in use
-        if s.lens_closed and not s.lens_redraw_manual and us != s.lens_redraw_us and \
-                core.is_3d_base(vinfo):
-            ADDON.setSettingInt("lens_redraw_us", us)
+        timing = core.parse_vinfo(read_sysfs(DISPLAY_VINFO))
+        us = core.opening(s.lens_closed, s.lens_redraw_manual, s.lens_redraw_us, timing)
+        if s.lens_closed and not s.lens_redraw_manual and core.is_3d_base(timing):
+            self.auto_redraw = us
         return us
+
+    def _keep_auto_redraw(self):
+        """The manual value starts from the automatic one of the 3D base in
+        use: written here, after the board has its window, not while sending it."""
+        us, self.auto_redraw = self.auto_redraw, None
+        if us is not None and us != self.settings.lens_redraw_us:
+            ADDON.setSettingInt("lens_redraw_us", us)
 
     def onNotification(self, sender, method, data):
         if sender == "xbmc":
@@ -212,6 +216,7 @@ class Service(xbmc.Monitor):
                 self._start_hold()
             self._follow_rate()
             self._follow_delay()
+            self._keep_auto_redraw()
             self._publish()
         # a running hold sees the abort too and gives the film back
         self.link.stop()
