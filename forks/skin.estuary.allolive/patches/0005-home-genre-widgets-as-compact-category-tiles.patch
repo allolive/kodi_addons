@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 05/14] home: genre widgets as compact category tiles
+Subject: [PATCH 05/23] home: genre widgets as compact category tiles
 
 Moves the movie and TV genre widgets up the home widget list and
 renders category widgets with a new CategoryTileLayout (rounded tile,
@@ -95,7 +95,7 @@ index 5a9783b..9913559 100644
  					</control>
  					<include content="ImageWidget" condition="!Library.HasContent(musicvideos)">
 diff --git a/xml/Includes.xml b/xml/Includes.xml
-index 87422ec..66cfb82 100644
+index b7ebe63..eb635bc 100644
 --- a/xml/Includes.xml
 +++ b/xml/Includes.xml
 @@ -308,7 +308,7 @@

@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Fri, 9 Oct 2026 10:27:27 -0400
-Subject: [PATCH 16/17] OSD: the subtitle button stays enabled without
+Subject: [PATCH 16/23] OSD: the subtitle button stays enabled without
  subtitles
 
 Its dialog is also where subtitles are downloaded, so a film without

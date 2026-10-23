@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Sat, 17 Oct 2026 13:20:23 -0400
+Subject: [PATCH 20/23] subtitle select dialog: 3D depth button
+
+A 3D depth button next to Offset in the subtitle select dialog, while a
+film plays in 3D: it shows the film's subtitle depth and opens its
+slider (Kodi's subtitledepth action), the subtitles moving as the slider
+does. Needs a Kodi with that action and Player.SubtitleDepth.
+---
+ xml/Includes_DialogSelect.xml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
+index 7e9a38c..11f8043 100644
+--- a/xml/Includes_DialogSelect.xml
++++ b/xml/Includes_DialogSelect.xml
+@@ -803,6 +803,12 @@
+ 					<param name="label" value="Offset $VAR[SubtitleDelayDisplayVar]" />
+ 					<param name="onclick" value="Action(subtitledelay)" />
+ 				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70100" />
++					<param name="label" value="3D depth $INFO[Player.SubtitleDepth]" />
++					<param name="onclick" value="Action(subtitledepth)" />
++					<param name="visible" value="!String.IsEqual(System.StereoscopicMode,0) + !String.IsEqual(System.StereoscopicMode,9)" />
++				</include>
+ 				<include content="DefaultDialogButton">
+ 					<param name="id" value="70098" />
+ 					<param name="label" value="Realign $VAR[SubtitleRealignDisplayVar]" />

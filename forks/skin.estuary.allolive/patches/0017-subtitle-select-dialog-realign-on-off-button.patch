@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Thu, 15 Oct 2026 18:33:34 -0400
-Subject: [PATCH 17/17] subtitle select dialog: realign on/off button
+Subject: [PATCH 17/23] subtitle select dialog: realign on/off button
 
 The subtitle select dialog gets a side button that turns the
 realignment of a subtitle file on or off while the video plays,
@@ -31,7 +31,7 @@ index 113b712..447e4b8 100644
  					<param name="id" value="70093" />
  					<param name="label" value="Settings" />
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index 1f7f4a4..19e5cc1 100644
+index 399c4c0..23730ec 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
 @@ -368,6 +368,10 @@

@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 03/14] rounded tiles, buttons and poster art
+Subject: [PATCH 03/23] rounded tiles, buttons and poster art
 
 Rounded-corner look: a lists/rounded-tile.png focus/background texture
 for the settings home panel (resized to 5 x 350px tiles), settings
@@ -484,7 +484,7 @@ index 4595220..fd91390 100644
  						</control>
  						<control type="image">
 diff --git a/xml/Includes.xml b/xml/Includes.xml
-index 1456868..87422ec 100644
+index d7c6bc8..b7ebe63 100644
 --- a/xml/Includes.xml
 +++ b/xml/Includes.xml
 @@ -1644,70 +1644,68 @@

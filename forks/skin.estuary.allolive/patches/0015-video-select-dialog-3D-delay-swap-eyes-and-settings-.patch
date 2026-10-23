@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Fri, 9 Oct 2026 10:27:27 -0400
-Subject: [PATCH 15/17] video select dialog: 3D delay, swap eyes and settings
+Subject: [PATCH 15/23] video select dialog: 3D delay, swap eyes and settings
  buttons
 
 The video stream select dialog gets side buttons like the audio and
@@ -44,7 +44,7 @@ index b028dcd..113b712 100644
  			</control>
  		</control>
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index 691c36e..1f7f4a4 100644
+index ef6d0cd..399c4c0 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
 @@ -364,6 +364,10 @@

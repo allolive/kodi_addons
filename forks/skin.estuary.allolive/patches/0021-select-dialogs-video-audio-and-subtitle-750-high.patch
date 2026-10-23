@@ -1,0 +1,59 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Sat, 17 Oct 2026 14:40:54 -0400
+Subject: [PATCH 21/23] select dialogs: video, audio and subtitle 750 high
+
+The subtitle select dialog was 550 high and its buttons, one every 80
+from the top, need up to 740 with all of them shown: Settings went past
+its foot. The audio, subtitle and video select dialogs are now all 750
+high, centred as before, with room for every button.
+---
+ xml/Includes_DialogSelect.xml | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
+index 11f8043..58085d8 100644
+--- a/xml/Includes_DialogSelect.xml
++++ b/xml/Includes_DialogSelect.xml
+@@ -225,11 +225,11 @@
+ 		<control type="group">
+ 			<centertop>50%</centertop>
+ 			<centerleft>50%</centerleft>
+-			<height>870</height>
++			<height>750</height>
+ 			<width>1270</width>
+ 			<include content="DialogBackgroundCommons">
+ 				<param name="width" value="1270" />
+-				<param name="height" value="870" />
++				<param name="height" value="750" />
+ 				<param name="header_label" value="" />
+ 				<param name="header_id" value="1" />
+ 			</include>
+@@ -431,11 +431,11 @@
+ 		<control type="group">
+ 			<centertop>50%</centertop>
+ 			<centerleft>50%</centerleft>
+-			<height>550</height>
++			<height>750</height>
+ 			<width>1270</width>
+ 			<include content="DialogBackgroundCommons">
+ 				<param name="width" value="1270" />
+-				<param name="height" value="550" />
++				<param name="height" value="750" />
+ 				<param name="header_label" value="" />
+ 				<param name="header_id" value="1" />
+ 			</include>
+@@ -623,11 +623,11 @@
+ 		<control type="group">
+ 			<centertop>50%</centertop>
+ 			<centerleft>50%</centerleft>
+-			<height>550</height>
++			<height>750</height>
+ 			<width>1220</width>
+ 			<include content="DialogBackgroundCommons">
+ 				<param name="width" value="1220" />
+-				<param name="height" value="550" />
++				<param name="height" value="750" />
+ 				<param name="header_label" value="" />
+ 				<param name="header_id" value="1" />
+ 			</include>

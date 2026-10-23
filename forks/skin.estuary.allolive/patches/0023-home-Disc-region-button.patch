@@ -1,0 +1,72 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Fri, 23 Oct 2026 17:50:18 -0400
+Subject: [PATCH 23/23] home: Disc region button
+
+The Disc section gets a Region button that opens Settings > Player > Discs
+on the Blu-ray region, the DVD one just above it. The image widget takes a
+fourth and fifth optional button for it, which also lets the Disc
+section's Rip CD button show for an audio CD.
+
+Signed-off-by: allolive <160342668+allolive@users.noreply.github.com>
+---
+ xml/Home.xml          |  3 +++
+ xml/Includes_Home.xml | 24 ++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
+
+diff --git a/xml/Home.xml b/xml/Home.xml
+index 9913559..81c5b63 100644
+--- a/xml/Home.xml
++++ b/xml/Home.xml
+@@ -894,6 +894,9 @@
+ 						<param name="button4_label" value="$LOCALIZE[600]"/>
+ 						<param name="button4_onclick" value="RipCD"/>
+ 						<param name="visible_4" value="System.HasMediaAudioCD"/>
++						<param name="button5_label" value="$LOCALIZE[20026]"/>
++						<param name="button5_onclick" value="ActivateWindow(PlayerSettings,bluray.playerregion,return)"/>
++						<param name="visible_5" value="!System.HasMediaAudioCD"/>
+ 					</include>
+ 				</control>
+ 			</control>
+diff --git a/xml/Includes_Home.xml b/xml/Includes_Home.xml
+index c7536c5..6b47a4d 100644
+--- a/xml/Includes_Home.xml
++++ b/xml/Includes_Home.xml
+@@ -82,6 +82,8 @@
+ 		<param name="visible_1">true</param>
+ 		<param name="visible_2">true</param>
+ 		<param name="visible_3">false</param>
++		<param name="visible_4">false</param>
++		<param name="visible_5">false</param>
+ 		<param name="button2_label">$LOCALIZE[31116]</param>
+ 		<param name="button2_onclick">true</param>
+ 		<definition>
+@@ -143,6 +145,28 @@
+ 							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+ 							<visible>$PARAM[visible_3]</visible>
+ 						</control>
++						<control type="button" id="$PARAM[button_id]570">
++							<width>auto</width>
++							<height>110</height>
++							<label>$PARAM[button4_label]</label>
++							<textoffsetx>40</textoffsetx>
++							<onclick>$PARAM[button4_onclick]</onclick>
++							<align>center</align>
++							<texturefocus border="25" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
++							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
++							<visible>$PARAM[visible_4]</visible>
++						</control>
++						<control type="button" id="$PARAM[button_id]571">
++							<width>auto</width>
++							<height>110</height>
++							<label>$PARAM[button5_label]</label>
++							<textoffsetx>40</textoffsetx>
++							<onclick>$PARAM[button5_onclick]</onclick>
++							<align>center</align>
++							<texturefocus border="25" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
++							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
++							<visible>$PARAM[visible_5]</visible>
++						</control>
+ 					</control>
+ 				</control>
+ 			</control>

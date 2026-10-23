@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Fri, 16 Oct 2026 12:27:09 -0400
+Subject: [PATCH 19/23] subtitle select dialog: translate-to button
+
+Signed-off-by: allolive <160342668+allolive@users.noreply.github.com>
+---
+ xml/Includes_DialogSelect.xml | 6 ++++++
+ xml/Variables.xml             | 4 ++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
+index ef58f33..7e9a38c 100644
+--- a/xml/Includes_DialogSelect.xml
++++ b/xml/Includes_DialogSelect.xml
+@@ -808,6 +808,12 @@
+ 					<param name="label" value="Realign $VAR[SubtitleRealignDisplayVar]" />
+ 					<param name="onclick" value="PlayerControl(SubtitleRealign)" />
+ 				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70089" />
++					<param name="label" value="$VAR[SubtitleTranslateDisplayVar]" />
++					<param name="onclick" value="PlayerControl(SubtitleTranslate)" />
++					<param name="visible" value="!String.IsEmpty(VideoPlayer.SubtitleTranslate)" />
++				</include>
+ 				<include content="DefaultDialogButton">
+ 					<param name="id" value="70093" />
+ 					<param name="label" value="Settings" />
+diff --git a/xml/Variables.xml b/xml/Variables.xml
+index 23730ec..9401b7a 100644
+--- a/xml/Variables.xml
++++ b/xml/Variables.xml
+@@ -372,6 +372,10 @@
+ 		<value condition="VideoPlayer.SubtitleRealign">$LOCALIZE[16041]</value>
+ 		<value>$LOCALIZE[16039]</value>
+ 	</variable>
++	<variable name="SubtitleTranslateDisplayVar">
++		<value condition="String.IsEqual(VideoPlayer.SubtitleTranslate,$LOCALIZE[16039])">Translate $LOCALIZE[16039]</value>
++		<value>$LOCALIZE[60098] $INFO[VideoPlayer.SubtitleTranslate]</value>
++	</variable>
+ 	<variable name="SubtitleDelayDisplayVar">
+ 		<value condition="String.IsEqual(Player.SubtitleDelay,-0.000 s)">0.000 s</value>
+ 		<value>$INFO[Player.SubtitleDelay]</value>

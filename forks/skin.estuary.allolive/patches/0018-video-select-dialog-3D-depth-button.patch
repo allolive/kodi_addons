@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Fri, 16 Oct 2026 11:00:00 -0400
+Subject: [PATCH 18/23] video select dialog: 3D depth button
+
+A 3D depth button next to 3D delay in the video stream select dialog, in
+HFR VRR only: it shows the film's depth and opens its slider (Kodi's
+stereodepth action), the picture moving as the slider does. Needs a Kodi
+with that action and Player.StereoDepth.
+---
+ xml/Includes_DialogSelect.xml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
+index 447e4b8..ef58f33 100644
+--- a/xml/Includes_DialogSelect.xml
++++ b/xml/Includes_DialogSelect.xml
+@@ -402,6 +402,12 @@
+ 					<param name="onclick" value="Action(fs3ddelay)" />
+ 					<param name="visible" value="String.IsEqual(System.StereoscopicMode,10)" />
+ 				</include>
++				<include content="DefaultDialogButton">
++					<param name="id" value="70099" />
++					<param name="label" value="3D depth $INFO[Player.StereoDepth]" />
++					<param name="onclick" value="Action(stereodepth)" />
++					<param name="visible" value="String.IsEqual(System.StereoscopicMode,10)" />
++				</include>
+ 				<include content="DefaultDialogButton">
+ 					<param name="id" value="70096" />
+ 					<param name="label" value="Swap eyes $VAR[StereoInvertDisplayVar]" />

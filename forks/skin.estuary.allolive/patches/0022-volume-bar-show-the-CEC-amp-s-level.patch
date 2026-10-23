@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Sat, 17 Oct 2026 15:05:00 -0400
+Subject: [PATCH 22/23] volume bar: show the CEC amp's level
+
+When an amp handles volume over CEC, Kodi's own volume sits at 100% and
+the ring would always be full. Kodi (patch 21-kodi-cec_volume) publishes
+the amp's level, 0-100, as the Home window property cec.ampvolume, empty
+while the amp does not handle volume. While it is set, the ring fills to
+the amp's level and the number replaces the speaker icon; muted still
+shows the mute icon. Without it the bar is unchanged.
+---
+ xml/DialogVolumeBar.xml | 15 ++++++++++++++-
+ xml/Variables.xml       |  4 ++++
+ 2 files changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/xml/DialogVolumeBar.xml b/xml/DialogVolumeBar.xml
+index 2ac0aa6..59c2b4b 100644
+--- a/xml/DialogVolumeBar.xml
++++ b/xml/DialogVolumeBar.xml
+@@ -35,7 +35,7 @@
+ 				<top>15</top>
+ 				<width>68</width>
+ 				<height>68</height>
+-				<texture>$INFO[Control.GetLabel(29999),dialogs/volume/progress/p,.png]</texture>
++				<texture>$VAR[VolumeRingVar]</texture>
+ 				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+ 			</control>
+ 			<control type="image">
+@@ -44,6 +44,19 @@
+ 				<width>40</width>
+ 				<height>40</height>
+ 				<texture colordiffuse="white">$VAR[VolumeIconVar]</texture>
++				<visible>String.IsEmpty(Window(Home).Property(cec.ampvolume)) | Player.Muted</visible>
++			</control>
++			<control type="label">
++				<left>22</left>
++				<top>15</top>
++				<width>68</width>
++				<height>68</height>
++				<align>center</align>
++				<aligny>center</aligny>
++				<font>font27</font>
++				<textcolor>white</textcolor>
++				<label>$INFO[Window(Home).Property(cec.ampvolume)]</label>
++				<visible>!String.IsEmpty(Window(Home).Property(cec.ampvolume)) + !Player.Muted</visible>
+ 			</control>
+ 		</control>
+ 	</controls>
+diff --git a/xml/Variables.xml b/xml/Variables.xml
+index 9401b7a..756bba6 100644
+--- a/xml/Variables.xml
++++ b/xml/Variables.xml
+@@ -419,6 +419,10 @@
+ 		<value condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">$INFO[Skin.String(OSDAutoCloseTime)]</value>
+ 		<value condition="String.IsEmpty(Skin.String(OSDAutoCloseTime))">4</value> <!-- Default value -->
+ 	</variable>
++	<variable name="VolumeRingVar">
++		<value condition="!String.IsEmpty(Window(Home).Property(cec.ampvolume))">$INFO[Window(Home).Property(cec.ampvolume),dialogs/volume/progress/p,.png]</value>
++		<value>$INFO[Control.GetLabel(29999),dialogs/volume/progress/p,.png]</value>
++	</variable>
+ 	<variable name="VolumeIconVar">
+ 		<value condition="Player.Muted">dialogs/volume/mute.png</value>
+ 		<value condition="Integer.IsGreater(Player.Volume,66)">dialogs/volume/volume.png</value>

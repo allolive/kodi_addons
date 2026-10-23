@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 09/14] player info panel redesign
+Subject: [PATCH 09/23] player info panel redesign
 
 Reworks the fullscreen info (DialogSeekBar): a right-aligned media
 flag row replaces the MediaFlags include, and the info panel becomes
@@ -318,7 +318,7 @@ index b63c7bb..bca5780 100644
  	</controls>
  </window>
 diff --git a/xml/Includes.xml b/xml/Includes.xml
-index 66cfb82..0e188c9 100644
+index eb635bc..0b90375 100644
 --- a/xml/Includes.xml
 +++ b/xml/Includes.xml
 @@ -304,6 +304,24 @@

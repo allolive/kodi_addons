@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Wed, 30 Sep 2026 18:28:38 -0400
-Subject: [PATCH 14/14] sharper default icons, drawn at icon size
+Subject: [PATCH 14/23] sharper default icons, drawn at icon size
 
 Estuary's 117 single-colour Default*.png icons are 256 px, and the list
 view's side panel stretched the icon of an item without artwork (the ..
