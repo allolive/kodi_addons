@@ -30,7 +30,7 @@ PICTURE_US_1080P120 = 8000      # 1080 of 1125 lines at 120 Hz: the base without
 def parse_vinfo(text):
     """/sys/class/display/vinfo: (active lines, line length in pixels, lines
     per frame, pixel clock in kHz) of the mode being sent, or None."""
-    fields = {}
+    fields: dict[str, str] = {}
     for line in (text or "").splitlines():
         key, _, value = line.partition(":")
         fields.setdefault(key.strip(), value.strip())
