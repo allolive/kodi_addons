@@ -22,6 +22,8 @@ MEDIA = os.path.join(ADDON.getAddonInfo("path"), "resources", "media")
 # film rate -> the refresh the box shows it at in 3D, in mHz; a test pattern for
 # each, crosstalk-<rate>.3D.SBS.mkv
 RATES = {core.rate_name(fps): core.display_mhz(fps) for fps in core.FILM_RATES}
+# Kodi's preferred 3D mode, and Active 3D for VRR displays in it and in GUI.SetStereoscopicMode
+MODE_SETTING, HFR_VRR, HFR_VRR_NAME = "videoscreen.preferedstereoscopicmode", 10, "hfr_vrr"
 BACK = (xbmcgui.ACTION_PARENT_DIR, xbmcgui.ACTION_PREVIOUS_MENU, xbmcgui.ACTION_NAV_BACK)
 
 
@@ -242,6 +244,17 @@ def pattern_file(rate):
     return os.path.join(MEDIA, "crosstalk-%s.3D.SBS.mkv" % rate)
 
 
+def require_active_3d():
+    """True when Active 3D is Kodi's preferred 3D mode; otherwise says where to
+    choose it (a pattern forced into it then breaks playback)."""
+    if setting(MODE_SETTING) == HFR_VRR:
+        return True
+    xbmcgui.Dialog().ok(NAME, "The test patterns need Settings > System > Display > Stereoscopic "
+                        "3D > Preferred mode: Active 3D for VRR displays. It is offered when the "
+                        "TV reports game VRR at 120 Hz or more and no HDMI 3D.")
+    return False
+
+
 def play_pattern(pattern):
     """The test pattern in HFR VRR, the mode chosen as if by hand before it
     starts, so Kodi does not ask. A film already playing is stopped first, if
@@ -254,7 +267,7 @@ def play_pattern(pattern):
         # after the player has closed: wait for it, not for the player
         player.stop()
         wait_until(player.stopped.is_set)
-    rpc("GUI.SetStereoscopicMode", mode="hfr_vrr")
+    rpc("GUI.SetStereoscopicMode", mode=HFR_VRR_NAME)
     player.play(pattern)
     if wait_until(lambda: playing_pattern(player, pattern)):
         return True
@@ -294,9 +307,14 @@ def redraw_auto_us():
     return ADDON.getSettingInt("lens_redraw_auto_us") if base is None else base
 
 
+def setting(setting_id):
+    """A Kodi setting's value, or None."""
+    return (rpc("Settings.GetSettingValue", setting=setting_id) or {}).get("value")
+
+
 def kodi_delay():
     """Kodi's 3D glasses delay as it is now (where a rate not tuned yet starts)."""
-    value = (rpc("Settings.GetSettingValue", setting=DELAY_SETTING) or {}).get("value")
+    value = setting(DELAY_SETTING)
     return value if isinstance(value, int) else 0
 
 
@@ -340,6 +358,8 @@ def main():
         if chosen == "settings":
             ADDON.openSettings()                 # the service rereads them itself
         elif chosen == "pattern":
+            if not require_active_3d():
+                continue
             rate = pick_rate("Test pattern at which film rate?")
             if rate and play_pattern(pattern_file(rate)):
                 tune(rate)
