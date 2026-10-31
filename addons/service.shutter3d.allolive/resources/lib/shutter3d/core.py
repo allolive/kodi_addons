@@ -102,7 +102,9 @@ ADJUST_MIN_US, ADJUST_MAX_US, ADJUST_STEP_US = -3000, 8000, 100
 
 # ---- the delay per film rate, set from the settings ----------------------------
 
-DELAY_MIN_US, DELAY_MAX_US, DELAY_STEP_US = -10500, 10500, 100   # Kodi's 3D glasses delay
+# Kodi's 3D glasses delay: just over an eye pair (two frames) either way at
+# 95.904 Hz, so eyes that start swapped are mid-range rather than at the end
+DELAY_MIN_US, DELAY_MAX_US, DELAY_STEP_US = -21000, 21000, 100
 FILM_RATES = (23.976, 24.0, 25.0, 29.97, 30.0)     # 3D film rates, a test pattern each
 OTHER_RATES = (50.0, 59.94, 60.0)
 
@@ -115,6 +117,14 @@ def rate_name(fps):
 def display_mhz(fps):
     """The refresh frame-sequential 3D shows a film rate at: each eye twice."""
     return int(round(fps * 4000))
+
+
+def emitter_delay(us, rate=None):
+    """The delay within one frame either way, which the emitters reach: two
+    frames later is the same timing. Frames at 4x the film rate (23.976 until
+    one is known)."""
+    frame = 1e9 / display_mhz(float(rate) if rate else FILM_RATES[0])
+    return int(round((us + frame) % (2 * frame) - frame))
 
 
 def delay_message(rate, us):

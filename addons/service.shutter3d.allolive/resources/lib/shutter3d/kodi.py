@@ -57,7 +57,7 @@ class Service(xbmc.Monitor):
         self.link = board.BoardLink(log, self.entered_3d.set, opening=self._opening,
                                     expected_build=pi.bundled_build(boot_dir))
         self.published = None
-        self.delay = None                        # Kodi's 3D glasses delay, as last applied
+        self.delay = None                        # the emitter's delay, as last applied
         self.delay_misses = 0
         self.item_rate = None                    # the playing item's film rate, once known
         self.rate_seen = None                    # what Kodi said it was on the last tick
@@ -170,9 +170,10 @@ class Service(xbmc.Monitor):
                 self.link.set_delay(0)
             return
         self.delay_misses = 0
-        if value != self.delay:
-            self.delay = value
-            self.link.set_delay(value)
+        sent = core.emitter_delay(value, self.rate)
+        if sent != self.delay:
+            self.delay = sent
+            self.link.set_delay(sent)
         if self.rate is not None and self.delays.get(self.rate) != value:
             self.delays[self.rate] = value       # tuned at this rate (or its first time)
             save_delays(self.delays)

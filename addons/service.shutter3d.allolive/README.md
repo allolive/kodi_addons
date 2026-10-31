@@ -118,10 +118,12 @@ stereoscopic 3D mode*, and under System → Display → Stereoscopic 3D. It is a
 Each step reaches the board within a quarter of a second, and Kodi saves it
 when the dialog closes.
 
-It goes from -10500 to 10500 µs in steps of 100 µs, just over a whole frame
-each way at 95.9 Hz (a frame lasts 10427 µs). A whole frame later is the same
-as swapping the eyes, so the delay alone reaches every timing: keep moving it
-the way the picture improves, past half a frame if need be.
+It goes from -21000 to 21000 µs in steps of 100 µs, just over an eye pair
+(two frames) each way at 95.9 Hz (a frame lasts 10427 µs). A whole frame
+later is the same as swapping the eyes, and a pair later the same as no
+delay, so eyes that start swapped are mid-range, not at the end: keep moving
+it the way the picture improves. The emitter gets it taken back to within a
+frame.
 
 **Tune with test pattern** asks for a film rate (23.976, 24, 25, 29.97 or
 30 fps) and plays that pattern, side by side, which the box runs at four times

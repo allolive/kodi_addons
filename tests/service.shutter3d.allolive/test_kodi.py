@@ -157,7 +157,17 @@ def test_the_delay_message():
     assert core.parse_delay_message("delay_25_900") == ("25", 900)
     assert core.parse_delay_message("test_96000") is None
     assert core.parse_delay_message("delay_25_x") is None
-    assert core.clamp_delay(1234) == 1200 and core.clamp_delay(-99999) == -10500
+    assert core.clamp_delay(1234) == 1200
+    assert core.clamp_delay(-99999) == core.DELAY_MIN_US
+
+
+def test_the_emitter_gets_the_delay_within_a_frame():
+    from shutter3d import core
+    frame = 1e9 / core.display_mhz(23.976)
+    assert core.emitter_delay(-400, "23.976") == -400
+    assert core.emitter_delay(11000, "23.976") == round(11000 - 2 * frame)   # two frames earlier
+    for us in (core.DELAY_MIN_US, core.DELAY_MAX_US):
+        assert abs(core.emitter_delay(us, "23.976")) <= frame
 
 
 def test_a_delay_set_in_the_settings(monkeypatch, tmp_path):
