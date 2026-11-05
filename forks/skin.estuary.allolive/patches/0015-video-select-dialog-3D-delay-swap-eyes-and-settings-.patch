@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Fri, 9 Oct 2026 10:27:27 -0400
-Subject: [PATCH 15/23] video select dialog: 3D delay, swap eyes and settings
+Subject: [PATCH 15/26] video select dialog: 3D delay, swap eyes and settings
  buttons
 
 The video stream select dialog gets side buttons like the audio and
@@ -16,7 +16,7 @@ Touches Includes_DialogSelect.xml, Variables.xml.
  2 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
-index b028dcd..113b712 100644
+index ddb7187..8f01487 100644
 --- a/xml/Includes_DialogSelect.xml
 +++ b/xml/Includes_DialogSelect.xml
 @@ -397,8 +397,21 @@
@@ -44,10 +44,10 @@ index b028dcd..113b712 100644
  			</control>
  		</control>
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index ef6d0cd..399c4c0 100644
+index 3ff485a..ba87142 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
-@@ -364,6 +364,10 @@
+@@ -367,6 +367,10 @@
  		<value condition="String.IsEqual(Player.AudioDelay,-0.000 s)">0.000 s</value>
  		<value>$INFO[Player.AudioDelay]</value>
  	</variable>

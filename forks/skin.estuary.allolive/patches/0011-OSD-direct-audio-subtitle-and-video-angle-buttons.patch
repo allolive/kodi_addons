@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 11/23] OSD: direct audio, subtitle and video-angle buttons
+Subject: [PATCH 11/26] OSD: direct audio, subtitle and video-angle buttons
 
 Reorders the video OSD button row: direct audio, subtitle and video
 stream selection buttons whose focus label shows the language name
@@ -98,10 +98,10 @@ literal 0
 HcmV?d00001
 
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index a5124ae..352d2e0 100644
+index d8a1f3d..9c59dfa 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
-@@ -376,6 +376,10 @@
+@@ -379,6 +379,10 @@
  		<value condition="Control.HasFocus(70046)">$LOCALIZE[13392]</value>
  		<value condition="Control.HasFocus(70047)">$LOCALIZE[36501]</value>
  		<value condition="Control.HasFocus(70048)">$LOCALIZE[5]</value>
@@ -112,7 +112,7 @@ index a5124ae..352d2e0 100644
  		<value condition="Control.HasFocus(70050)">$LOCALIZE[29900]</value>
  		<value condition="Control.HasFocus(70051)">$LOCALIZE[31066]</value>
  		<value condition="Control.HasFocus(70052)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
-@@ -760,6 +764,15 @@
+@@ -764,6 +768,15 @@
  		<value condition="String.IsEmpty(VideoPlayer.AudioLanguage) | String.IsEqual(VideoPlayer.AudioLanguage,und)">$LOCALIZE[13205]</value>
  		<value condition="!String.IsEmpty(VideoPlayer.AudioLanguage)">$INFO[VideoPlayer.AudioLanguage]</value>
  	</variable>

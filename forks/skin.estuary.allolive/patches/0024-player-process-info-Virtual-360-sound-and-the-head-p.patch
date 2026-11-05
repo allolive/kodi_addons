@@ -1,0 +1,112 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 3 Nov 2026 20:35:49 -0500
+Subject: [PATCH 24/26] =?UTF-8?q?player=20process=20info:=20Virtual=20360?=
+ =?UTF-8?q?=C2=B0=20sound=20and=20the=20head=20position=20as=20channels=20?=
+ =?UTF-8?q?out?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+While Virtual Sound renders the headphones (its home property
+service.virtualsound.allolive.enabled), both PPI screens show Channels out
+as "Virtual 360° sound" instead of the loopback's channel layout or
+Passthrough, followed by the tracked head position when the service
+publishes it (service.virtualsound.allolive.head).
+
+Signed-off-by: allolive <160342668+allolive@users.noreply.github.com>
+---
+ language/resource.language.en_gb/strings.po |  5 +++++
+ xml/DialogPlayerProcessInfo.xml             | 14 ++++++++++++--
+ xml/VideoOSD.xml                            | 16 +++++++++++++---
+ 3 files changed, 30 insertions(+), 5 deletions(-)
+
+diff --git a/language/resource.language.en_gb/strings.po b/language/resource.language.en_gb/strings.po
+index b52f9af..b391972 100644
+--- a/language/resource.language.en_gb/strings.po
++++ b/language/resource.language.en_gb/strings.po
+@@ -1074,6 +1074,11 @@ msgctxt "#31641"
+ msgid "Passthrough"
+ msgstr ""
+ 
++#. Channels out in the player process info while Virtual Sound renders the headphones
++msgctxt "#31642"
++msgid "Virtual 360° sound"
++msgstr ""
++
+ msgctxt "#31700"
+ msgid "Inter (Modern)"
+ msgstr ""
+diff --git a/xml/DialogPlayerProcessInfo.xml b/xml/DialogPlayerProcessInfo.xml
+index ce13a46..c3c36b2 100644
+--- a/xml/DialogPlayerProcessInfo.xml
++++ b/xml/DialogPlayerProcessInfo.xml
+@@ -335,7 +335,17 @@
+ 					<font>font12</font>
+ 					<scroll>true</scroll>
+ 					<shadowcolor>black</shadowcolor>
+-					<visible>!Player.Passthrough</visible>
++					<visible>!Player.Passthrough + !String.IsEqual(Window(Home).Property(service.virtualsound.allolive.enabled),true)</visible>
++				</control>
++				<control type="label">
++					<width>520</width>
++					<height>40</height>
++					<aligny>bottom</aligny>
++					<label>[COLOR button_focus]$LOCALIZE[472]:[/COLOR] $LOCALIZE[31642]$INFO[Window(Home).Property(service.virtualsound.allolive.head),  ·  ,]</label>
++					<font>font12</font>
++					<scroll>true</scroll>
++					<shadowcolor>black</shadowcolor>
++					<visible>String.IsEqual(Window(Home).Property(service.virtualsound.allolive.enabled),true)</visible>
+ 				</control>
+ 				<control type="label">
+ 					<width>520</width>
+@@ -345,7 +355,7 @@
+ 					<font>font12</font>
+ 					<scroll>true</scroll>
+ 					<shadowcolor>black</shadowcolor>
+-					<visible>Player.Passthrough</visible>
++					<visible>Player.Passthrough + !String.IsEqual(Window(Home).Property(service.virtualsound.allolive.enabled),true)</visible>
+ 				</control>
+ 				<control type="label">
+ 					<width>420</width>
+diff --git a/xml/VideoOSD.xml b/xml/VideoOSD.xml
+index 004edee..6445de2 100644
+--- a/xml/VideoOSD.xml
++++ b/xml/VideoOSD.xml
+@@ -252,7 +252,7 @@
+ 						<label>Passthrough</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+-						<visible>Player.Passthrough</visible>
++						<visible>Player.Passthrough + !String.IsEqual(Window(Home).Property(service.virtualsound.allolive.enabled),true)</visible>
+ 					</control>
+ 					<control type="label">
+ 						<left>240</left>
+@@ -261,7 +261,7 @@
+ 						<label>$INFO[Player.Process(audiochannelssink)]</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+-						<visible>!Player.Passthrough + !String.IsEmpty(Player.Process(audiochannelssink))</visible>
++						<visible>!Player.Passthrough + !String.IsEmpty(Player.Process(audiochannelssink)) + !String.IsEqual(Window(Home).Property(service.virtualsound.allolive.enabled),true)</visible>
+ 					</control>
+ 					<control type="label">
+ 						<left>240</left>
+@@ -269,7 +269,17 @@
+ 						<label>PCM</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+-						<visible>!Player.Passthrough + String.IsEmpty(Player.Process(audiochannelssink))</visible>
++						<visible>!Player.Passthrough + String.IsEmpty(Player.Process(audiochannelssink)) + !String.IsEqual(Window(Home).Property(service.virtualsound.allolive.enabled),true)</visible>
++					</control>
++					<control type="label">
++						<left>240</left>
++						<top>140</top>
++						<width>320</width>
++						<label>$LOCALIZE[31642]$INFO[Window(Home).Property(service.virtualsound.allolive.head),  ·  ,]</label>
++						<font>font_tiny</font>
++						<scroll>true</scroll>
++						<textcolor>dialog_fg_90</textcolor>
++						<visible>String.IsEqual(Window(Home).Property(service.virtualsound.allolive.enabled),true)</visible>
+ 					</control>
+ 
+ 					<control type="label">

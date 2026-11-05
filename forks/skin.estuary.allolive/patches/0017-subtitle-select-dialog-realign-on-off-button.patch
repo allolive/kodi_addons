@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Thu, 15 Oct 2026 18:33:34 -0400
-Subject: [PATCH 17/23] subtitle select dialog: realign on/off button
+Subject: [PATCH 17/26] subtitle select dialog: realign on/off button
 
 The subtitle select dialog gets a side button that turns the
 realignment of a subtitle file on or off while the video plays,
@@ -15,7 +15,7 @@ Touches Includes_DialogSelect.xml, Variables.xml.
  2 files changed, 9 insertions(+)
 
 diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
-index 113b712..447e4b8 100644
+index 8f01487..40853cb 100644
 --- a/xml/Includes_DialogSelect.xml
 +++ b/xml/Includes_DialogSelect.xml
 @@ -797,6 +797,11 @@
@@ -31,10 +31,10 @@ index 113b712..447e4b8 100644
  					<param name="id" value="70093" />
  					<param name="label" value="Settings" />
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index 399c4c0..23730ec 100644
+index ba87142..d32cc6a 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
-@@ -368,6 +368,10 @@
+@@ -371,6 +371,10 @@
  		<value condition="Player.StereoInvert">$LOCALIZE[16041]</value>
  		<value>$LOCALIZE[16039]</value>
  	</variable>

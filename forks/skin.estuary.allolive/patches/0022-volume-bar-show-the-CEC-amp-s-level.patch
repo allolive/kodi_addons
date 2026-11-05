@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Sat, 17 Oct 2026 15:05:00 -0400
-Subject: [PATCH 22/23] volume bar: show the CEC amp's level
+Subject: [PATCH 22/26] volume bar: show the CEC amp's level
 
 When an amp handles volume over CEC, Kodi's own volume sits at 100% and
 the ring would always be full. Kodi (patch 21-kodi-cec_volume) publishes
@@ -48,10 +48,10 @@ index 2ac0aa6..59c2b4b 100644
  		</control>
  	</controls>
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index 9401b7a..756bba6 100644
+index d46b626..34c8333 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
-@@ -419,6 +419,10 @@
+@@ -422,6 +422,10 @@
  		<value condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">$INFO[Skin.String(OSDAutoCloseTime)]</value>
  		<value condition="String.IsEmpty(Skin.String(OSDAutoCloseTime))">4</value> <!-- Default value -->
  	</variable>

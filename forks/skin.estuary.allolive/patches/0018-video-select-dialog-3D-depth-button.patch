@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Fri, 16 Oct 2026 11:00:00 -0400
-Subject: [PATCH 18/23] video select dialog: 3D depth button
+Subject: [PATCH 18/26] video select dialog: 3D depth button
 
 A 3D depth button next to 3D delay in the video stream select dialog, in
 HFR VRR only: it shows the film's depth and opens its slider (Kodi's
@@ -12,7 +12,7 @@ with that action and Player.StereoDepth.
  1 file changed, 6 insertions(+)
 
 diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
-index 447e4b8..ef58f33 100644
+index 40853cb..2253a1b 100644
 --- a/xml/Includes_DialogSelect.xml
 +++ b/xml/Includes_DialogSelect.xml
 @@ -402,6 +402,12 @@

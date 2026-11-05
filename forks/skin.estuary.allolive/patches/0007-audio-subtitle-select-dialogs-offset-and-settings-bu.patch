@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 07/23] audio/subtitle select dialogs: offset and settings
+Subject: [PATCH 07/26] audio/subtitle select dialogs: offset and settings
  buttons
 
 The audio and subtitle select dialogs get shorter lists and side
@@ -47,7 +47,7 @@ index ef828ec..f02251f 100644
  	</controls>
  </window>
 diff --git a/xml/Includes_DialogSelect.xml b/xml/Includes_DialogSelect.xml
-index ee7d629..b028dcd 100644
+index a774df2..ddb7187 100644
 --- a/xml/Includes_DialogSelect.xml
 +++ b/xml/Includes_DialogSelect.xml
 @@ -412,11 +412,11 @@
@@ -118,10 +118,10 @@ index ee7d629..b028dcd 100644
  			</control>
  		</control>
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index ce37a29..12b8a66 100644
+index a7561c0..9e8fa21 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
-@@ -352,6 +352,14 @@
+@@ -355,6 +355,14 @@
  		<value condition="Control.HasFocus(70044)">$LOCALIZE[19320]</value>
  		<value condition="Control.HasFocus(70045)">$LOCALIZE[19321]</value>
  	</variable>

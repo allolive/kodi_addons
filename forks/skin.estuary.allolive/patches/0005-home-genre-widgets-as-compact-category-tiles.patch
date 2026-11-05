@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 05/23] home: genre widgets as compact category tiles
+Subject: [PATCH 05/26] home: genre widgets as compact category tiles
 
 Moves the movie and TV genre widgets up the home widget list and
 renders category widgets with a new CategoryTileLayout (rounded tile,

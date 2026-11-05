@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Thu, 5 Nov 2026 14:03:39 -0500
+Subject: [PATCH 26/26] player process info: the video's live bitrate shows
+
+Upstream's label read $INFO[Player.Process(videolivebitrate,$COMMA ,]:
+the closing parenthesis missing, so Kodi logged "unmatched parentheses"
+each time the panel opened and the video line never showed the bitrate.
+The audio line's has it.
+
+Signed-off-by: allolive <160342668+allolive@users.noreply.github.com>
+---
+ xml/DialogPlayerProcessInfo.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/xml/DialogPlayerProcessInfo.xml b/xml/DialogPlayerProcessInfo.xml
+index fcdcdee..dc518a1 100644
+--- a/xml/DialogPlayerProcessInfo.xml
++++ b/xml/DialogPlayerProcessInfo.xml
+@@ -155,7 +155,7 @@
+ 					<width>900</width>
+ 					<height>40</height>
+ 					<aligny>bottom</aligny>
+-					<label>$INFO[Player.Process(videowidth),[COLOR button_focus]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight)]$INFO[Player.Process(videoscantype)]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]$INFO[Player.Process(videolivebitrate,$COMMA ,]</label>
++					<label>$INFO[Player.Process(videowidth),[COLOR button_focus]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight)]$INFO[Player.Process(videoscantype)]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]$INFO[Player.Process(videolivebitrate),$COMMA ,]</label>
+ 					<font>font12</font>
+ 					<shadowcolor>black</shadowcolor>
+ 				</control>

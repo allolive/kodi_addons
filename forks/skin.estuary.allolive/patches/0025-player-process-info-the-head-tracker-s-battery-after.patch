@@ -1,0 +1,58 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Tue, 3 Nov 2026 21:16:57 -0500
+Subject: [PATCH 25/26] player process info: the head tracker's battery after
+ its position
+
+Channels out under Virtual Sound ends with "Tracker 80 %" when the
+service publishes service.virtualsound.allolive.headbattery.
+
+Signed-off-by: allolive <160342668+allolive@users.noreply.github.com>
+---
+ language/resource.language.en_gb/strings.po | 5 +++++
+ xml/DialogPlayerProcessInfo.xml             | 2 +-
+ xml/VideoOSD.xml                            | 2 +-
+ 3 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/language/resource.language.en_gb/strings.po b/language/resource.language.en_gb/strings.po
+index b391972..f4400a8 100644
+--- a/language/resource.language.en_gb/strings.po
++++ b/language/resource.language.en_gb/strings.po
+@@ -1079,6 +1079,11 @@ msgctxt "#31642"
+ msgid "Virtual 360° sound"
+ msgstr ""
+ 
++#. Before the head tracker's battery level, in the player process info
++msgctxt "#31643"
++msgid "Tracker"
++msgstr ""
++
+ msgctxt "#31700"
+ msgid "Inter (Modern)"
+ msgstr ""
+diff --git a/xml/DialogPlayerProcessInfo.xml b/xml/DialogPlayerProcessInfo.xml
+index c3c36b2..fcdcdee 100644
+--- a/xml/DialogPlayerProcessInfo.xml
++++ b/xml/DialogPlayerProcessInfo.xml
+@@ -341,7 +341,7 @@
+ 					<width>520</width>
+ 					<height>40</height>
+ 					<aligny>bottom</aligny>
+-					<label>[COLOR button_focus]$LOCALIZE[472]:[/COLOR] $LOCALIZE[31642]$INFO[Window(Home).Property(service.virtualsound.allolive.head),  ·  ,]</label>
++					<label>[COLOR button_focus]$LOCALIZE[472]:[/COLOR] $LOCALIZE[31642]$INFO[Window(Home).Property(service.virtualsound.allolive.head),  ·  ,]$INFO[Window(Home).Property(service.virtualsound.allolive.headbattery),  ·  $LOCALIZE[31643] ,]</label>
+ 					<font>font12</font>
+ 					<scroll>true</scroll>
+ 					<shadowcolor>black</shadowcolor>
+diff --git a/xml/VideoOSD.xml b/xml/VideoOSD.xml
+index 6445de2..567eef3 100644
+--- a/xml/VideoOSD.xml
++++ b/xml/VideoOSD.xml
+@@ -275,7 +275,7 @@
+ 						<left>240</left>
+ 						<top>140</top>
+ 						<width>320</width>
+-						<label>$LOCALIZE[31642]$INFO[Window(Home).Property(service.virtualsound.allolive.head),  ·  ,]</label>
++						<label>$LOCALIZE[31642]$INFO[Window(Home).Property(service.virtualsound.allolive.head),  ·  ,]$INFO[Window(Home).Property(service.virtualsound.allolive.headbattery),  ·  $LOCALIZE[31643] ,]</label>
+ 						<font>font_tiny</font>
+ 						<scroll>true</scroll>
+ 						<textcolor>dialog_fg_90</textcolor>

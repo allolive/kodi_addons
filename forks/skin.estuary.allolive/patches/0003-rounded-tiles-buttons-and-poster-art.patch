@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:27 -0400
-Subject: [PATCH 03/23] rounded tiles, buttons and poster art
+Subject: [PATCH 03/26] rounded tiles, buttons and poster art
 
 Rounded-corner look: a lists/rounded-tile.png focus/background texture
 for the settings home panel (resized to 5 x 350px tiles), settings
@@ -730,7 +730,7 @@ index 82b231e..d8f97ed 100644
  					<control type="group">
  						<left>291</left>
 diff --git a/xml/View_51_Poster.xml b/xml/View_51_Poster.xml
-index 32b5a47..c4b091a 100644
+index 182f20a..48d6398 100644
 --- a/xml/View_51_Poster.xml
 +++ b/xml/View_51_Poster.xml
 @@ -123,7 +123,7 @@
@@ -754,7 +754,7 @@ index 32b5a47..c4b091a 100644
  			<control type="group">
  				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBType,season) | ListItem.IsRecording | ListItem.HasReminder | ListItem.HasTimer | ListItem.IsCollection | ListItem.HasVideoVersions | ListItem.IsPlaying | ListItem.IsResumable | ListItem.HasVideoExtras | ListItem.HasArchive | Integer.IsGreater(ListItem.Playcount,0)</visible>
 diff --git a/xml/View_53_Shift.xml b/xml/View_53_Shift.xml
-index e5a827f..415285f 100644
+index bdda0d8..42ab570 100644
 --- a/xml/View_53_Shift.xml
 +++ b/xml/View_53_Shift.xml
 @@ -145,16 +145,22 @@
@@ -787,7 +787,7 @@ index e5a827f..415285f 100644
  		</control>
  		<control type="textbox">
 diff --git a/xml/View_54_InfoWall.xml b/xml/View_54_InfoWall.xml
-index d744c2d..9a03e77 100644
+index b33308a..6cd43ab 100644
 --- a/xml/View_54_InfoWall.xml
 +++ b/xml/View_54_InfoWall.xml
 @@ -278,26 +278,30 @@

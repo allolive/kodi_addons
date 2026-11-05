@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: allolive <160342668+allolive@users.noreply.github.com>
 Date: Tue, 29 Sep 2026 11:59:28 -0400
-Subject: [PATCH 12/23] player process info (PPI) panel
+Subject: [PATCH 12/26] player process info (PPI) panel
 
 Player process info ported from jamal2362's Estuary Hybrid: a CPM-style
 DialogPlayerProcessInfo and an OSD overlay toggled by a PPI button,
@@ -9142,7 +9142,7 @@ index 04b314f..d8ccf42 100644
  	</fontset>
  </fonts>
 diff --git a/xml/Variables.xml b/xml/Variables.xml
-index 352d2e0..ef6d0cd 100644
+index 9c59dfa..3ff485a 100644
 --- a/xml/Variables.xml
 +++ b/xml/Variables.xml
 @@ -1,5 +1,13 @@
@@ -9159,7 +9159,7 @@ index 352d2e0..ef6d0cd 100644
  	<variable name="PVRStatusImageVar">
  		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
  		<value condition="ListItem.HasTimer | ListItem.HasTimerSchedule">windows/pvr/timer.png</value>
-@@ -367,6 +375,7 @@
+@@ -370,6 +378,7 @@
  		<value condition="Control.HasFocus(608)">$LOCALIZE[264]</value>
  		<value condition="Control.HasFocus(804)">$LOCALIZE[33061]</value>
  		<value condition="Control.HasFocus(70011)">$LOCALIZE[31178]</value>
