@@ -1,0 +1,176 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: allolive <160342668+allolive@users.noreply.github.com>
+Date: Mon, 23 Nov 2026 21:40:00 -0500
+Subject: [PATCH] OSD: the CPU row shows what the default panel shows
+
+The OSD overlay's Render thread and CPU (all cores) rows came from ppi_sysfs.py, which read /proc itself; their bars, bound to window properties, never moved because a progress control reads only integer infos. The overlay now has the one CPU row the default Player process info panel has: a bar on Kodi's own System.CPUUsage, the overall percentage beside it and the per-core System.CpuUsage text on its own line below, each line with its label (CPU:, Cores:). The Buffer percentage loses its space too (99%, like the CPU). Kodi has no overall label, so the script averages the per-core figures Kodi reports; Kodi measures them in the background, so everything is there as soon as the overlay opens. The script no longer reads /proc.
+
+Signed-off-by: allolive <160342668+allolive@users.noreply.github.com>
+---
+ extras/ppi_sysfs.py | 0
+ xml/VideoOSD.xml    | 0
+diff --git a/extras/ppi_sysfs.py b/extras/ppi_sysfs.py
+index b80cb64..19099bc 100644
+--- a/extras/ppi_sysfs.py
++++ b/extras/ppi_sysfs.py
+@@ -31,7 +31,6 @@ when PPI is toggled off (or playback stops) it cleans up. The overlay lives in
+ VideoOSD.xml so the OSD keeps input focus (you can still move the button
+ selection and click PPI again to toggle off).
+ """
+-import os
+ import re
+ 
+ import xbmc
+@@ -72,8 +71,7 @@ _PROPS = (
+     "ppi.graphic_format", "ppi.dv_provider",
+     "ppi.dv_mode", "ppi.process",
+     "ppi.out_mode", "ppi.out_color", "ppi.out_eotf", "ppi.out_gamut", "ppi.out_hdr",
+-    # CPU load: Kodi's main/render thread (as % of one core) + system average.
+-    "ppi.kodi_cpu", "ppi.cpu_avg",
++    "ppi.cpu_avg",
+ )
+ 
+ 
+@@ -95,57 +93,6 @@ def _pretty_mode(token):
+     return "%s %sHz" % (m.group(1), m.group(2)) if m else token
+ 
+ 
+-# --- CPU load -------------------------------------------------------------
+-# System.CpuUsage only exposes per-core figures, which hide a single thread
+-# saturating one core: the scheduler migrates that thread across cores, so each
+-# core reads low even though one core's worth of compute is being burned. We
+-# read /proc directly to report Kodi's main/render thread (the busy one) as a
+-# percentage of one core, plus the true system-wide average across all cores.
+-_PID = os.getpid()
+-_NCPU = os.cpu_count() or 1
+-_cpu_prev = {}  # carries the previous sample between polls
+-
+-
+-def _main_thread_jiffies():
+-    # /proc/<pid>/task/<pid>/stat -> utime (14) + stime (15), 1-indexed. comm
+-    # (field 2) can contain spaces/parens, so split after the last ')'.
+-    try:
+-        with open("/proc/%d/task/%d/stat" % (_PID, _PID)) as f:
+-            rest = f.read().rpartition(")")[2].split()
+-        return int(rest[11]) + int(rest[12])
+-    except Exception:
+-        return None
+-
+-
+-def _system_jiffies():
+-    # /proc/stat "cpu" line: user nice system idle iowait irq softirq steal ...
+-    try:
+-        with open("/proc/stat") as f:
+-            v = [int(x) for x in f.readline().split()[1:]]
+-        idle = v[3] + (v[4] if len(v) > 4 else 0)  # idle + iowait
+-        total = sum(v)
+-        return total - idle, total
+-    except Exception:
+-        return None, None
+-
+-
+-def cpu_usage():
+-    """(kodi_main_thread % of one core, system average %) as label strings."""
+-    main = _main_thread_jiffies()
+-    busy, total = _system_jiffies()
+-    res = ("", "")
+-    if (main is not None and busy is not None and _cpu_prev
+-            and total > _cpu_prev["total"]):
+-        dt = total - _cpu_prev["total"]
+-        # plain integers (no %): drive the skin progress bars; the skin label
+-        # appends the % sign for display.
+-        res = ("%.0f" % ((main - _cpu_prev["main"]) / (dt / _NCPU) * 100.0),
+-               "%.0f" % ((busy - _cpu_prev["busy"]) / dt * 100.0))
+-    if main is not None and busy is not None:
+-        _cpu_prev.update(main=main, busy=busy, total=total)
+-    return res
+-
+-
+ def collect():
+     """Return {property: value} from the current sysfs state."""
+     out = {p: "" for p in _PROPS}
+@@ -220,8 +167,12 @@ def collect():
+     if hdr:
+         out["ppi.out_hdr"] = hdr
+ 
+-    # --- CPU: Kodi main/render thread (% of one core) + system average
+-    out["ppi.kodi_cpu"], out["ppi.cpu_avg"] = cpu_usage()
++    # --- CPU: the average of the per-core figures Kodi itself reports ("#0:  13%
++    # #1:  29% ..."). Kodi has no single overall label and measures the cores in
++    # the background, so this is there at once and agrees with the bar and text.
++    cores = re.findall(r"(\d+)%", xbmc.getInfoLabel("System.CPUUsage"))
++    if cores:
++        out["ppi.cpu_avg"] = "%.0f" % (sum(map(int, cores)) / len(cores))
+ 
+     return out
+ 
+diff --git a/xml/VideoOSD.xml b/xml/VideoOSD.xml
+index 567eef3..6e1a6a4 100644
+--- a/xml/VideoOSD.xml
++++ b/xml/VideoOSD.xml
+@@ -392,10 +392,10 @@
+ 						<textcolor>dialog_fg_90</textcolor>
+ 					</control>
+ 
+-					<!-- CPU: Kodi main/render thread (% of one core) + live bar -->
++					<!-- CPU as the default panel shows it: Kodi's own bar, the overall % beside it and the per-core text below it -->
+ 					<control type="label">
+ 						<top>90</top>
+-						<label>Render thread:</label>
++						<label>CPU:</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+ 					</control>
+@@ -404,38 +404,27 @@
+ 						<top>103</top>
+ 						<width>250</width>
+ 						<height>12</height>
+-						<info>Window(Home).Property(ppi.kodi_cpu)</info>
++						<info>System.CPUUsage</info>
+ 						<texturebg colordiffuse="33FFFFFF">colors/white.png</texturebg>
+ 						<midtexture colordiffuse="dialog_fg_90">colors/white.png</midtexture>
+ 					</control>
+ 					<control type="label">
+ 						<left>440</left>
+ 						<top>90</top>
+-						<label>$INFO[Window(Home).Property(ppi.kodi_cpu)]%</label>
++						<label>$INFO[Window(Home).Property(ppi.cpu_avg)]%</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+ 					</control>
+-
+-					<!-- CPU: system average across all cores + live bar -->
+ 					<control type="label">
+ 						<top>125</top>
+-						<label>CPU (all cores):</label>
++						<label>Cores:</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+ 					</control>
+-					<control type="progress">
+-						<left>175</left>
+-						<top>138</top>
+-						<width>250</width>
+-						<height>12</height>
+-						<info>Window(Home).Property(ppi.cpu_avg)</info>
+-						<texturebg colordiffuse="33FFFFFF">colors/white.png</texturebg>
+-						<midtexture colordiffuse="dialog_fg_90">colors/white.png</midtexture>
+-					</control>
+ 					<control type="label">
+-						<left>440</left>
++						<left>175</left>
+ 						<top>125</top>
+-						<label>$INFO[Window(Home).Property(ppi.cpu_avg)]%</label>
++						<label>$INFO[System.CpuUsage]</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+ 					</control>
+@@ -459,7 +448,7 @@
+ 					<control type="label">
+ 						<left>440</left>
+ 						<top>55</top>
+-						<label>$INFO[Player.CacheLevel,, %]</label>
++						<label>$INFO[Player.CacheLevel,,%]</label>
+ 						<font>font_tiny</font>
+ 						<textcolor>dialog_fg_90</textcolor>
+ 					</control>
